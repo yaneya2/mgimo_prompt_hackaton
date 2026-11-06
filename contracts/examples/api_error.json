@@ -1,0 +1,10 @@
+{
+  "error": {
+    "code": "UPSTREAM_UNAVAILABLE",
+    "message": "Поисковый сервис недоступен",
+    "retryable": true,
+    "request_id": "request_demo",
+    "run_id": "run_demo",
+    "field_errors": []
+  }
+}

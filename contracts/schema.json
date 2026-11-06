@@ -1,0 +1,2030 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Strategy system contracts 1.0.0 (proposed)",
+  "$defs": {
+    "Money": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "properties": {
+        "amount": {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d{1,6})?$"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        }
+      }
+    },
+    "EntityRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "id",
+        "version"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "capability",
+            "source",
+            "claim",
+            "option",
+            "message",
+            "experiment",
+            "decision",
+            "issue"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "Project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "created_at",
+        "current_brief_version"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "current_brief_version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "BriefInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "product",
+        "goal",
+        "audience",
+        "horizon",
+        "budget",
+        "constraints",
+        "assumptions",
+        "unknowns",
+        "excluded_source_ids"
+      ],
+      "properties": {
+        "product": {
+          "type": "string",
+          "minLength": 1
+        },
+        "goal": {
+          "type": "string",
+          "minLength": 1
+        },
+        "audience": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "horizon": {
+          "type": "string",
+          "minLength": 1
+        },
+        "budget": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "unknowns": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "excluded_source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+          }
+        }
+      }
+    },
+    "BriefVersion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_id",
+        "version",
+        "created_at",
+        "author",
+        "input"
+      ],
+      "properties": {
+        "project_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "author": {
+          "type": "string",
+          "enum": [
+            "user",
+            "agent"
+          ]
+        },
+        "input": {
+          "$ref": "#/$defs/BriefInput"
+        }
+      }
+    },
+    "Capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "project_id",
+        "brief_version",
+        "name",
+        "status",
+        "basis",
+        "source_ids"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "project_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "brief_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "available",
+            "planned",
+            "hypothesis"
+          ]
+        },
+        "basis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+          }
+        }
+      }
+    },
+    "Source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "project_id",
+        "brief_version",
+        "kind",
+        "title",
+        "url",
+        "publisher",
+        "published_at",
+        "retrieved_at",
+        "content_excerpt",
+        "locator",
+        "verification",
+        "origin_note"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "project_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "brief_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "web",
+            "user_text",
+            "user_file"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publisher": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "published_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retrieved_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "content_excerpt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "locator": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "verification": {
+          "type": "string",
+          "enum": [
+            "read",
+            "unavailable"
+          ]
+        },
+        "origin_note": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "web"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "verification": {
+                "const": "read"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content_excerpt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "locator": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "source_version",
+        "quote",
+        "locator",
+        "relation"
+      ],
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "source_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation": {
+          "type": "string",
+          "enum": [
+            "supports",
+            "contradicts",
+            "context"
+          ]
+        }
+      }
+    },
+    "Claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "project_id",
+        "brief_version",
+        "text",
+        "kind",
+        "verification",
+        "evidence",
+        "limitations"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "project_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "brief_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "external_fact",
+            "user_provided",
+            "hypothesis",
+            "forecast"
+          ]
+        },
+        "verification": {
+          "type": "string",
+          "enum": [
+            "supported",
+            "disputed",
+            "unverified"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "StrategyOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "project_id",
+        "brief_version",
+        "name",
+        "segment",
+        "problem",
+        "value",
+        "priorities",
+        "capability_ids",
+        "claim_ids",
+        "channels",
+        "resource_assumptions",
+        "objections",
+        "failure_condition",
+        "rationale"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "project_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "brief_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "segment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "problem": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1
+        },
+        "priorities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "capability_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+          }
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+          }
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "resource_assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "objections": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "failure_condition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "Message": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "project_id",
+        "brief_version",
+        "option_id",
+        "text",
+        "capability_ids",
+        "claim_ids",
+        "channel",
+        "status",
+        "rationale"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "project_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "brief_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "option_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "capability_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+          }
+        },
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+          }
+        },
+        "channel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "allowed",
+            "hypothesis_only",
+            "blocked"
+          ]
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "Experiment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "project_id",
+        "brief_version",
+        "option_id",
+        "message_ids",
+        "hypothesis",
+        "method",
+        "metric",
+        "baseline",
+        "decision_threshold",
+        "threshold_basis",
+        "duration",
+        "owner",
+        "data_requirements",
+        "stop_condition"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "project_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "brief_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "option_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "message_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+          }
+        },
+        "hypothesis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "metric": {
+          "type": "string",
+          "minLength": 1
+        },
+        "baseline": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "decision_threshold": {
+          "type": "string",
+          "minLength": 1
+        },
+        "threshold_basis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "duration": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "data_requirements": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "stop_condition": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "Decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "project_id",
+        "brief_version",
+        "option_id",
+        "action",
+        "author",
+        "rationale",
+        "created_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "project_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "brief_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "option_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "select",
+            "reject",
+            "request_revision"
+          ]
+        },
+        "author": {
+          "type": "string",
+          "enum": [
+            "user",
+            "agent"
+          ]
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "ReviewIssue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "project_id",
+        "brief_version",
+        "code",
+        "severity",
+        "target",
+        "explanation",
+        "evidence",
+        "suggested_fix",
+        "return_to",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "project_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "brief_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "blocking",
+            "warning",
+            "info"
+          ]
+        },
+        "target": {
+          "$ref": "#/$defs/EntityRef"
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          }
+        },
+        "suggested_fix": {
+          "type": "string",
+          "minLength": 1
+        },
+        "return_to": {
+          "type": "string",
+          "enum": [
+            "brief",
+            "research",
+            "options",
+            "communications",
+            "review",
+            "selection",
+            "report"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "open",
+            "resolved",
+            "accepted_limitation"
+          ]
+        }
+      }
+    },
+    "Usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "run_id",
+        "call_id",
+        "attempt",
+        "stage",
+        "provider",
+        "model",
+        "tool",
+        "started_at",
+        "duration_ms",
+        "input_tokens",
+        "output_tokens",
+        "cost",
+        "cost_basis",
+        "pricing_version",
+        "outcome",
+        "cached"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "call_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "stage": {
+          "type": "string",
+          "enum": [
+            "brief",
+            "research",
+            "options",
+            "communications",
+            "review",
+            "selection",
+            "report"
+          ]
+        },
+        "provider": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tool": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "duration_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "input_tokens": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "output_tokens": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost_basis": {
+          "type": "string",
+          "enum": [
+            "reported",
+            "estimated",
+            "unknown"
+          ]
+        },
+        "pricing_version": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "success",
+            "error"
+          ]
+        },
+        "cached": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "stage",
+        "text",
+        "required",
+        "options"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "stage": {
+          "type": "string",
+          "enum": [
+            "brief",
+            "research",
+            "options",
+            "communications",
+            "review",
+            "selection",
+            "report"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code",
+            "message",
+            "retryable",
+            "request_id",
+            "run_id",
+            "field_errors"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "enum": [
+                "VALIDATION_ERROR",
+                "NOT_FOUND",
+                "VERSION_CONFLICT",
+                "INVALID_STATE",
+                "RUN_ALREADY_ACTIVE",
+                "UPSTREAM_UNAVAILABLE",
+                "BUDGET_EXCEEDED",
+                "INTERNAL_ERROR"
+              ]
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1
+            },
+            "retryable": {
+              "type": "boolean"
+            },
+            "request_id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+            },
+            "run_id": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "field_errors": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "path",
+                  "message"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "message": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "project_id",
+        "brief_version",
+        "revision",
+        "status",
+        "stage",
+        "quality",
+        "created_at",
+        "updated_at",
+        "checkpoint_id",
+        "attempt",
+        "error"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "project_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "brief_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "queued",
+            "running",
+            "pause_requested",
+            "paused",
+            "waiting_for_input",
+            "completed",
+            "failed",
+            "incomplete"
+          ]
+        },
+        "stage": {
+          "type": "string",
+          "enum": [
+            "brief",
+            "research",
+            "options",
+            "communications",
+            "review",
+            "selection",
+            "report"
+          ]
+        },
+        "quality": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "blocked",
+            "ready"
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "checkpoint_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ErrorResponse"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "Artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "project_id",
+        "run_id",
+        "brief_version",
+        "schema_version",
+        "stage",
+        "prompt_version",
+        "model_id",
+        "created_at",
+        "freshness",
+        "depends_on",
+        "entities",
+        "summary"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "project_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "brief_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "stage": {
+          "type": "string",
+          "enum": [
+            "brief",
+            "research",
+            "options",
+            "communications",
+            "review",
+            "selection",
+            "report"
+          ]
+        },
+        "prompt_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "freshness": {
+          "type": "string",
+          "enum": [
+            "current",
+            "stale"
+          ]
+        },
+        "depends_on": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "artifact_id",
+              "version"
+            ],
+            "properties": {
+              "artifact_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        },
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityRef"
+          }
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "DataBundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capabilities",
+        "sources",
+        "claims",
+        "options",
+        "messages",
+        "experiments",
+        "decisions",
+        "issues"
+      ],
+      "properties": {
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Capability"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Claim"
+          }
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StrategyOption"
+          }
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Message"
+          }
+        },
+        "experiments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Experiment"
+          }
+        },
+        "decisions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Decision"
+          }
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ReviewIssue"
+          }
+        }
+      }
+    },
+    "Limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_model_calls",
+        "max_search_calls",
+        "max_repair_cycles",
+        "timeout_seconds",
+        "budget"
+      ],
+      "properties": {
+        "max_model_calls": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_search_calls": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_repair_cycles": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "budget": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "StageRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "run_id",
+        "project_id",
+        "stage",
+        "brief",
+        "input_data",
+        "input_artifacts",
+        "limits",
+        "prompt_version",
+        "model_id"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "project_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "stage": {
+          "type": "string",
+          "enum": [
+            "brief",
+            "research",
+            "options",
+            "communications",
+            "review",
+            "selection",
+            "report"
+          ]
+        },
+        "brief": {
+          "$ref": "#/$defs/BriefVersion"
+        },
+        "input_data": {
+          "$ref": "#/$defs/DataBundle"
+        },
+        "input_artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Artifact"
+          }
+        },
+        "limits": {
+          "$ref": "#/$defs/Limits"
+        },
+        "prompt_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "StageResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "run_id",
+        "project_id",
+        "brief_version",
+        "stage",
+        "outcome",
+        "data",
+        "artifacts",
+        "questions",
+        "suggested_next_stage",
+        "usage_ids",
+        "error"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "project_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "brief_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "stage": {
+          "type": "string",
+          "enum": [
+            "brief",
+            "research",
+            "options",
+            "communications",
+            "review",
+            "selection",
+            "report"
+          ]
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "success",
+            "needs_input",
+            "needs_revision",
+            "incomplete",
+            "failed"
+          ]
+        },
+        "data": {
+          "$ref": "#/$defs/DataBundle"
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Artifact"
+          }
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Question"
+          }
+        },
+        "suggested_next_stage": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "brief",
+                "research",
+                "options",
+                "communications",
+                "review",
+                "selection",
+                "report"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "usage_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+          }
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ErrorResponse"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "failed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "error": {
+                "$ref": "#/$defs/ErrorResponse"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "error": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "needs_input"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "questions": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "project",
+        "brief",
+        "run",
+        "data",
+        "artifacts",
+        "questions",
+        "usage"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "project": {
+          "$ref": "#/$defs/Project"
+        },
+        "brief": {
+          "$ref": "#/$defs/BriefVersion"
+        },
+        "run": {
+          "$ref": "#/$defs/Run"
+        },
+        "data": {
+          "$ref": "#/$defs/DataBundle"
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Artifact"
+          }
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Question"
+          }
+        },
+        "usage": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Usage"
+          }
+        }
+      }
+    },
+    "CreateProject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "brief"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "brief": {
+          "$ref": "#/$defs/BriefInput"
+        }
+      }
+    },
+    "CreateRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "brief_version",
+        "limits"
+      ],
+      "properties": {
+        "brief_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "limits": {
+          "$ref": "#/$defs/Limits"
+        }
+      }
+    },
+    "RunCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_revision"
+      ],
+      "properties": {
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "ReviseBrief": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_brief_version",
+        "brief"
+      ],
+      "properties": {
+        "expected_brief_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "brief": {
+          "$ref": "#/$defs/BriefInput"
+        }
+      }
+    },
+    "AnswerQuestions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_revision",
+        "answers"
+      ],
+      "properties": {
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "answers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "question_id",
+              "value"
+            ],
+            "properties": {
+              "question_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+              },
+              "value": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "ChooseOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_revision",
+        "option_id",
+        "option_version",
+        "rationale"
+      ],
+      "properties": {
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "option_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "option_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "ExcludeSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_revision",
+        "source_id",
+        "source_version",
+        "reason"
+      ],
+      "properties": {
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "source_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "source_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "ExportRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "expected_revision",
+        "format",
+        "allow_draft"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "markdown",
+            "html"
+          ]
+        },
+        "allow_draft": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Export": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "run_id",
+        "run_revision",
+        "brief_version",
+        "quality",
+        "format",
+        "download_url"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "run_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "brief_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "quality": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "blocked",
+            "ready"
+          ]
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "markdown",
+            "html"
+          ]
+        },
+        "download_url": {
+          "type": "string",
+          "format": "uri-reference"
+        }
+      }
+    }
+  }
+}

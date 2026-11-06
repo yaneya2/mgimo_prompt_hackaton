@@ -1,0 +1,53 @@
+import pytest
+from fastapi.testclient import TestClient
+from pydantic import ValidationError
+
+from app.config import Settings
+from app.main import create_app
+
+
+@pytest.fixture(autouse=True)
+def isolated_env(monkeypatch, tmp_path):
+    import os
+    for name in list(os.environ):
+        if name.startswith("APP_"):
+            monkeypatch.delenv(name)
+    monkeypatch.chdir(tmp_path)
+
+
+def test_health_and_preserved_data(tmp_path):
+    folder = tmp_path / "persistent"
+    config = Settings(data_dir=folder)
+    with TestClient(create_app(config)) as client:
+        assert client.get("/health").json() == {"status": "ok"}
+        (folder / "existing.txt").write_text("keep")
+    with TestClient(create_app(config)) as client:
+        assert client.get("/health").status_code == 200
+        assert (folder / "existing.txt").read_text() == "keep"
+        assert client.get("/api/v1/projects").status_code == 404
+
+
+def test_env_overrides_dotenv_and_key_is_hidden(monkeypatch, tmp_path):
+    (tmp_path / ".env").write_text("APP_PORT=8100\nAPP_MODEL_API_KEY=test-secret\nBACKEND_PORT=8000\n")
+    monkeypatch.setenv("APP_PORT", "8200")
+    settings = Settings()
+    assert settings.port == 8200
+    assert settings.model_api_key.get_secret_value() == "test-secret"
+    assert "test-secret" not in repr(settings)
+
+
+@pytest.mark.parametrize("name,value", [("APP_PORT", "0"), ("APP_PORT", "65536"), ("APP_PORT", "secret-invalid-port"), ("APP_LOG_LEVEL", "verbose"), ("APP_DATA_DIR", "")])
+def test_invalid_configuration(monkeypatch, name, value):
+    monkeypatch.setenv(name, value)
+    with pytest.raises(ValidationError) as error:
+        Settings()
+    assert "secret-invalid-port" not in str(error.value)
+
+
+def test_data_path_cannot_be_file(tmp_path):
+    path = tmp_path / "file"
+    path.write_text("existing content")
+    with pytest.raises(RuntimeError, match="APP_DATA_DIR"):
+        with TestClient(create_app(Settings(data_dir=path))):
+            pass
+    assert path.read_text() == "existing content"

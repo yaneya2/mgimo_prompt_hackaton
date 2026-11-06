@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "run_demo",
+  "project_id": "project_demo",
+  "brief_version": 1,
+  "stage": "brief",
+  "outcome": "needs_input",
+  "data": {
+    "capabilities": [],
+    "sources": [],
+    "claims": [],
+    "options": [],
+    "messages": [],
+    "experiments": [],
+    "decisions": [],
+    "issues": []
+  },
+  "artifacts": [],
+  "questions": [
+    {
+      "id": "question_budget",
+      "stage": "brief",
+      "text": "Каков бюджет запуска?",
+      "required": true,
+      "options": []
+    }
+  ],
+  "suggested_next_stage": null,
+  "usage_ids": [],
+  "error": null
+}

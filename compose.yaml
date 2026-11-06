@@ -1,0 +1,19 @@
+name: strategy-assistant
+
+services:
+  backend:
+    build: .
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      APP_HOST: 0.0.0.0
+      APP_PORT: "8000"
+      APP_DATA_DIR: /data
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - backend_data:/data
+
+volumes:
+  backend_data:

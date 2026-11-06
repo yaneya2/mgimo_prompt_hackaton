@@ -1,0 +1,334 @@
+{
+  "schema_version": "1.0.0",
+  "project": {
+    "id": "project_demo",
+    "name": "Демонстрационный пример",
+    "created_at": "2026-11-06T12:00:00Z",
+    "current_brief_version": 1
+  },
+  "brief": {
+    "project_id": "project_demo",
+    "version": 1,
+    "created_at": "2026-11-06T12:00:00Z",
+    "author": "user",
+    "input": {
+      "product": "Условный сервис расписания для преподавателей",
+      "goal": "Выбрать первый сегмент и проверить спрос",
+      "audience": [
+        "Частные преподаватели"
+      ],
+      "horizon": "Шесть недель",
+      "budget": {
+        "amount": "100000",
+        "currency": "RUB"
+      },
+      "constraints": [
+        "Нет интеграции с мессенджерами"
+      ],
+      "assumptions": [
+        "Все данные примера синтетические"
+      ],
+      "unknowns": [
+        "Частота пропусков занятий"
+      ],
+      "excluded_source_ids": []
+    }
+  },
+  "run": {
+    "id": "run_demo",
+    "project_id": "project_demo",
+    "brief_version": 1,
+    "revision": 1,
+    "status": "incomplete",
+    "stage": "review",
+    "quality": "blocked",
+    "created_at": "2026-11-06T12:00:00Z",
+    "updated_at": "2026-11-06T12:00:00Z",
+    "checkpoint_id": "checkpoint_1",
+    "attempt": 0,
+    "error": null
+  },
+  "data": {
+    "capabilities": [
+      {
+        "id": "cap_email",
+        "version": 1,
+        "project_id": "project_demo",
+        "brief_version": 1,
+        "name": "Напоминания по электронной почте",
+        "status": "available",
+        "basis": "Условная карточка продукта",
+        "source_ids": [
+          "source_user"
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "id": "source_user",
+        "version": 1,
+        "project_id": "project_demo",
+        "brief_version": 1,
+        "kind": "user_text",
+        "title": "Карточка условного продукта",
+        "url": null,
+        "publisher": null,
+        "published_at": null,
+        "retrieved_at": "2026-11-06T12:00:00Z",
+        "content_excerpt": "Доступны напоминания по электронной почте.",
+        "locator": "Строка 1",
+        "verification": "read",
+        "origin_note": "Синтетический пример, не результат исследования"
+      },
+      {
+        "id": "source_other",
+        "version": 1,
+        "project_id": "project_demo",
+        "brief_version": 1,
+        "kind": "user_text",
+        "title": "Другая версия карточки",
+        "url": null,
+        "publisher": null,
+        "published_at": null,
+        "retrieved_at": "2026-11-06T12:00:00Z",
+        "content_excerpt": "Email-напоминания пока не реализованы.",
+        "locator": "Строка 1",
+        "verification": "read",
+        "origin_note": "Синтетический конфликт"
+      }
+    ],
+    "claims": [
+      {
+        "id": "claim_email",
+        "version": 1,
+        "project_id": "project_demo",
+        "brief_version": 1,
+        "text": "В продукте есть email-напоминания",
+        "kind": "user_provided",
+        "verification": "disputed",
+        "evidence": [
+          {
+            "source_id": "source_user",
+            "source_version": 1,
+            "quote": "Доступны напоминания по электронной почте.",
+            "locator": "Строка 1",
+            "relation": "supports"
+          },
+          {
+            "source_id": "source_other",
+            "source_version": 1,
+            "quote": "Email-напоминания пока не реализованы.",
+            "locator": "Строка 1",
+            "relation": "contradicts"
+          }
+        ],
+        "limitations": [
+          "Данные пользователя, независимо не проверены"
+        ]
+      }
+    ],
+    "options": [
+      {
+        "id": "option_1",
+        "version": 1,
+        "project_id": "project_demo",
+        "brief_version": 1,
+        "name": "Направление 1",
+        "segment": "Частные преподаватели",
+        "problem": "Ручное напоминание о занятиях",
+        "value": "Отправка email-напоминаний",
+        "priorities": [
+          "Проверить спрос в сегменте"
+        ],
+        "capability_ids": [
+          "cap_email"
+        ],
+        "claim_ids": [
+          "claim_email"
+        ],
+        "channels": [
+          "Профессиональное сообщество"
+        ],
+        "resource_assumptions": [
+          "Ресурс на пилот требует уточнения"
+        ],
+        "objections": [
+          "Пользователи могут предпочитать мессенджеры"
+        ],
+        "failure_condition": "В пилоте нет готовности пользоваться",
+        "rationale": "Гипотеза направления, требует проверки"
+      },
+      {
+        "id": "option_2",
+        "version": 1,
+        "project_id": "project_demo",
+        "brief_version": 1,
+        "name": "Направление 2",
+        "segment": "Небольшие школы",
+        "problem": "Ручное напоминание о занятиях",
+        "value": "Отправка email-напоминаний",
+        "priorities": [
+          "Проверить спрос в сегменте"
+        ],
+        "capability_ids": [
+          "cap_email"
+        ],
+        "claim_ids": [
+          "claim_email"
+        ],
+        "channels": [
+          "Прямые интервью"
+        ],
+        "resource_assumptions": [
+          "Ресурс на пилот требует уточнения"
+        ],
+        "objections": [
+          "Пользователи могут предпочитать мессенджеры"
+        ],
+        "failure_condition": "В пилоте нет готовности пользоваться",
+        "rationale": "Гипотеза направления, требует проверки"
+      },
+      {
+        "id": "option_3",
+        "version": 1,
+        "project_id": "project_demo",
+        "brief_version": 1,
+        "name": "Направление 3",
+        "segment": "Партнёры преподавателей",
+        "problem": "Ручное напоминание о занятиях",
+        "value": "Отправка email-напоминаний",
+        "priorities": [
+          "Проверить спрос в сегменте"
+        ],
+        "capability_ids": [
+          "cap_email"
+        ],
+        "claim_ids": [
+          "claim_email"
+        ],
+        "channels": [
+          "Партнёрские рекомендации"
+        ],
+        "resource_assumptions": [
+          "Ресурс на пилот требует уточнения"
+        ],
+        "objections": [
+          "Пользователи могут предпочитать мессенджеры"
+        ],
+        "failure_condition": "В пилоте нет готовности пользоваться",
+        "rationale": "Гипотеза направления, требует проверки"
+      }
+    ],
+    "messages": [
+      {
+        "id": "message_email",
+        "version": 1,
+        "project_id": "project_demo",
+        "brief_version": 1,
+        "option_id": "option_1",
+        "text": "Отправляйте напоминания о занятиях по email",
+        "capability_ids": [
+          "cap_email"
+        ],
+        "claim_ids": [
+          "claim_email"
+        ],
+        "channel": "Профессиональное сообщество",
+        "status": "blocked",
+        "rationale": "Соответствует условной карточке продукта"
+      }
+    ],
+    "experiments": [
+      {
+        "id": "experiment_pilot",
+        "version": 1,
+        "project_id": "project_demo",
+        "brief_version": 1,
+        "option_id": "option_1",
+        "message_ids": [
+          "message_email"
+        ],
+        "hypothesis": "Преподавателям нужна автоматизация напоминаний",
+        "method": "Интервью и пробный запуск",
+        "metric": "Число участников, продолживших использование",
+        "baseline": null,
+        "decision_threshold": "Не менее 3 из 5 участников хотят продолжить",
+        "threshold_basis": "Проектное допущение для малого пилота, не статистический вывод",
+        "duration": "Две недели",
+        "owner": null,
+        "data_requirements": [
+          "Согласие на участие",
+          "Факт повторного использования"
+        ],
+        "stop_condition": "Сбой отправки или просьба участника остановить пилот"
+      }
+    ],
+    "decisions": [
+      {
+        "id": "decision_1",
+        "version": 1,
+        "project_id": "project_demo",
+        "brief_version": 1,
+        "option_id": "option_1",
+        "action": "select",
+        "author": "user",
+        "rationale": "Начать с наиболее доступного сегмента",
+        "created_at": "2026-11-06T12:00:00Z"
+      }
+    ],
+    "issues": [
+      {
+        "id": "issue_conflict",
+        "version": 1,
+        "project_id": "project_demo",
+        "brief_version": 1,
+        "code": "CONFLICTING_EVIDENCE",
+        "severity": "blocking",
+        "target": {
+          "kind": "claim",
+          "id": "claim_email",
+          "version": 1
+        },
+        "explanation": "Карточки противоречат друг другу",
+        "evidence": [
+          {
+            "source_id": "source_other",
+            "source_version": 1,
+            "quote": "Email-напоминания пока не реализованы.",
+            "locator": "Строка 1",
+            "relation": "contradicts"
+          }
+        ],
+        "suggested_fix": "Уточнить статус функции",
+        "return_to": "research",
+        "status": "open"
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "id": "artifact_report",
+      "version": 1,
+      "project_id": "project_demo",
+      "run_id": "run_demo",
+      "brief_version": 1,
+      "schema_version": "1.0.0",
+      "stage": "report",
+      "prompt_version": "report-v1",
+      "model_id": null,
+      "created_at": "2026-11-06T12:00:00Z",
+      "freshness": "current",
+      "depends_on": [],
+      "entities": [
+        {
+          "kind": "option",
+          "id": "option_1",
+          "version": 1
+        }
+      ],
+      "summary": "Синтетический пример отчёта: выбран пилот с частными преподавателями."
+    }
+  ],
+  "questions": [],
+  "usage": []
+}

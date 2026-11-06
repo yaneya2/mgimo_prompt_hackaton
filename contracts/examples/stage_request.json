@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "run_demo",
+  "project_id": "project_demo",
+  "stage": "brief",
+  "brief": {
+    "project_id": "project_demo",
+    "version": 1,
+    "created_at": "2026-11-06T12:00:00Z",
+    "author": "user",
+    "input": {
+      "product": "Условный сервис расписания для преподавателей",
+      "goal": "Выбрать первый сегмент и проверить спрос",
+      "audience": [
+        "Частные преподаватели"
+      ],
+      "horizon": "Шесть недель",
+      "budget": null,
+      "constraints": [
+        "Нет интеграции с мессенджерами"
+      ],
+      "assumptions": [
+        "Все данные примера синтетические"
+      ],
+      "unknowns": [
+        "Частота пропусков занятий",
+        "Бюджет запуска"
+      ],
+      "excluded_source_ids": []
+    }
+  },
+  "input_data": {
+    "capabilities": [],
+    "sources": [],
+    "claims": [],
+    "options": [],
+    "messages": [],
+    "experiments": [],
+    "decisions": [],
+    "issues": []
+  },
+  "input_artifacts": [],
+  "limits": {
+    "max_model_calls": 10,
+    "max_search_calls": 8,
+    "max_repair_cycles": 2,
+    "timeout_seconds": 120,
+    "budget": null
+  },
+  "prompt_version": "brief-v1",
+  "model_id": "fixture-model"
+}

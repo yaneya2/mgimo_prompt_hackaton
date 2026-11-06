@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0.0",
+  "project": {
+    "id": "project_demo",
+    "name": "Демонстрационный пример",
+    "created_at": "2026-11-06T12:00:00Z",
+    "current_brief_version": 1
+  },
+  "brief": {
+    "project_id": "project_demo",
+    "version": 1,
+    "created_at": "2026-11-06T12:00:00Z",
+    "author": "user",
+    "input": {
+      "product": "Условный сервис расписания для преподавателей",
+      "goal": "Выбрать первый сегмент и проверить спрос",
+      "audience": [
+        "Частные преподаватели"
+      ],
+      "horizon": "Шесть недель",
+      "budget": null,
+      "constraints": [
+        "Нет интеграции с мессенджерами"
+      ],
+      "assumptions": [
+        "Все данные примера синтетические"
+      ],
+      "unknowns": [
+        "Частота пропусков занятий",
+        "Бюджет запуска"
+      ],
+      "excluded_source_ids": []
+    }
+  },
+  "run": {
+    "id": "run_demo",
+    "project_id": "project_demo",
+    "brief_version": 1,
+    "revision": 1,
+    "status": "waiting_for_input",
+    "stage": "brief",
+    "quality": "draft",
+    "created_at": "2026-11-06T12:00:00Z",
+    "updated_at": "2026-11-06T12:00:00Z",
+    "checkpoint_id": "checkpoint_1",
+    "attempt": 0,
+    "error": null
+  },
+  "data": {
+    "capabilities": [],
+    "sources": [],
+    "claims": [],
+    "options": [],
+    "messages": [],
+    "experiments": [],
+    "decisions": [],
+    "issues": []
+  },
+  "artifacts": [],
+  "questions": [
+    {
+      "id": "question_budget",
+      "stage": "brief",
+      "text": "Каков бюджет запуска?",
+      "required": true,
+      "options": []
+    }
+  ],
+  "usage": []
+}
