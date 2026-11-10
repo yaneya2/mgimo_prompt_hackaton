@@ -31,6 +31,17 @@ class Settings(BaseSettings):
     model_cost_currency: str = Field(default="USD", pattern=r"^[A-Z]{3}$")
     model_pricing_version: str | None = None
 
+    tavily_api_key: SecretStr | None = None
+    research_timeout_seconds: float = Field(default=30, gt=0, le=120)
+    research_max_sources: int = Field(default=5, ge=1, le=10)
+    research_max_queries: int = Field(default=2, ge=1, le=4)
+    research_source_chars: int = Field(default=8000, ge=500, le=20000)
+    research_max_response_bytes: int = Field(default=2000000, ge=10000, le=10000000)
+    research_file_bytes: int = Field(default=200000, ge=1000, le=1000000)
+    research_materials_dir: Path = Path("materials")
+    research_files: list[str] = Field(default_factory=list, max_length=10)
+    agent_context_chars: int = Field(default=120000, ge=20000, le=300000)
+
     @field_validator("data_dir", mode="before")
     @classmethod
     def nonempty_path(cls, value):
@@ -38,7 +49,7 @@ class Settings(BaseSettings):
             raise ValueError("APP_DATA_DIR must not be empty")
         return value
 
-    @field_validator("model_provider", "model_name", "model_api_key", "stage_factory", mode="before")
+    @field_validator("model_provider", "model_name", "model_api_key", "tavily_api_key", "stage_factory", mode="before")
     @classmethod
     def empty_is_unset(cls, value):
         return None if value == "" else value
