@@ -1085,6 +1085,139 @@
         },
         "cached": {
           "type": "boolean"
+        },
+        "context": {
+          "$ref": "#/$defs/CallContext"
+        },
+        "generation_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "TokenPricing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model",
+        "input_per_million",
+        "output_per_million",
+        "currency",
+        "version"
+      ],
+      "properties": {
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_per_million": {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d+)?$"
+        },
+        "output_per_million": {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d+)?$"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "CallContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata_version",
+        "prompt_version",
+        "schema_version",
+        "prompt_hash",
+        "schema_hash",
+        "model_requested",
+        "parameters",
+        "pricing"
+      ],
+      "properties": {
+        "metadata_version": {
+          "const": "1.0.0"
+        },
+        "prompt_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schema_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prompt_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "schema_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "model_requested": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "timeout_seconds",
+            "max_tokens",
+            "max_retries"
+          ],
+          "properties": {
+            "timeout_seconds": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "max_tokens": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "max_retries": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "pricing": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TokenPricing"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },

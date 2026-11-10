@@ -3,5 +3,7 @@
 !app/**
 !pyproject.toml
 !uv.lock
+!contracts/
+!contracts/schema.json
 app/**/__pycache__/
 app/**/*.pyc

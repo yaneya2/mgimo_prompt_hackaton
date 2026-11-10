@@ -1,4 +1,7 @@
-"""Append-only usage events; replace this sink with storage in A4."""
+"""Usage sink protocol and JSONL output for standalone model checks.
+
+Platform runs pass app.storage.Storage directly as their durable sink.
+"""
 import json
 from pathlib import Path
 from threading import Lock

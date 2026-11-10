@@ -20,3 +20,4 @@ package = false
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+markers = ["live_model: opt-in real model access; consumes account limits/credits"]

@@ -15,5 +15,20 @@ services:
     volumes:
       - backend_data:/data
 
+  worker:
+    profiles: ["worker"]
+    build: .
+    command: ["python", "-m", "app.worker"]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      APP_DATA_DIR: /data
+    volumes:
+      - backend_data:/data
+    healthcheck:
+      disable: true
+    stop_grace_period: 330s
+
 volumes:
   backend_data:

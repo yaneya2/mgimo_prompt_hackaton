@@ -6,6 +6,7 @@ from fastapi import FastAPI
 
 from app.api.health import router
 from app.config import Settings
+from app.storage import Storage
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -22,6 +23,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 probe.flush()
         except OSError as exc:
             raise RuntimeError("APP_DATA_DIR must be an accessible writable directory") from exc
+        application.state.storage = Storage(config.data_dir)
+        recovered = application.state.storage.recover_if_idle()
+        if recovered:
+            logger.info("Recovered %d interrupted run(s) as paused", len(recovered))
         logger.info("Strategy backend started")
         yield
 

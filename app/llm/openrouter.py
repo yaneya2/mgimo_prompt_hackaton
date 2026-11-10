@@ -1,73 +1,18 @@
 """Non-streaming OpenRouter adapter. Public errors never include remote bodies."""
-import json
-import re
 import time
-from dataclasses import dataclass
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from email.utils import parsedate_to_datetime
 from uuid import uuid4
 
 import httpx
-from jsonschema import Draft202012Validator, FormatChecker
-from jsonschema.exceptions import SchemaError, ValidationError
+from jsonschema.exceptions import ValidationError
 
 from app.config import Settings
 from app.llm.usage import UsageSink
 
-STAGES = {"brief", "research", "options", "communications", "review", "selection", "report"}
-
-
-class ModelError(Exception):
-    def __init__(self, code: str, message: str, *, retryable=False, usage_ids=()):
-        super().__init__(message)
-        self.code = code
-        self.retryable = retryable
-        self.usage_ids = list(usage_ids)
-
-
-@dataclass(frozen=True)
-class ModelResult:
-    data: dict
-    model: str
-    generation_id: str | None
-    usage_ids: list[str]
-
-
-def strict_json(text):
-    def reject_constant(value):
-        raise ValueError("Non-finite JSON")
-    def pairs(items):
-        result = {}
-        for key, value in items:
-            if key in result:
-                raise ValueError("Duplicate JSON key")
-            result[key] = value
-        return result
-    return json.loads(text, parse_constant=reject_constant, object_pairs_hook=pairs)
-
-
-def check_local_refs(value, root=None):
-    root = value if root is None else root
-    if isinstance(value, dict):
-        for key, child in value.items():
-            if key in {"$id", "$dynamicRef"}:
-                raise ModelError("INVALID_SCHEMA", "Nested resources and dynamic references are unsupported")
-            if key == "$ref":
-                if not isinstance(child, str) or not (child == "#" or child.startswith("#/")):
-                    raise ModelError("INVALID_SCHEMA", "Only local JSON Pointer references are supported")
-                target = root
-                try:
-                    for part in child[2:].split("/") if child != "#" else []:
-                        part = part.replace("~1", "/").replace("~0", "~")
-                        target = target[int(part)] if isinstance(target, list) else target[part]
-                except (KeyError, IndexError, TypeError, ValueError):
-                    raise ModelError("INVALID_SCHEMA", "Unresolved local schema reference") from None
-            check_local_refs(child, root)
-    elif isinstance(value, list):
-        for child in value:
-            check_local_refs(child, root)
-
+from app.llm.base import ModelError, ModelResult, strict_json, validate_request
+from app.llm.accounting import UsageRecorder, call_context, pricing_from_settings
 
 def status_error(status):
     codes = {400: ("INVALID_REQUEST", "Model or schema parameters are unsupported"),
@@ -126,6 +71,10 @@ class OpenRouterAdapter:
         self.sink = sink
         self.sleep = sleep
         self._owned = client is None
+        try:
+            self.recorder = UsageRecorder(sink, pricing_from_settings(settings))
+        except ValueError as error:
+            raise ModelError("CONFIGURATION_ERROR", str(error)) from None
         self.client = client if client is not None else httpx.Client(follow_redirects=False)
 
     def close(self):
@@ -138,21 +87,17 @@ class OpenRouterAdapter:
     def __exit__(self, *args):
         self.close()
 
-    def generate(self, *, messages: list[dict], schema: dict, run_id: str, stage: str) -> ModelResult:
-        if not re.fullmatch(r"[a-z][a-z0-9_-]{1,127}", run_id) or stage not in STAGES:
-            raise ModelError("INVALID_REQUEST", "Invalid run_id or stage")
-        if not messages or any(not isinstance(m, dict) or set(m) != {"role", "content"} or not isinstance(m["role"], str) or m["role"] not in {"system", "user", "assistant"} or not isinstance(m["content"], str) or not m["content"] for m in messages):
-            raise ModelError("INVALID_REQUEST", "Messages require a role and nonempty text content")
-        if not isinstance(schema, dict):
-            raise ModelError("INVALID_SCHEMA", "Schema must be an object")
-        check_local_refs(schema)
+    def generate(self, *, messages: list[dict], schema: dict, run_id: str, stage: str,
+                 prompt_version: str | None = None, schema_version: str | None = None) -> ModelResult:
+        validator = validate_request(messages, schema, run_id, stage)
         try:
-            Draft202012Validator.check_schema(schema)
-            if schema.get("type") != "object":
-                raise ModelError("INVALID_SCHEMA", "The output schema must declare type=object")
-            validator = Draft202012Validator(schema, format_checker=FormatChecker())
-        except SchemaError:
-            raise ModelError("INVALID_SCHEMA", "Invalid JSON Schema") from None
+            context = call_context(messages, schema, prompt_version=prompt_version, schema_version=schema_version,
+                                   model_requested=self.settings.model_name,
+                                   parameters={"timeout_seconds": self.settings.model_timeout_seconds,
+                                               "max_tokens": self.settings.model_max_tokens,
+                                               "max_retries": self.settings.model_max_retries})
+        except (ValueError, TypeError) as error:
+            raise ModelError("INVALID_REQUEST", "Cannot encode call metadata or version labels") from None
         payload = {"model": self.settings.model_name, "messages": messages, "stream": False,
                    "max_tokens": self.settings.model_max_tokens,
                    "provider": {"require_parameters": True, "allow_fallbacks": False},
@@ -200,13 +145,14 @@ class OpenRouterAdapter:
                                 started_at=stamp, duration_ms=max(0, int((time.monotonic()-start)*1000)),
                                 outcome="error" if error else "success")
             ids.append(event["id"])
+            generation = body.get("id") if isinstance(body, dict) else None
+            generation = generation if isinstance(generation, str) and generation else None
             try:
-                self.sink.record(event)
+                self.recorder.record_model(event, context, generation)
             except OSError:
                 raise ModelError("USAGE_RECORDING_ERROR", "Call completed but usage could not be saved; do not retry automatically", usage_ids=ids) from None
             if error is None:
-                generation = body.get("id")
-                return ModelResult(result, model, generation if isinstance(generation, str) else None, ids)
+                return ModelResult(result, model, generation, ids)
             error.usage_ids = ids.copy()
             delay = retry_delay(response.headers.get("Retry-After"), attempt) if response is not None else None
             if not error.retryable or attempt > self.settings.model_max_retries or delay is None:

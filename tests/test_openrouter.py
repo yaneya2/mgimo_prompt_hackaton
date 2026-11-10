@@ -167,3 +167,15 @@ def test_sink_failure_not_retried(setup):
     with pytest.raises(ModelError) as caught:
         invoke(setup,lambda _:response())
     assert caught.value.code == "USAGE_RECORDING_ERROR"
+
+
+def test_overflowing_model_number_is_rejected_and_cost_is_kept(setup):
+    schema = {"type": "object", "properties": {"value": {"type": "number"}},
+              "required": ["value"], "additionalProperties": False}
+    with pytest.raises(ModelError) as error:
+        invoke(setup, lambda _: response('{"value":1e309}'), schema=schema)
+    assert error.value.code == "INVALID_RESPONSE"
+    records = events(setup)
+    assert len(records) == 1
+    assert records[0]["outcome"] == "error"
+    assert records[0]["cost"] is not None

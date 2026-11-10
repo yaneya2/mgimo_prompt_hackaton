@@ -65,71 +65,89 @@ def check_snapshot(s):
         for ev in issue['evidence']:
             evidence(ev)
     artifacts = {(a['id'], a['version']): a for a in s['artifacts']}
+    assert len(artifacts) == len(s['artifacts']), 'Duplicate artifact version'
     def visit(key, ancestors):
         assert key in artifacts, 'Missing artifact dependency'
         assert key not in ancestors, 'Cyclic artifacts'
         for dep in artifacts[key]['depends_on']:
             visit((dep['artifact_id'], dep['version']), ancestors | {key})
+    current = []
     for artifact in s['artifacts']:
         visit((artifact['id'], artifact['version']), set())
         assert artifact['project_id'] == s['project']['id']
+        if artifact['freshness'] == 'stale':
+            # Historical entity versions belong to the archive, not this bundle.
+            continue
+        current.append(artifact)
+        assert artifact['brief_version'] == s['run']['brief_version'], 'Current artifact has old brief'
+        for dep in artifact['depends_on']:
+            dependency = artifacts[(dep['artifact_id'], dep['version'])]
+            assert dependency['freshness'] == 'current', 'Current artifact depends on stale data'
+            assert dependency['brief_version'] == s['run']['brief_version'], 'Current dependency has old brief'
         for target in artifact['entities']:
             item = resolve(target['kind'], target['id'], target['version'])
-            if artifact['freshness'] == 'current':
-                assert item['brief_version'] == artifact['brief_version'] == s['run']['brief_version']
+            assert item['brief_version'] == s['run']['brief_version'], 'Current entity has old brief'
     if s['run']['quality'] == 'ready':
-        assert not any(a['freshness'] == 'stale' for a in s['artifacts']), 'Ready with stale data'
+        assert any(a['stage'] == 'report' for a in current), 'Ready without a current report'
+        assert all(item['brief_version'] == s['run']['brief_version']
+                   for collection in data.values() for item in collection), 'Ready bundle contains old context'
         assert not any(m['status'] == 'blocked' for m in data['messages']), 'Ready with blocked promise'
         assert not any(i['severity'] == 'blocking' and i['status'] != 'resolved' for i in data['issues']), 'Ready with blocking issue'
 
-for name in defs:
-    Draft202012Validator.check_schema({'$defs': defs, '$ref': '#/$defs/' + name})
-special = {'stage_request': 'StageRequest', 'stage_result': 'StageResult', 'api_error': 'ErrorResponse'}
-fixtures = {}
-for path in sorted((ROOT / 'examples').glob('*.json')):
-    value = json.loads(path.read_text())
-    fixtures[path.stem] = value
-    if path.stem in special:
-        validate(special[path.stem], value)
-    else:
-        check_snapshot(value)
 
-api = json.loads((ROOT / 'openapi.json').read_text())
-operations = set()
-def walk(node):
-    if isinstance(node, dict):
-        if '$ref' in node:
-            prefix = './schema.json#/$defs/'
-            assert node['$ref'].startswith(prefix)
-            assert node['$ref'][len(prefix):] in defs
-        for value in node.values():
-            walk(value)
-    elif isinstance(node, list):
-        for value in node:
-            walk(value)
-walk(api)
-for path, methods in api['paths'].items():
-    for method, op in methods.items():
-        assert op['operationId'] not in operations
-        operations.add(op['operationId'])
-        assert {p['name'] for p in op['parameters'] if p['in'] == 'path'} == {p[1:-1] for p in path.split('/') if p.startswith('{')}
-        if method == 'post':
-            assert any(p['name'] == 'Idempotency-Key' and p['required'] for p in op['parameters'])
+def main():
+    for name in defs:
+        Draft202012Validator.check_schema({'$defs': defs, '$ref': '#/$defs/' + name})
+    special = {'stage_request': 'StageRequest', 'stage_result': 'StageResult', 'api_error': 'ErrorResponse'}
+    fixtures = {}
+    for path in sorted((ROOT / 'examples').glob('*.json')):
+        value = json.loads(path.read_text())
+        fixtures[path.stem] = value
+        if path.stem in special:
+            validate(special[path.stem], value)
+        else:
+            check_snapshot(value)
 
-cases = []
-bad = copy.deepcopy(fixtures['success']); bad['run']['status'] = 'finished'; cases.append(('unknown status', 'Snapshot', bad))
-bad = copy.deepcopy(fixtures['success']); bad['brief']['input']['extra'] = True; cases.append(('unknown field', 'Snapshot', bad))
-bad = copy.deepcopy(fixtures['success']); bad['data']['claims'][0]['evidence'][0]['source_id'] = 'source_missing'; cases.append(('dangling evidence', 'Snapshot', bad))
-bad = copy.deepcopy(fixtures['success']); bad['data']['claims'][0].update(kind='external_fact', evidence=[]); cases.append(('unsupported fact', 'Snapshot', bad))
-bad = copy.deepcopy(fixtures['stale_result']); bad['run']['quality'] = 'ready'; cases.append(('stale ready result', 'Snapshot', bad))
-bad = copy.deepcopy(fixtures['unsupported_promise']); bad['run']['quality'] = 'ready'; cases.append(('blocked ready result', 'Snapshot', bad))
-bad = copy.deepcopy(fixtures['stage_result']); bad['questions'] = []; cases.append(('empty clarification', 'StageResult', bad))
-bad = copy.deepcopy(fixtures['stage_result']); bad['outcome'] = 'failed'; cases.append(('failure without error', 'StageResult', bad))
-for label, name, value in cases:
-    try:
-        check_snapshot(value) if name == 'Snapshot' else validate(name, value)
-    except (AssertionError, __import__('jsonschema').ValidationError):
-        continue
-    raise AssertionError('Negative case accepted: ' + label)
-print(f'PASS: {len(defs)} schemas; {len(fixtures)} examples; {len(operations)} API operations and references; {len(cases)} negative cases.')
-print('Checks cover structure and fixture integrity, not factual truth or a running API.')
+    api = json.loads((ROOT / 'openapi.json').read_text())
+    operations = set()
+    def walk(node):
+        if isinstance(node, dict):
+            if '$ref' in node:
+                prefix = './schema.json#/$defs/'
+                assert node['$ref'].startswith(prefix)
+                assert node['$ref'][len(prefix):] in defs
+            for value in node.values():
+                walk(value)
+        elif isinstance(node, list):
+            for value in node:
+                walk(value)
+    walk(api)
+    for path, methods in api['paths'].items():
+        for method, op in methods.items():
+            assert op['operationId'] not in operations
+            operations.add(op['operationId'])
+            assert {p['name'] for p in op['parameters'] if p['in'] == 'path'} == {p[1:-1] for p in path.split('/') if p.startswith('{')}
+            if method == 'post':
+                assert any(p['name'] == 'Idempotency-Key' and p['required'] for p in op['parameters'])
+
+    cases = []
+    bad = copy.deepcopy(fixtures['success']); bad['run']['status'] = 'finished'; cases.append(('unknown status', 'Snapshot', bad))
+    bad = copy.deepcopy(fixtures['success']); bad['brief']['input']['extra'] = True; cases.append(('unknown field', 'Snapshot', bad))
+    bad = copy.deepcopy(fixtures['success']); bad['data']['claims'][0]['evidence'][0]['source_id'] = 'source_missing'; cases.append(('dangling evidence', 'Snapshot', bad))
+    bad = copy.deepcopy(fixtures['success']); bad['data']['claims'][0].update(kind='external_fact', evidence=[]); cases.append(('unsupported fact', 'Snapshot', bad))
+    bad = copy.deepcopy(fixtures['stale_result']); bad['run']['quality'] = 'ready'; cases.append(('stale ready result', 'Snapshot', bad))
+    bad = copy.deepcopy(fixtures['unsupported_promise']); bad['run']['quality'] = 'ready'; cases.append(('blocked ready result', 'Snapshot', bad))
+    bad = copy.deepcopy(fixtures['stage_result']); bad['questions'] = []; cases.append(('empty clarification', 'StageResult', bad))
+    bad = copy.deepcopy(fixtures['stage_result']); bad['outcome'] = 'failed'; cases.append(('failure without error', 'StageResult', bad))
+    for label, name, value in cases:
+        try:
+            check_snapshot(value) if name == 'Snapshot' else validate(name, value)
+        except (AssertionError, __import__('jsonschema').ValidationError):
+            continue
+        raise AssertionError('Negative case accepted: ' + label)
+    print(f'PASS: {len(defs)} schemas; {len(fixtures)} examples; {len(operations)} API operations and references; {len(cases)} negative cases.')
+    print('Checks cover structure and fixture integrity, not factual truth or a running API.')
+
+
+if __name__ == "__main__":
+    main()

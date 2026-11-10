@@ -20,6 +20,7 @@ def test_health_and_preserved_data(tmp_path):
     config = Settings(data_dir=folder)
     with TestClient(create_app(config)) as client:
         assert client.get("/health").json() == {"status": "ok"}
+        assert (folder / "state.sqlite3").is_file()
         (folder / "existing.txt").write_text("keep")
     with TestClient(create_app(config)) as client:
         assert client.get("/health").status_code == 200
@@ -51,3 +52,24 @@ def test_data_path_cannot_be_file(tmp_path):
         with TestClient(create_app(Settings(data_dir=path))):
             pass
     assert path.read_text() == "existing content"
+
+
+def test_startup_recovers_interrupted_work_but_leaves_live_worker_alone(tmp_path):
+    import json
+    from pathlib import Path
+    from app.storage import Storage
+
+    examples = Path(__file__).resolve().parents[1] / "contracts" / "examples"
+    request = json.loads((examples / "stage_request.json").read_text())
+    config = Settings(data_dir=tmp_path / "state")
+    storage = Storage(config.data_dir)
+    project = storage.create_project("Recovery test", request["brief"]["input"])
+    run = storage.create_run(project["id"], request["limits"])
+    with storage.worker() as worker:
+        run = worker.claim_run(run["id"])
+        worker.begin_step(run["id"], expected_revision=run["revision"])
+        with TestClient(create_app(config)) as client:
+            assert client.app.state.storage.get_run(run["id"])["status"] == "running"
+    with TestClient(create_app(config)) as client:
+        assert client.app.state.storage.get_run(run["id"])["status"] == "paused"
+        assert client.app.state.storage.list_jobs(run["id"])[0]["state"] == "interrupted"

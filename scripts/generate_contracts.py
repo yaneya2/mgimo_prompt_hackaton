@@ -52,6 +52,15 @@ D['Experiment'] = entity(option_id=ID, message_ids=arr(ID), hypothesis=S, method
 D['Decision'] = entity(option_id=ID, action=enum('select', 'reject', 'request_revision'), author=enum('user', 'agent'), rationale=S, created_at=DT)
 D['ReviewIssue'] = entity(code=S, severity=enum('blocking', 'warning', 'info'), target=ref('EntityRef'), explanation=S, evidence=arr(ref('Evidence')), suggested_fix=S, return_to=enum(*STAGES), status=enum('open', 'resolved', 'accepted_limitation'))
 D['Usage'] = obj(id=ID, run_id=ID, call_id=ID, attempt=I, stage=enum(*STAGES), provider=S, model=nullable(S), tool=nullable(S), started_at=DT, duration_ms=N, input_tokens=nullable(N), output_tokens=nullable(N), cost=nullable(ref('Money')), cost_basis=enum('reported', 'estimated', 'unknown'), pricing_version=nullable(S), outcome=enum('success', 'error'), cached={'type': 'boolean'})
+D['TokenPricing'] = obj(model=S, input_per_million={'type': 'string', 'pattern': r'^\d+(\.\d+)?$'}, output_per_million={'type': 'string', 'pattern': r'^\d+(\.\d+)?$'}, currency={'type': 'string', 'pattern': '^[A-Z]{3}$'}, version=S)
+D['CallContext'] = obj(metadata_version={'const': '1.0.0'}, prompt_version=S, schema_version=S,
+                       prompt_hash={'type': 'string', 'pattern': '^[a-f0-9]{64}$'},
+                       schema_hash={'type': 'string', 'pattern': '^[a-f0-9]{64}$'},
+                       model_requested=nullable(S),
+                       parameters=obj(timeout_seconds={'type': 'number', 'exclusiveMinimum': 0}, max_tokens=nullable(I), max_retries=N),
+                       pricing=nullable(ref('TokenPricing')))
+# Optional provenance is additive: old Usage records remain valid.
+D['Usage']['properties'].update(context=ref('CallContext'), generation_id=nullable(S))
 D['Question'] = obj(id=ID, stage=enum(*STAGES), text=S, required={'type': 'boolean'}, options=arr(S))
 D['ErrorResponse'] = obj(error=obj(code=enum('VALIDATION_ERROR', 'NOT_FOUND', 'VERSION_CONFLICT', 'INVALID_STATE', 'RUN_ALREADY_ACTIVE', 'UPSTREAM_UNAVAILABLE', 'BUDGET_EXCEEDED', 'INTERNAL_ERROR'), message=S, retryable={'type': 'boolean'}, request_id=ID, run_id=nullable(ID), field_errors=arr(obj(path=S, message=S))))
 D['Run'] = obj(id=ID, project_id=ID, brief_version=I, revision=I, status=enum(*STATUS), stage=enum(*STAGES), quality=enum('draft', 'blocked', 'ready'), created_at=DT, updated_at=DT, checkpoint_id=nullable(ID), attempt=N, error=nullable(ref('ErrorResponse')))
