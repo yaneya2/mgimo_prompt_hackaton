@@ -3,6 +3,8 @@ from copy import deepcopy
 import json
 
 from app.llm.base import ModelError
+from app.execution import PauseRequested, before_external_action, execution_control
+from app.reuse import input_key, reuse_result
 from app.storage.database import encode
 from app.storage.validation import COLLECTIONS, Conflict, StorageError, require, validate
 from app.workflow.results import artifact_for, error_for, result_for
@@ -29,7 +31,8 @@ class Orchestrator:
     def _state(self, run):
         state = self.storage.get_checkpoint(run["checkpoint_id"])["graph_state"] if run["checkpoint_id"] else {}
         return dict(workflow_version=1, repairs_used=state.get("repairs_used", 0), feedback=state.get("feedback", []),
-                    registry=state.get("registry", self.registry.manifest()), stop_reason=None)
+                    registry=state.get("registry", self.registry.manifest()), stop_reason=None,
+                    reuse_plan=state.get('reuse_plan', {}))
 
     @staticmethod
     def _merged_data(request, result):
@@ -40,7 +43,7 @@ class Orchestrator:
             data[collection] = list(items.values())
         return data
 
-    def _check_output(self, request, output):
+    def _check_output(self, request, output, *, reused=False):
         validate("StageResult", output)
         require((output["run_id"], output["project_id"], output["brief_version"], output["stage"])
                 == (request["run_id"], request["project_id"], request["brief"]["version"], request["stage"]),
@@ -55,7 +58,9 @@ class Orchestrator:
                         for item in output["data"]["decisions"]), "An agent cannot create a user decision")
         for artifact in output["artifacts"]:
             require(artifact["prompt_version"] == request["prompt_version"], "Wrong prompt version")
+            require(reused or 'reused_from' not in artifact, 'Reuse provenance belongs to the platform')
         excluded = set(request["brief"]["input"]["excluded_source_ids"])
+        require(not any(source['id'] in excluded for source in output['data']['sources']), 'Excluded source returned to context')
         require(not any(e["source_id"] in excluded for key in ("claims", "issues")
                         for item in output["data"][key] for e in item["evidence"]), "Excluded source used as evidence")
         require(not any(source_id in excluded for cap in output["data"]["capabilities"]
@@ -160,23 +165,36 @@ class Orchestrator:
                                   error=error_for(request["run_id"], code, message, retryable=retryable))
         return worker.commit_step(job["id"], output, status="failed", quality="blocked", graph_state=state)
 
-    def step(self, worker, run_id):
+    def step(self, worker, run_id, stop=None):
         run = self.storage.get_run(run_id)
         request, spec = self._request(run)
         state = self._state(run)
         job = worker.begin_step(run_id, expected_revision=run["revision"])
-        if state["registry"] != self.registry.manifest():
+        if not self.registry.accepts_manifest(state['registry']):
             return self._failed(worker, job, request, state, "INVALID_STATE", "Конфигурация этапов изменилась после контрольной точки.")
+        state['registry'] = self.registry.manifest()
         context = StageContext(inputs=[item for item in self.storage.list_inputs(run_id)
                                        if item["brief_version"] == request["brief"]["version"]], feedback=deepcopy(state["feedback"]),
                                repairs_used=state["repairs_used"], synthetic=self.registry.synthetic)
+        state['reuse_key'] = input_key(request, spec, context)
+        reused = False
+        def check_pause():
+            if (stop is not None and stop.is_set()) or self.storage.get_run(run_id)['status'] == 'pause_requested':
+                raise PauseRequested()
         try:
             checkpoint = self.storage.get_checkpoint(run["checkpoint_id"]) if run["checkpoint_id"] else {}
             if checkpoint.get("outcome") == "needs_input" and not any(i["checkpoint_id"] == run["checkpoint_id"] for i in context.inputs):
                 # Resume after pausing an unanswered question must not repeat a paid model call.
                 output = result_for(request, outcome="needs_input", questions=deepcopy(checkpoint["questions"]))
             else:
-                output = spec.handler(deepcopy(request), deepcopy(context))
+                with execution_control(run_id, check_pause):
+                    before_external_action()
+                    output = reuse_result(self.storage, request, spec, context, state)
+                    reused = output is not None
+                    if output is None:
+                        output = spec.handler(deepcopy(request), deepcopy(context))
+        except PauseRequested:
+            return worker.interrupt_step(job['id'])
         except ModelError as error:
             if error.code in ("INVALID_RESPONSE", "INCOMPLETE_RESPONSE"):
                 return self._invalid(worker, job, request, state)
@@ -190,7 +208,7 @@ class Orchestrator:
             output = json.loads(encode(output))
             validate("StageResult", output)
             output = self.storage.prepare_stage_result(request, output)
-            self._check_output(request, output)
+            self._check_output(request, output, reused=reused)
             route = self._route(request, output, state)
             if state["stop_reason"]:
                 output["artifacts"].extend(self._diagnostic(request, state, message=state["stop_reason"]["message"])["artifacts"])
@@ -213,7 +231,7 @@ class Orchestrator:
             if stop.is_set() or self.storage.get_run(run_id)["status"] == "pause_requested":
                 return worker.pause_at_boundary(run_id)
             try:
-                self.step(worker, run_id)
+                self.step(worker, run_id, stop)
             except Conflict:
                 if self.storage.get_run(run_id)["status"] == "pause_requested":
                     return worker.pause_at_boundary(run_id)

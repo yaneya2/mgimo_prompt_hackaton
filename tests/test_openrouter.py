@@ -92,6 +92,38 @@ def test_long_retry_after_does_not_retry_early(setup):
     assert len(events(setup)) == 1
 
 
+def test_pause_between_retry_attempts_keeps_first_usage_and_does_not_call_again(setup):
+    from app.execution import PauseRequested, execution_control
+    paused = False
+    calls = []
+
+    def check():
+        if paused:
+            raise PauseRequested()
+
+    def handler(request):
+        nonlocal paused
+        calls.append(request)
+        paused = True
+        return httpx.Response(503)
+
+    with execution_control('run_test', check), pytest.raises(PauseRequested):
+        invoke(setup, handler)
+    assert len(calls) == len(events(setup)) == 1
+    assert events(setup)[0]['outcome'] == 'error'
+
+
+def test_pause_before_first_model_action_does_not_record_a_call(setup):
+    from app.execution import PauseRequested, execution_control
+
+    def check():
+        raise PauseRequested()
+
+    with execution_control('run_test', check), pytest.raises(PauseRequested):
+        invoke(setup, lambda _: pytest.fail('Network action must not start'))
+    assert not setup[1].path.exists()
+
+
 @pytest.mark.parametrize("content", ['not json','{"answer":7}','{"answer":"a","extra":1}','{"answer":"a","answer":"b"}','{"answer":NaN}'])
 def test_invalid_output_still_accounts_for_cost(setup,content):
     with pytest.raises(ModelError,match="schema") as caught:

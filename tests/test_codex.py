@@ -56,6 +56,17 @@ def test_codex_success_and_usage(setup):
     Draft202012Validator({"$defs":defs,"$ref":"#/$defs/Usage"}).validate(event)
 
 
+def test_pause_before_process_spawn_does_not_record_a_call(setup):
+    from app.execution import PauseRequested, execution_control
+
+    def check():
+        raise PauseRequested()
+
+    with execution_control('run_test', check), pytest.raises(PauseRequested):
+        invoke(setup, lambda *_: pytest.fail('Process must not start'))
+    assert not setup[1].path.exists()
+
+
 def test_explicit_model_argument_and_temp_cleanup(setup):
     setup[0].model_name="chosen-model"
     paths=[]

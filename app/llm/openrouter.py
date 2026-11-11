@@ -9,6 +9,7 @@ import httpx
 from jsonschema.exceptions import ValidationError
 
 from app.config import Settings
+from app.execution import before_external_action
 from app.llm.usage import UsageSink
 
 from app.llm.base import ModelError, ModelResult, strict_json, validate_request
@@ -104,6 +105,7 @@ class OpenRouterAdapter:
                    "response_format": {"type": "json_schema", "json_schema": {"name": "agent_result", "strict": True, "schema": schema}}}
         ids = []
         for attempt in range(1, self.settings.model_max_retries + 2):
+            before_external_action(run_id)
             start = time.monotonic()
             stamp = datetime.now(timezone.utc).isoformat()
             body, error, result, response = {}, None, None, None
@@ -157,5 +159,6 @@ class OpenRouterAdapter:
             delay = retry_delay(response.headers.get("Retry-After"), attempt) if response is not None else None
             if not error.retryable or attempt > self.settings.model_max_retries or delay is None:
                 raise error from None
+            before_external_action(run_id)
             self.sleep(delay)
         raise AssertionError("Unreachable")

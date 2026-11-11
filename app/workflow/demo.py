@@ -103,5 +103,7 @@ def demo_stage(request, context):
 
 
 def build_stages(settings=None, sink=None):
-    return StageRegistry("synthetic-demo-v1", {stage: StageSpec(demo_stage, "synthetic-" + stage + "-v1", "synthetic-no-model")
+    return StageRegistry("synthetic-demo-v1", {stage: StageSpec(demo_stage, "synthetic-" + stage + "-v1", "synthetic-no-model",
+                                               reuse_brief_fields=('product', 'goal', 'audience', 'assumptions', 'unknowns', 'excluded_source_ids') if stage == 'research' else None,
+                                               reuse_collections=('capabilities', 'sources', 'claims', 'issues') if stage == 'research' else None)
                                                for stage in AGENT_STAGES}, synthetic=True)

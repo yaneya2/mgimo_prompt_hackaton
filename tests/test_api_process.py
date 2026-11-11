@@ -8,13 +8,15 @@ import sys
 import time
 
 import httpx
+import pytest
 
 from scripts.try_api import run_demo
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_http_demo_with_separate_worker_and_server_restart(tmp_path):
+@pytest.mark.parametrize('revise_budget', [False, True])
+def test_http_demo_with_separate_worker_and_server_restart(tmp_path, revise_budget):
     with socket.socket() as listener:
         listener.bind(('127.0.0.1', 0))
         port = listener.getsockname()[1]
@@ -56,9 +58,14 @@ def test_http_demo_with_separate_worker_and_server_restart(tmp_path):
         with httpx.Client(base_url=base_url, timeout=2, trust_env=False) as client:
             wait_server(client, server)
             worker = launch('app.worker')
-            result = run_demo(base_url, tmp_path / 'documents')
+            result = run_demo(base_url, tmp_path / 'documents', revise_budget=revise_budget)
             output_dir = Path(result['output_dir'])
             expected = json.loads((output_dir / 'snapshot.json').read_text())
+            if revise_budget:
+                assert expected['brief']['version'] == 2
+                assert expected['brief']['input']['budget']['amount'] == '12000'
+                assert '50000' not in (output_dir / 'report.md').read_text()
+                assert any(a.get('reused_from') for a in expected['artifacts'] if a['freshness'] == 'current')
             stop(worker)
             stop(server)
         server = launch('app')

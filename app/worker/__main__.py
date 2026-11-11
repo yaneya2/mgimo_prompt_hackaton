@@ -43,7 +43,7 @@ def main():
         return 2
     logging.basicConfig(level=settings.log_level.upper(), format="%(levelname)s %(message)s")
     stop = StopFlag()
-    # Set a flag only; the active synchronous handler finishes before the safe boundary.
+    # Set a flag only; external-action guards and stage boundaries observe it.
     for name in (signal.SIGINT, signal.SIGTERM):
         signal.signal(name, lambda signum, frame: stop.set())
     try:

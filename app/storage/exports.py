@@ -50,6 +50,14 @@ def render_snapshot(snapshot, format):
         lines += ["Итоговый отчёт ещё не подготовлен. Ниже — сохранённые результаты текущих этапов.", ""]
         for artifact in snapshot["artifacts"]:
             lines += ["## " + artifact["stage"], "", artifact["summary"], ""]
+    reused = [a for a in snapshot['artifacts'] if 'reused_from' in a]
+    if reused:
+        lines += ['## Повторное использование результатов', '']
+        for artifact in reused:
+            origin = artifact['reused_from']
+            lines += [f"- {artifact['stage']}: сохранённый результат {origin['artifact_id']} v{origin['version']} "
+                      f"из брифа v{origin['brief_version']}; применимость проверена платформой, нового вызова этапа не было."]
+        lines.append('')
     # Exact structured data is available even before the final C6 renderer is connected.
     data = json.dumps(dict(brief=snapshot["brief"], data=snapshot["data"], questions=snapshot["questions"], usage=snapshot["usage"]),
                       ensure_ascii=False, indent=2)

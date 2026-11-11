@@ -65,6 +65,7 @@ D['Question'] = obj(id=ID, stage=enum(*STAGES), text=S, required={'type': 'boole
 D['ErrorResponse'] = obj(error=obj(code=enum('VALIDATION_ERROR', 'NOT_FOUND', 'VERSION_CONFLICT', 'INVALID_STATE', 'RUN_ALREADY_ACTIVE', 'UPSTREAM_UNAVAILABLE', 'BUDGET_EXCEEDED', 'INTERNAL_ERROR'), message=S, retryable={'type': 'boolean'}, request_id=ID, run_id=nullable(ID), field_errors=arr(obj(path=S, message=S))))
 D['Run'] = obj(id=ID, project_id=ID, brief_version=I, revision=I, status=enum(*STATUS), stage=enum(*STAGES), quality=enum('draft', 'blocked', 'ready'), created_at=DT, updated_at=DT, checkpoint_id=nullable(ID), attempt=N, error=nullable(ref('ErrorResponse')))
 D['Artifact'] = obj(id=ID, version=I, project_id=ID, run_id=ID, brief_version=I, schema_version={'const': '1.0.0'}, stage=enum(*STAGES), prompt_version=S, model_id=nullable(S), created_at=DT, freshness=enum('current', 'stale'), depends_on=arr(obj(artifact_id=ID, version=I)), entities=arr(ref('EntityRef')), summary=S)
+D['Artifact']['properties']['reused_from'] = obj(artifact_id=ID, version=I, brief_version=I)
 collections = {'capabilities': 'Capability', 'sources': 'Source', 'claims': 'Claim', 'options': 'StrategyOption', 'messages': 'Message', 'experiments': 'Experiment', 'decisions': 'Decision', 'issues': 'ReviewIssue'}
 D['DataBundle'] = obj(**{k: arr(ref(v)) for k, v in collections.items()})
 D['Limits'] = obj(max_model_calls=I, max_search_calls=I, max_repair_cycles=N, timeout_seconds=I, budget=nullable(ref('Money')))

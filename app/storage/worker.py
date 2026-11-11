@@ -107,6 +107,24 @@ class WorkerSession:
                 self.storage._write_run(connection, run)
         return run
 
+    def interrupt_step(self, job_id):
+        """Stop a cooperative unfinished step, retaining its confirmed input checkpoint and Usage."""
+        self._check()
+        with self.storage.transaction(write=True) as connection:
+            row = connection.execute('SELECT * FROM jobs WHERE id = ?', (job_id,)).fetchone()
+            if row is None or row['state'] != 'running' or row['owner'] != self.owner:
+                raise Conflict('Job is not owned by this worker')
+            run = self.storage._run(connection, row['run_id'])
+            expected = row['run_revision'] + (run['status'] == 'pause_requested')
+            if (run['status'] not in ('running', 'pause_requested') or run['revision'] != expected
+                    or run['checkpoint_id'] != row['base_checkpoint_id']):
+                raise Conflict('Run changed while the step was executing')
+            stamp = now()
+            run.update(status='paused', revision=run['revision'] + 1, updated_at=stamp)
+            self.storage._write_run(connection, run)
+            connection.execute("UPDATE jobs SET state = 'interrupted', finished_at = ? WHERE id = ?", (stamp, job_id))
+        return run
+
     def _merge_entities(self, connection, run, previous, incoming):
         merged = {}
         for kind, collection in COLLECTIONS.items():
@@ -143,6 +161,14 @@ class WorkerSession:
             require(artifact["stage"] == stage, "Artifact belongs to another stage")
             require(artifact["brief_version"] == run["brief_version"], "New artifact has old brief")
             require(artifact["freshness"] == "current", "A new artifact must be current")
+            if 'reused_from' in artifact:
+                origin = artifact['reused_from']
+                saved = connection.execute('SELECT payload FROM artifacts WHERE project_id = ? AND id = ? AND version = ?',
+                                           (run['project_id'], origin['artifact_id'], origin['version'])).fetchone()
+                require(saved is not None and json.loads(saved[0])['brief_version'] == origin['brief_version'],
+                        'Reuse origin not found in the archive')
+                require(origin['artifact_id'] == artifact['id'] and origin['version'] < artifact['version']
+                        and origin['brief_version'] < artifact['brief_version'], 'Invalid reuse provenance')
             key = (run["project_id"], artifact["id"], artifact["version"])
             old = connection.execute("SELECT payload FROM artifacts WHERE project_id = ? AND id = ? AND version = ?", key).fetchone()
             if old:

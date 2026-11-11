@@ -5,6 +5,7 @@ from pathlib import Path
 import shutil
 import signal
 import subprocess
+from app.execution import before_external_action
 import tempfile
 import time
 from datetime import datetime, timezone
@@ -98,6 +99,7 @@ class CodexAdapter:
                           "Use only their provided content; do not use tools or inspect files. "
                           "Return only the final JSON matching the supplied output schema.\n"
                           + json.dumps(messages, ensure_ascii=False))
+                before_external_action(run_id)
                 result = self.runner(command, prompt, self.settings.model_timeout_seconds, str(work))
                 terminal = None
                 stream_error = False
