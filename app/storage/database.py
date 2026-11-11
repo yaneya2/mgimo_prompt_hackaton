@@ -1,5 +1,6 @@
 """SQLite source of truth and reproducible JSON files for the local platform."""
 from contextlib import contextmanager
+from contextvars import ContextVar
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -10,7 +11,7 @@ from tempfile import NamedTemporaryFile
 from uuid import uuid4
 
 from app.storage.validation import (
-    Conflict, NotFound, StorageError, WorkerBusy, empty_data, require, validate,
+    Conflict, NotFound, RunAlreadyActive, StorageError, VersionConflict, WorkerBusy, empty_data, require, validate,
 )
 
 
@@ -74,6 +75,15 @@ INPUTS_DDL = """CREATE TABLE run_inputs (
     kind TEXT NOT NULL CHECK(kind IN ('answers', 'selection')), payload TEXT NOT NULL,
     created_at TEXT NOT NULL, UNIQUE(run_id, checkpoint_id))"""
 
+COMMAND_DDL = [
+    """CREATE TABLE commands (
+        scope TEXT NOT NULL, key TEXT NOT NULL, request_json TEXT NOT NULL,
+        response_json TEXT NOT NULL, PRIMARY KEY(scope, key))""",
+    """CREATE TABLE exports (
+        id TEXT PRIMARY KEY, run_id TEXT NOT NULL REFERENCES runs(id),
+        payload TEXT NOT NULL, content TEXT NOT NULL)""",
+]
+
 
 class Storage:
     """Each operation owns its connection; reads use a consistent transaction."""
@@ -82,21 +92,30 @@ class Storage:
         self.data_dir = Path(data_dir).resolve()
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self.database_path = self.data_dir / "state.sqlite3"
+        self._command_connection = ContextVar("storage_command_connection", default=None)
         for name in ("results", "checkpoints"):
             (self.data_dir / name).mkdir(exist_ok=True)
         with self.transaction(write=True) as connection:
             version = connection.execute("PRAGMA user_version").fetchone()[0]
-            if version not in (0, 1, 2):
+            if version not in (0, 1, 2, 3):
                 raise StorageError("Unsupported storage schema version")
             if version == 0:
                 for statement in DDL:
                     connection.execute(statement)
             if version < 2:
                 connection.execute(INPUTS_DDL)
-                connection.execute("PRAGMA user_version = 2")
+            if version < 3:
+                for statement in COMMAND_DDL:
+                    connection.execute(statement)
+                connection.execute("PRAGMA user_version = 3")
 
     @contextmanager
     def transaction(self, *, write=False):
+        # A command and its replay record commit together, even when it calls several operations.
+        shared = self._command_connection.get()
+        if shared is not None:
+            yield shared
+            return
         connection = sqlite3.connect(self.database_path, timeout=5, isolation_level=None)
         connection.row_factory = sqlite3.Row
         try:
@@ -157,7 +176,7 @@ class Storage:
         with self.transaction(write=True) as connection:
             project = self._payload(connection, "SELECT payload FROM projects WHERE id = ?", (project_id,))
             if project["current_brief_version"] != expected_version:
-                raise Conflict("Brief version conflict")
+                raise VersionConflict("Brief version conflict")
             if connection.execute("""SELECT 1 FROM runs WHERE project_id = ?
                     AND status IN ('queued','running','pause_requested','paused','waiting_for_input')""",
                                   (project_id,)).fetchone():
@@ -176,7 +195,7 @@ class Storage:
             project = self._payload(connection, "SELECT payload FROM projects WHERE id = ?", (project_id,))
             version = project["current_brief_version"]
             if brief_version is not None and brief_version != version:
-                raise Conflict("Only the current brief can start a run")
+                raise VersionConflict("Only the current brief can start a run")
             stamp = now()
             run = dict(id=run_id or new_id("run"), project_id=project_id, brief_version=version, revision=1,
                        status="queued", stage="brief", quality="draft", created_at=stamp, updated_at=stamp,
@@ -186,7 +205,7 @@ class Storage:
                 connection.execute("INSERT INTO runs VALUES (?, ?, ?, ?, ?, ?, ?)",
                                    (run["id"], project_id, version, "queued", 1, encode(run), encode(limits)))
             except sqlite3.IntegrityError:
-                raise Conflict("Run already exists or project has an unfinished run") from None
+                raise RunAlreadyActive("Run already exists or project has an unfinished run") from None
         return run
 
     def get_run(self, run_id):
@@ -312,7 +331,7 @@ class Storage:
         with self.transaction(write=True) as connection:
             run = self._run(connection, run_id)
             if run["revision"] != expected_revision:
-                raise Conflict("Run revision conflict")
+                raise VersionConflict("Run revision conflict")
             if run["status"] != "paused":
                 raise Conflict("Only a paused run can be requeued here")
             run.update(status="queued", revision=run["revision"] + 1, updated_at=now())
@@ -343,7 +362,7 @@ class Storage:
         with self.transaction(write=True) as connection:
             run = self._run(connection, run_id)
             if run["revision"] != command["expected_revision"]:
-                raise Conflict("Run revision conflict")
+                raise VersionConflict("Run revision conflict")
             if run["status"] != "waiting_for_input" or not run["checkpoint_id"]:
                 raise Conflict("Run is not waiting for input")
             snapshot = self._snapshot(connection, run)
@@ -365,7 +384,7 @@ class Storage:
                                  if item["id"] == command["option_id"] and item["version"] == command["option_version"]
                                  and item["brief_version"] == run["brief_version"]), None)
                 if selected is None:
-                    raise Conflict("Selected option is missing or outdated")
+                    raise VersionConflict("Selected option is missing or outdated")
                 require(any(artifact["stage"] == "options" and artifact["freshness"] == "current"
                             and {"kind": "option", "id": selected["id"], "version": selected["version"]} in artifact["entities"]
                             for artifact in snapshot["artifacts"]), "Selected option has no current artifact")
@@ -393,3 +412,50 @@ class Storage:
                 return worker.recovered_run_ids
         except WorkerBusy:
             return []
+
+    def command(self, scope, key, body, action):
+        """Durable HTTP command replay. Failed commands roll back and do not reserve a key."""
+        request_json = encode(body)
+        with self.transaction(write=True) as connection:
+            old = connection.execute("SELECT * FROM commands WHERE scope = ? AND key = ?", (scope, key)).fetchone()
+            if old:
+                if old["request_json"] != request_json:
+                    raise VersionConflict("Idempotency key already used with another request")
+                return json.loads(old["response_json"])
+            token = self._command_connection.set(connection)
+            try:
+                response = action()
+                connection.execute("INSERT INTO commands VALUES (?, ?, ?, ?)",
+                                   (scope, key, request_json, encode(response)))
+            finally:
+                self._command_connection.reset(token)
+        return response
+
+    def prepare_stage_result(self, request, result):
+        """Allocate archive versions when a revised brief restarts with an empty current bundle."""
+        from copy import deepcopy
+        from app.storage.validation import COLLECTIONS
+        result = deepcopy(result)
+        versions = {}
+        with self.transaction() as connection:
+            for kind, collection in COLLECTIONS.items():
+                present = {item["id"] for item in request["input_data"][collection]}
+                for item in result["data"][collection]:
+                    if item["id"] in present or item["version"] != 1:
+                        continue
+                    latest = connection.execute("""SELECT version, brief_version FROM entities
+                        WHERE project_id = ? AND kind = ? AND id = ? ORDER BY version DESC LIMIT 1""",
+                        (request["project_id"], kind, item["id"])).fetchone()
+                    if latest and latest["brief_version"] < request["brief"]["version"]:
+                        item["version"] = latest["version"] + 1
+                        versions[(kind, item["id"], 1)] = item["version"]
+        for collection in ("claims", "issues"):
+            for item in result["data"][collection]:
+                for evidence in item["evidence"]:
+                    evidence["source_version"] = versions.get(
+                        ("source", evidence["source_id"], evidence["source_version"]), evidence["source_version"])
+        refs = [issue["target"] for issue in result["data"]["issues"]]
+        refs += [ref for artifact in result["artifacts"] for ref in artifact["entities"]]
+        for ref in refs:
+            ref["version"] = versions.get((ref["kind"], ref["id"], ref["version"]), ref["version"])
+        return result

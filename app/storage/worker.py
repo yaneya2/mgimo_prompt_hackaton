@@ -96,7 +96,7 @@ class WorkerSession:
         return job
 
     def pause_at_boundary(self, run_id):
-        """Operational shutdown at a committed boundary, not the future user pause API."""
+        """Acknowledge an API pause or operational shutdown at a committed boundary."""
         self._check()
         with self.storage.transaction(write=True) as connection:
             run = self.storage._run(connection, run_id)
@@ -205,7 +205,8 @@ class WorkerSession:
             if job["state"] != "running" or job["owner"] != self.owner:
                 raise Conflict("Job is not owned by this worker")
             run = self.storage._run(connection, job["run_id"])
-            if run["revision"] != job["run_revision"] or run["checkpoint_id"] != job["base_checkpoint_id"]:
+            expected_revision = job["run_revision"] + (1 if run["status"] == "pause_requested" else 0)
+            if run["revision"] != expected_revision or run["checkpoint_id"] != job["base_checkpoint_id"]:
                 raise Conflict("Run changed while the step was executing")
             require(run["status"] in ("running", "pause_requested"), "Run is not active")
             require((result["run_id"], result["project_id"], result["brief_version"], result["stage"])
@@ -216,6 +217,8 @@ class WorkerSession:
             require(status != "paused" or run["status"] == "pause_requested", "Pause was not requested")
             require((next_stage is not None) == (status in ("running", "paused")), "Next stage disagrees with status")
             require(status != "completed" or job["stage"] == "report", "Only report can complete a run")
+            if run["status"] == "pause_requested" and status == "running":
+                status = "paused"
             require(all(question["stage"] == job["stage"] for question in result["questions"]), "Question belongs to another stage")
             require(len({question["id"] for question in result["questions"]}) == len(result["questions"]), "Duplicate question ID")
             if result["error"]:

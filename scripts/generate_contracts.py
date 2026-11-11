@@ -106,7 +106,7 @@ def endpoint(path, method, operation, output, request=None, code='200', array=Fa
     if array:
         success['content']['application/json']['schema'] = arr(api_ref(output))
     op = {'operationId': operation, 'parameters': params, 'responses': {code: success}}
-    for status in ['404', '409', '422', '503']:
+    for status in ['404', '409', '422', '500', '503']:
         op['responses'][status] = response('ErrorResponse', 'Structured error; see contracts/README.md')
     if request:
         op['requestBody'] = {'required': True, 'content': {'application/json': {'schema': api_ref(request)}}}
@@ -126,7 +126,9 @@ for action, request in [('pause', 'RunCommand'), ('resume', 'RunCommand'), ('ans
     endpoint('/runs/{run_id}/' + action, 'post', action.replace('-', '_') + 'Run', 'Run', request, '202')
 endpoint('/projects/{project_id}/exports', 'post', 'createExport', 'Export', 'ExportRequest', '201')
 paths['/exports/{export_id}/download'] = {'get': {'operationId': 'downloadExport', 'parameters': [{'name': 'export_id', 'in': 'path', 'required': True, 'schema': ID}], 'responses': {'200': {'description': 'Rendered artifact', 'content': {'text/markdown': {'schema': {'type': 'string'}}, 'text/html': {'schema': {'type': 'string'}}}}, '404': response('ErrorResponse', 'Export not found')}}}
-write(OUT / 'openapi.json', {'openapi': '3.1.0', 'info': {'title': 'Strategy API — proposed contract', 'version': '1.0.0', 'description': 'Specification only. Server implementation belongs to A6.'}, 'servers': [{'url': '/api/v1'}], 'paths': paths})
+for status in ['422', '500', '503']:
+    paths['/exports/{export_id}/download']['get']['responses'][status] = response('ErrorResponse', 'Structured error; see contracts/README.md')
+write(OUT / 'openapi.json', {'openapi': '3.1.0', 'info': {'title': 'Strategy API — proposed contract', 'version': '1.0.0', 'description': 'Implemented by A6. Cross-team acceptance is pending; see contracts/README.md.'}, 'servers': [{'url': '/api/v1'}], 'paths': paths})
 
 T = '2026-11-06T12:00:00Z'
 def e(id, **fields):

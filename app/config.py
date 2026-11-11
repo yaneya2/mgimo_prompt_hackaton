@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     data_dir: Path = Path("data")
     stage_factory: str | None = None
     worker_poll_seconds: float = Field(default=0.5, gt=0, le=10)
+    api_max_request_bytes: int = Field(default=1048576, ge=1024, le=10485760)
     model_provider: str | None = "codex"
     model_name: str | None = None
     model_api_key: SecretStr | None = None

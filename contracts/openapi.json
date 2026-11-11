@@ -3,7 +3,7 @@
   "info": {
     "title": "Strategy API — proposed contract",
     "version": "1.0.0",
-    "description": "Specification only. Server implementation belongs to A6."
+    "description": "Implemented by A6. Cross-team acceptance is pending; see contracts/README.md."
   },
   "servers": [
     {
@@ -57,6 +57,16 @@
             }
           },
           "422": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
             "description": "Structured error; see contracts/README.md",
             "content": {
               "application/json": {
@@ -135,6 +145,16 @@
               }
             }
           },
+          "500": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
           "503": {
             "description": "Structured error; see contracts/README.md",
             "content": {
@@ -194,6 +214,16 @@
             }
           },
           "422": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
             "description": "Structured error; see contracts/README.md",
             "content": {
               "application/json": {
@@ -271,6 +301,16 @@
             }
           },
           "422": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
             "description": "Structured error; see contracts/README.md",
             "content": {
               "application/json": {
@@ -367,6 +407,16 @@
               }
             }
           },
+          "500": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
           "503": {
             "description": "Structured error; see contracts/README.md",
             "content": {
@@ -446,6 +496,16 @@
               }
             }
           },
+          "500": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
           "503": {
             "description": "Structured error; see contracts/README.md",
             "content": {
@@ -514,6 +574,16 @@
               }
             }
           },
+          "500": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
           "503": {
             "description": "Structured error; see contracts/README.md",
             "content": {
@@ -573,6 +643,16 @@
             }
           },
           "422": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
             "description": "Structured error; see contracts/README.md",
             "content": {
               "application/json": {
@@ -653,6 +733,16 @@
               }
             }
           },
+          "500": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
           "503": {
             "description": "Structured error; see contracts/README.md",
             "content": {
@@ -715,6 +805,16 @@
             }
           },
           "422": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
             "description": "Structured error; see contracts/README.md",
             "content": {
               "application/json": {
@@ -792,6 +892,16 @@
             }
           },
           "422": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
             "description": "Structured error; see contracts/README.md",
             "content": {
               "application/json": {
@@ -888,6 +998,16 @@
               }
             }
           },
+          "500": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
           "503": {
             "description": "Structured error; see contracts/README.md",
             "content": {
@@ -966,6 +1086,16 @@
             }
           },
           "422": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
             "description": "Structured error; see contracts/README.md",
             "content": {
               "application/json": {
@@ -1062,6 +1192,16 @@
               }
             }
           },
+          "500": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
           "503": {
             "description": "Structured error; see contracts/README.md",
             "content": {
@@ -1140,6 +1280,16 @@
             }
           },
           "422": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
             "description": "Structured error; see contracts/README.md",
             "content": {
               "application/json": {
@@ -1236,6 +1386,16 @@
               }
             }
           },
+          "500": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
           "503": {
             "description": "Structured error; see contracts/README.md",
             "content": {
@@ -1291,6 +1451,36 @@
           },
           "404": {
             "description": "Export not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured error; see contracts/README.md",
             "content": {
               "application/json": {
                 "schema": {

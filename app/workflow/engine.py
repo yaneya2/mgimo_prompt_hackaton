@@ -4,7 +4,7 @@ import json
 
 from app.llm.base import ModelError
 from app.storage.database import encode
-from app.storage.validation import COLLECTIONS, StorageError, require, validate
+from app.storage.validation import COLLECTIONS, Conflict, StorageError, require, validate
 from app.workflow.results import artifact_for, error_for, result_for
 from app.workflow.stages import STAGES, StageContext, StageSpec
 
@@ -55,6 +55,11 @@ class Orchestrator:
                         for item in output["data"]["decisions"]), "An agent cannot create a user decision")
         for artifact in output["artifacts"]:
             require(artifact["prompt_version"] == request["prompt_version"], "Wrong prompt version")
+        excluded = set(request["brief"]["input"]["excluded_source_ids"])
+        require(not any(e["source_id"] in excluded for key in ("claims", "issues")
+                        for item in output["data"][key] for e in item["evidence"]), "Excluded source used as evidence")
+        require(not any(source_id in excluded for cap in output["data"]["capabilities"]
+                        for source_id in cap["source_ids"]), "Excluded source used as capability basis")
         if request["stage"] == "options" and output["outcome"] == "success":
             require(len({item["id"] for item in self._merged_data(request, output)["options"]}) >= 3,
                     "Options requires at least three alternatives")
@@ -162,10 +167,16 @@ class Orchestrator:
         job = worker.begin_step(run_id, expected_revision=run["revision"])
         if state["registry"] != self.registry.manifest():
             return self._failed(worker, job, request, state, "INVALID_STATE", "Конфигурация этапов изменилась после контрольной точки.")
-        context = StageContext(inputs=self.storage.list_inputs(run_id), feedback=deepcopy(state["feedback"]),
+        context = StageContext(inputs=[item for item in self.storage.list_inputs(run_id)
+                                       if item["brief_version"] == request["brief"]["version"]], feedback=deepcopy(state["feedback"]),
                                repairs_used=state["repairs_used"], synthetic=self.registry.synthetic)
         try:
-            output = spec.handler(deepcopy(request), deepcopy(context))
+            checkpoint = self.storage.get_checkpoint(run["checkpoint_id"]) if run["checkpoint_id"] else {}
+            if checkpoint.get("outcome") == "needs_input" and not any(i["checkpoint_id"] == run["checkpoint_id"] for i in context.inputs):
+                # Resume after pausing an unanswered question must not repeat a paid model call.
+                output = result_for(request, outcome="needs_input", questions=deepcopy(checkpoint["questions"]))
+            else:
+                output = spec.handler(deepcopy(request), deepcopy(context))
         except ModelError as error:
             if error.code in ("INVALID_RESPONSE", "INCOMPLETE_RESPONSE"):
                 return self._invalid(worker, job, request, state)
@@ -177,6 +188,8 @@ class Orchestrator:
         try:
             # Copy to plain finite JSON before schema checks or passing data to another stage.
             output = json.loads(encode(output))
+            validate("StageResult", output)
+            output = self.storage.prepare_stage_result(request, output)
             self._check_output(request, output)
             route = self._route(request, output, state)
             if state["stop_reason"]:
@@ -188,9 +201,21 @@ class Orchestrator:
             return self._invalid(worker, job, request, self._state(run))
 
     def execute(self, worker, run_id, stop):
-        worker.claim_run(run_id)
-        while self.storage.get_run(run_id)["status"] == "running":
-            if stop.is_set():
+        try:
+            worker.claim_run(run_id)
+        except Conflict:
+            # The API may pause an item after queue polling but before it is claimed.
+            run = self.storage.get_run(run_id)
+            if run["status"] == "paused":
+                return run
+            raise
+        while self.storage.get_run(run_id)["status"] in ("running", "pause_requested"):
+            if stop.is_set() or self.storage.get_run(run_id)["status"] == "pause_requested":
                 return worker.pause_at_boundary(run_id)
-            self.step(worker, run_id)
+            try:
+                self.step(worker, run_id)
+            except Conflict:
+                if self.storage.get_run(run_id)["status"] == "pause_requested":
+                    return worker.pause_at_boundary(run_id)
+                raise
         return self.storage.get_run(run_id)

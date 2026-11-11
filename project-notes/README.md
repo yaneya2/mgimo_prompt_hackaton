@@ -11,6 +11,7 @@
 - [Проверка сменных моделей и Codex](reports/A3_CODEX_CHECKS.md).
 - [Протокол проверки хранилища и восстановления A4](reports/A4_CHECKS.md).
 - [Протокол проверки оркестратора и worker A5](reports/A5_CHECKS.md).
+- [Протокол проверки HTTP API A6](reports/A6_CHECKS.md).
 - [Исправления четырёх ошибок из ревью](reports/REVIEW_FIXES.md).
 
 Инструкция запуска приложения находится в [корневом README](../README.md), технические контракты — в [contracts](../contracts/README.md).

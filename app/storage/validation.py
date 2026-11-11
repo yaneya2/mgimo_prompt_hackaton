@@ -17,7 +17,15 @@ class StorageError(ValueError):
 
 
 class Conflict(StorageError):
-    pass
+    code = "INVALID_STATE"
+
+
+class VersionConflict(Conflict):
+    code = "VERSION_CONFLICT"
+
+
+class RunAlreadyActive(Conflict):
+    code = "RUN_ALREADY_ACTIVE"
 
 
 class NotFound(StorageError):

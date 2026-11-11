@@ -5,13 +5,16 @@ from tempfile import TemporaryFile
 from fastapi import FastAPI
 
 from app.api.health import router
+from app.api.business import router as business_router, http_error, openapi_document
 from app.config import Settings
 from app.storage import Storage
+from app.storage.exports import render_snapshot
+from starlette.exceptions import HTTPException
 
 logger = logging.getLogger("uvicorn.error")
 
 
-def create_app(settings: Settings | None = None) -> FastAPI:
+def create_app(settings: Settings | None = None, *, renderer=render_snapshot) -> FastAPI:
     config = settings if settings is not None else Settings()
 
     @asynccontextmanager
@@ -32,5 +35,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     application = FastAPI(title="Strategy backend", version="0.1.0", lifespan=lifespan)
     application.state.settings = config
+    application.state.renderer = renderer
     application.include_router(router)
+    health_document = application.openapi()
+    application.include_router(business_router)
+    application.add_exception_handler(HTTPException, http_error)
+    application.openapi_schema = openapi_document(health_document)
+    application.openapi = lambda: application.openapi_schema
     return application

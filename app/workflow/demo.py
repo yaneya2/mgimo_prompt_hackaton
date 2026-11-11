@@ -43,8 +43,9 @@ def demo_stage(request, context):
         source = entity(request, "source", "source_brief", kind="user_text", title="Тестовый бриф", url=None,
                         publisher=None, published_at=None, retrieved_at=now(), content_excerpt=excerpt, locator="Бриф пользователя",
                         verification="read", origin_note="Синтетический прогон A5; сведения пользователя не проверены независимо")
-        data["sources"] = [source]
-        targets = [ref("source", source)]
+        if source["id"] not in request["brief"]["input"]["excluded_source_ids"]:
+            data["sources"] = [source]
+            targets = [ref("source", source)]
         summary += "Бриф сохранён: " + product
     elif stage == "research":
         claim = entity(request, "claim", "claim_demand", text="Есть ли спрос на продукт «" + product + "»?",
