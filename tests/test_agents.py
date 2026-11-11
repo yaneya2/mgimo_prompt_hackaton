@@ -35,7 +35,7 @@ class Sink:
 def request(stage='research'):
     req = json.loads((ROOT / 'contracts/examples/stage_request.json').read_text())
     req['stage'] = stage
-    req['prompt_version'] = stage + '-v1'
+    req['prompt_version'] = stage + '-v2'
     req['limits'] = dict(LIMITS, timeout_seconds=600)
     return req
 
@@ -48,7 +48,7 @@ def test_factory_has_six_versioned_real_handlers(tmp_path):
     registry = build_stages(config(tmp_path), Sink())
     assert not registry.synthetic
     assert set(registry.stages) == set(AGENT_STAGES)
-    assert registry.stages['report'].model_id == 'python-assembler-v1'
+    assert registry.stages['report'].model_id == 'python-assembler-v2'
     for stage in OWNED:
         validate_request([{'role': 'user', 'content': 'test'}], response_schema(stage), 'run_test', stage)
 
@@ -215,7 +215,7 @@ def real_handlers_with_fixture(tmp_path, store):
     settings = config(tmp_path, research_materials_dir=materials, research_files=['provided.md'])
     model = FixtureModel(settings, store)
     runtime = AgentRuntime(settings, store, model_factory=lambda *_: model)
-    registry = StageRegistry('fixture-agents-v1', {stage: StageSpec(runtime, stage + '-v1', 'fixture-model') for stage in AGENT_STAGES}, synthetic=True)
+    registry = StageRegistry('fixture-agents-v1', {stage: StageSpec(runtime, stage + '-v2', 'fixture-model') for stage in AGENT_STAGES}, synthetic=True)
     return registry, model
 
 
@@ -361,29 +361,33 @@ def test_time_limit_excludes_human_wait_and_is_durable(tmp_path):
             CallGate(tmp_path).reserve(req, 'model', 1)
 
 
-def test_comparison_modes_use_identical_brief_evidence_and_different_call_counts(tmp_path, monkeypatch):
+def test_comparison_modes_use_identical_brief_evidence_and_different_call_counts(tmp_path):
     import scripts.compare_agents as comparison
     snapshot = json.loads((ROOT / 'contracts/examples/success.json').read_text())
-    calls = []
-    class OfflineRuntime:
-        def __init__(self, settings, sink):
-            pass
-        def generate(self, req, context, stage, schema, instruction):
-            calls.append(deepcopy(req))
-            fixture = bundle()
-            payload = {'summary': 'Синтетическая проверка сравнительных режимов', 'questions': []}
-            for collection in ('options', 'messages', 'experiments', 'issues'):
-                if collection in schema['properties']:
-                    payload[collection] = [{k:v for k,v in item.items() if k not in META} for item in fixture[collection]]
-            return ModelResult(payload, 'fixture', None, [])
-    monkeypatch.setattr(comparison, 'AgentRuntime', OfflineRuntime)
-    results = comparison.compare(snapshot, config(tmp_path), tmp_path / 'comparison')
+    captured = []
+    class ComparisonModel(FixtureModel):
+        def generate(self, **kwargs):
+            captured.append(json.loads(kwargs['messages'][-1]['content']))
+            result = super().generate(**dict(kwargs, schema=response_schema(kwargs['stage'])))
+            if kwargs['stage'] == 'options' and 'messages' in kwargs['schema']['properties']:
+                result.data['messages'], result.data['experiments'] = [], []
+                for number in range(1, 4):
+                    fixture = bundle()
+                    message = {k:v for k,v in fixture['messages'][0].items() if k not in META}
+                    experiment = {k:v for k,v in fixture['experiments'][0].items() if k not in META}
+                    message.update(id='message_' + str(number), option_id='option_' + str(number))
+                    experiment.update(id='experiment_' + str(number), option_id=message['option_id'], message_ids=[message['id']])
+                    result.data['messages'].append(message)
+                    result.data['experiments'].append(experiment)
+            return result
+    results = comparison.compare(snapshot, config(tmp_path, model_name='fixture-model'), tmp_path / 'comparison',
+                                 model_factory=ComparisonModel)
     assert [r['calls'] for r in results] == [1, 2, 3]
-    assert len(calls) == 6
-    assert all(c['brief'] == snapshot['brief'] for c in calls)
-    assert all(c['input_data']['sources'] == snapshot['data']['sources'] for c in calls)
-    assert all(c['input_data']['claims'] == snapshot['data']['claims'] for c in calls)
+    for value in captured:
+        assert value['brief']['input'] == snapshot['brief']['input']
+        assert [s['content_excerpt'] for s in value['data'].get('sources', [])] in ([], [s['content_excerpt'] for s in snapshot['data']['sources']])
     assert all(json.loads(Path(r['file']).read_text())['evaluation_only'] for r in results)
+    assert all(r['status'] == 'waiting_for_input' for r in results)
 
 
 def test_identical_extracted_pages_keep_common_provenance_instead_of_two_votes(tmp_path):

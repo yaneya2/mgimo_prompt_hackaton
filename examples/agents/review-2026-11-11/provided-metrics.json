@@ -1,0 +1,15 @@
+{
+  "run_id": "run_75883b92a5094769b698620f351ed314",
+  "status": "waiting_for_input",
+  "stage": "selection",
+  "model_requested": "gpt-6.1-sol",
+  "usage_events": 7,
+  "duration_ms": 315667,
+  "input_tokens": 106151,
+  "output_tokens": 10980,
+  "unknown_cost_events": 6,
+  "explicit_test_operator_inputs": true,
+  "human_selection_submitted": false,
+  "independent_acceptance": false,
+  "observed_warning": "invalid_option_references: summary contained local aliases before namespace normalisation; fixed afterwards with a regression test, not retroactively edited in this snapshot"
+}

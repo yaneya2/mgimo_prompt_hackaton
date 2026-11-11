@@ -2,6 +2,7 @@
 import json
 
 from app.agents.contracts import ref
+from app.agents.context import effective_context, current_summaries
 from app.workflow.results import artifact_for, result_for
 
 
@@ -10,17 +11,31 @@ def run(request, context):
     selected = next(d for d in reversed(data['decisions']) if d['author'] == 'user' and d['action'] == 'select')
     option = next(o for o in data['options'] if o['id'] == selected['option_id'])
     brief = request['brief']['input']
+    clarified = effective_context(request['brief'], context.inputs)['clarifications']
+    prefix = 'Исходное значение (уточнения ниже): ' if clarified else ''
     lines = ['# Стратегия: ' + brief['product'], '', 'Цель: ' + brief['goal'],
-             'Горизонт: ' + brief['horizon'], 'Бюджет: ' + json.dumps(brief['budget'], ensure_ascii=False),
+             'Горизонт: ' + prefix + brief['horizon'], 'Бюджет: ' + prefix + ('не указан' if brief['budget'] is None else json.dumps(brief['budget'], ensure_ascii=False)),
              '', '## Решение руководителя', option['name'], selected['rationale'],
              'Сегмент: ' + option['segment'], 'Проблема: ' + option['problem'], 'Ценность: ' + option['value'],
              'Приоритеты: ' + '; '.join(option['priorities']), 'Основания: ' + option['rationale'],
              'Ресурсы и допущения: ' + '; '.join(option['resource_assumptions']),
              'Возражения: ' + '; '.join(option['objections']), 'Пересмотреть решение, если: ' + option['failure_condition'],
-             '', '## Ограничения и неизвестные', *brief['constraints'], *brief['assumptions'], *brief['unknowns'],
+             '', '## Исходные ограничения и неизвестные' + (' (с учётом уточнений ниже)' if clarified else ''), *brief['constraints'], *brief['assumptions'], *brief['unknowns'],
              '', '## Альтернативы']
     for item in data['options']:
         lines += ['- ' + item['name'] + ': ' + item['segment'] + '; ' + item['value'] + '. ' + item['rationale']]
+    lines += ['', '## Действующие уточнения пользователя']
+    if not clarified:
+        lines += ['Уточнения не поступали; действуют исходные условия брифа.']
+    for item in clarified:
+        lines += ['- Вопрос: ' + item['question'], '  Актуальный ответ: ' + item['answer'],
+                  '  Происхождение: ответ пользователя; версия брифа ' + str(item['brief_version'])]
+        if item['superseded']:
+            lines += ['  Предыдущие ответы заменены актуальным; история сохранена в журнале ввода.']
+    lines += ['', '## Рекомендация системы и сравнение направлений']
+    comparisons = current_summaries(request, 'report')
+    lines += [item['summary'] for item in comparisons] or ['Актуальное сравнение направлений не сохранено.']
+    lines += ['Выбор руководителя приведён отдельно; он может отличаться от рекомендации системы.']
     lines += ['', '## Возможности продукта']
     caps = {c['id']: c for c in data['capabilities']}
     for cap in caps.values():

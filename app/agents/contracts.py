@@ -2,6 +2,7 @@
 from copy import deepcopy
 import hashlib
 import json
+import re
 from pathlib import Path
 
 from app.storage.validation import COLLECTIONS
@@ -72,6 +73,11 @@ def namespace_payload(request, payload):
         if any(item['id'] == value for item in request['input_data'][collection]):
             return value
         return identity(request['run_id'] + ':' + collection + ':' + value)
+    aliases = {item['id']: mapped(collection, item['id'])
+               for collection in OWNED[request['stage']] for item in payload[collection]}
+    if aliases:
+        tokens = re.compile(r'(?<![a-z0-9_-])(' + '|'.join(re.escape(key) for key in sorted(aliases, key=len, reverse=True)) + r')(?![a-z0-9_-])')
+        payload['summary'] = tokens.sub(lambda match: aliases[match.group(0)], payload['summary'])
     for collection in OWNED[request['stage']]:
         for item in payload[collection]:
             item['id'] = mapped(collection, item['id'])

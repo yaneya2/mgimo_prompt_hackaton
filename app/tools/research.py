@@ -1,5 +1,7 @@
 """Bounded Tavily Search/Extract and operator-selected UTF-8 materials."""
+from copy import deepcopy
 import hashlib
+import re
 import ipaddress
 from pathlib import Path
 import time
@@ -17,6 +19,8 @@ class ResearchError(ValueError):
 
 def canonical_url(value):
     try:
+        if not isinstance(value, str) or re.search(r'[\x00-\x20\x7f\\]', value):
+            raise ValueError()
         parts = urlsplit(value)
         host = (parts.hostname or '').lower().rstrip('.')
         if parts.scheme not in ('http', 'https') or not host or parts.username or parts.password:
@@ -42,11 +46,15 @@ def canonical_url(value):
 def source(request, *, key, title, text, kind='web', url=None, note='', publisher=None):
     sid = 'source_' + hashlib.sha256((request['run_id'] + ':' + key).encode()).hexdigest()[:24]
     old = next((item for item in request['input_data']['sources'] if item['id'] == sid), None)
-    return dict(id=sid, version=old['version'] + 1 if old else 1,
+    result = dict(id=sid, version=old['version'] + 1 if old else 1,
                 project_id=request['project_id'], brief_version=request['brief']['version'], kind=kind,
                 title=title, url=url, publisher=publisher, published_at=None, retrieved_at=now(),
                 content_excerpt=text or None, locator='Сохранённый фрагмент, символы 1–' + str(len(text)) if text else None,
                 verification='read' if text else 'unavailable', origin_note=note)
+    # A second read is an attempt (Usage), not a new content version when nothing changed.
+    if old and all(old.get(k) == v for k, v in result.items() if k not in ('version', 'retrieved_at')):
+        return deepcopy(old)
+    return result
 
 
 class ResearchTools:
@@ -130,6 +138,14 @@ class ResearchTools:
             sources.append(item)
             if digest:
                 fingerprints[digest] = item
+        for index, item in enumerate(sources):
+            old = next((s for s in self.request['input_data']['sources'] if s['id'] == item['id']), None)
+            if old:
+                unchanged = all(old.get(k) == v for k, v in item.items() if k not in ('version', 'retrieved_at'))
+                if unchanged:
+                    sources[index] = deepcopy(old)
+                elif item['version'] == old['version']:
+                    item['version'] += 1
         return sources
 
     def read_file(self, relative_path):

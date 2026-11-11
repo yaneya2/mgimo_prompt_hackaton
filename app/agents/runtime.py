@@ -1,8 +1,8 @@
 """Six A5-compatible handlers. Models never write platform state or select for a human."""
 from copy import deepcopy
 import json
-import re
 
+from app.agents.context import effective_context, current_summaries
 from app.agents.checks import check_bundle
 from app.agents.contracts import ROOT, OWNED, identity, ref, response_schema, stamp, namespace_payload
 from app.agents.limits import CallGate, LimitExceeded
@@ -10,7 +10,8 @@ from app.agents import report
 from app.llm import create_model
 from app.llm.base import ModelError
 from app.storage.validation import COLLECTIONS, validate
-from app.tools.research import ResearchTools, ResearchError, canonical_url, source
+from app.tools.research import ResearchTools, ResearchError, source
+from app.tools.selection import extract_user_urls, select_urls, coverage
 from app.workflow.results import artifact_for, result_for
 from app.workflow.stages import AGENT_STAGES, StageRegistry, StageSpec
 
@@ -30,8 +31,13 @@ class AgentRuntime:
         self.gate = CallGate(settings.data_dir)
 
     def generate(self, request, context, stage, *, extra=None, schema=None, instruction=None):
+        relevant = {key: request['input_data'][key] for key in RELEVANT[stage]}
+        if 'issues' in relevant:
+            relevant['issues'] = [self.retarget(i, request['input_data']) for i in relevant['issues']]
         payload = dict(brief=request['brief'],
-                       data={key: request['input_data'][key] for key in RELEVANT[stage]},
+                       effective_context=effective_context(request['brief'], context.inputs),
+                       stage_summaries=current_summaries(request, stage),
+                       data=relevant,
                        answers=[item for item in context.inputs if item.get('kind') == 'answers'
                                 and item.get('brief_version') == request['brief']['version']],
                        feedback=context.feedback, repairs_used=context.repairs_used, extra=extra)
@@ -39,7 +45,7 @@ class AgentRuntime:
         if len(content) > self.settings.agent_context_chars:
             raise LimitExceeded('Контекст превышает лимит; сократите материалы. Ограничения и доказательства не обрезаны.')
         self.gate.reserve(request, 'model', 1 + (self.settings.model_max_retries if self.settings.model_provider == 'openrouter' else 0))
-        system = (ROOT / 'prompts/common-v1.md').read_text() + '\n' + (ROOT / ('prompts/' + stage + '-v1.md')).read_text()
+        system = (ROOT / 'prompts/common-v2.md').read_text() + '\n' + (ROOT / ('prompts/' + stage + '-v2.md')).read_text()
         if instruction:
             system += '\n' + instruction
         with self.model_factory(self.settings, self.sink) as model:
@@ -60,7 +66,7 @@ class AgentRuntime:
         finally:
             self.gate.finish(request)
 
-    def execute(self, request, context):
+    def execute(self, request, context, *, generated=None, frozen_research=False):
         stage = request['stage']
         request = deepcopy(request)
         extra = {}
@@ -73,7 +79,7 @@ class AgentRuntime:
             collected = [source(request, key=request['run_id'] + ':brief', title='Бриф и ответы пользователя',
                                 text=text, kind='user_text', note='Данные пользователя; независимая проверка не проводилась.')]
             extra['brief_source_id'] = collected[0]['id']
-        if stage == 'research':
+        if stage == 'research' and not frozen_research:
             tools = self.tools_factory(self.settings, self.sink, self.gate, request)
             errors = []
             try:
@@ -82,13 +88,11 @@ class AgentRuntime:
                         collected.append(tools.read_file(path))
                     except ResearchError as exc:
                         errors.append(str(exc))
-                brief_text = json.dumps(request['brief']['input'], ensure_ascii=False)
-                urls = []
-                for raw in re.findall(r'https?://[^\s"<>]+', brief_text):
-                    try:
-                        urls.append(canonical_url(raw.rstrip('.,);')))
-                    except ResearchError:
-                        errors.append('Отклонён недопустимый пользовательский URL')
+                urls, url_errors = extract_user_urls(dict(brief=request['brief']['input'],
+                    clarifications=[dict(question=c['question'], answer=c['answer'])
+                                    for c in effective_context(request['brief'], context.inputs)['clarifications']]))
+                errors.extend(url_errors)
+                groups = [dict(label='Ссылки пользователя', urls=urls)] if urls else []
                 if self.settings.tavily_api_key:
                     plan_schema = dict(type='object', additionalProperties=False, required=['questions', 'queries'],
                                        properties={'questions': {'type': 'array', 'items': {'type': 'string'}, 'maxItems': 4},
@@ -98,18 +102,29 @@ class AgentRuntime:
                                          instruction='Сейчас верни только план исследования: questions — исследовательские вопросы, queries — запросы к первичным источникам. Не создавай утверждения.')
                     usage_ids += plan.usage_ids
                     extra['research_plan'] = plan.data
-                    for query in plan.data['queries']:
+                    for number, query in enumerate(plan.data['queries']):
+                        group = dict(label=plan.data['questions'][number] if number < len(plan.data['questions']) else query,
+                                     query=query, urls=[])
                         try:
-                            urls.extend(item['url'] for item in tools.search(query))
+                            group['urls'] = [item['url'] for item in tools.search(query)]
                         except ResearchError as exc:
                             errors.append(str(exc))
-                    urls = list(dict.fromkeys(urls))
+                        groups.append(group)
+                    groups.extend(dict(label=question, urls=[]) for question in plan.data['questions'][len(plan.data['queries']):])
                     excluded = set(request['brief']['input']['excluded_source_ids'])
-                    urls = [url for url in urls if source(request, key=url, title=url, text='', url=url)['id'] not in excluded]
+                    for group in groups:
+                        group['urls'] = [url for url in group['urls']
+                            if source(request, key=url, title=url, text='', url=url)['id'] not in excluded]
+                    urls = select_urls(groups, self.settings.research_max_sources)
                     try:
                         collected.extend(tools.extract(urls))
                     except ResearchError as exc:
                         errors.append(str(exc))
+                    extra['research_coverage'] = coverage(groups, urls, collected)
+                    for item in extra['research_coverage']:
+                        if item['gap']:
+                            errors.append(item['label'] + ': ' + item['gap'])
+
                 else:
                     errors.append('APP_TAVILY_API_KEY не задан: веб-исследование не выполнено.')
             finally:
@@ -124,12 +139,18 @@ class AgentRuntime:
             if not any(s['verification'] == 'read' and s['kind'] != 'user_text' for s in request['input_data']['sources']):
                 output = result_for(request, outcome='incomplete')
                 output['data']['sources'] = collected
+                coherent = deepcopy(request['input_data'])
+                output['data']['claims'] = [stamp(request, 'claims', {k:v for k,v in self.refresh_claim(c, coherent).items() if k != 'version'})
+                                            for c in coherent['claims']]
+                coherent['claims'] = output['data']['claims']
+                output['data']['issues'] = [stamp(request, 'issues', {k:v for k,v in self.retarget(i, coherent).items() if k != 'version'})
+                                            for i in coherent['issues']]
                 output['artifacts'] = [artifact_for(request, 'Исследование не завершено: ' + '; '.join(errors or ['Нет прочитанных материалов.']))]
                 return output
         # The brief source is also visible to the analyst, without altering original BriefVersion.
         if stage == 'brief':
             request['input_data']['sources'] = collected
-        generated = self.generate(request, context, stage, extra=extra)
+        generated = generated or self.generate(request, context, stage, extra=extra)
         usage_ids += generated.usage_ids
         payload = namespace_payload(request, generated.data)
         output = result_for(request)
@@ -146,6 +167,8 @@ class AgentRuntime:
                 if not old_ids <= {item['id'] for item in output['data'][collection]}:
                     raise ModelError('INVALID_RESPONSE', 'Existing objects must be revised rather than silently dropped')
         output['data']['sources'] = collected
+        if stage == 'research':
+            output['data']['claims'] = [self.refresh_claim(c, request['input_data']) for c in output['data']['claims']]
         if stage == 'brief':
             for cap in output['data']['capabilities']:
                 # A model cannot invent independent provenance for a user statement.
@@ -184,9 +207,15 @@ class AgentRuntime:
                 updated = self.retarget(old, merged)
                 updated.pop('version', None)
                 output['data']['issues'].append(stamp(request, 'issues', updated))
+        for collection in COLLECTIONS.values():
+            if collection != 'sources':
+                output['data'][collection] = [stamp(request, collection, {k: v for k, v in item.items() if k != 'version'})
+                                               for item in output['data'][collection]]
         entities = [ref(collection, item) for collection in COLLECTIONS.values()
                     if collection != 'issues' or stage == 'review' for item in output['data'][collection]]
         summary = payload['summary']
+        if stage == 'research' and extra.get('research_coverage'):
+            summary += '\nПокрытие исследовательских вопросов: ' + json.dumps(extra['research_coverage'], ensure_ascii=False)
         if stage == 'research' and extra.get('tool_errors'):
             summary += '\nПробелы исследования: ' + '; '.join(extra['tool_errors'])
         artifact = artifact_for(request, summary, entities=entities)
@@ -196,8 +225,36 @@ class AgentRuntime:
         return output
 
     @staticmethod
+    def reconcile_evidence(value, data):
+        value = deepcopy(value)
+        sources = {s['id']: s for s in data['sources']}
+        kept, lost = [], []
+        for evidence in value.get('evidence', []):
+            current = sources.get(evidence['source_id'])
+            if current and current['verification'] == 'read' and evidence['quote'] in current['content_excerpt']:
+                evidence['source_version'] = current['version']
+                kept.append(evidence)
+            else:
+                lost.append(evidence)
+        value['evidence'] = kept
+        return value, lost
+
+    @staticmethod
+    def refresh_claim(claim, data):
+        claim, lost = AgentRuntime.reconcile_evidence(claim, data)
+        if lost:
+            claim['verification'] = 'unverified'
+            claim['limitations'] += ['Прежнее доказательство больше не входит в актуальный прочитанный фрагмент: '
+                                    + json.dumps(e, ensure_ascii=False) for e in lost]
+        return claim
+
+    @staticmethod
     def retarget(issue, data):
-        issue = deepcopy(issue)
+        issue, lost = AgentRuntime.reconcile_evidence(issue, data)
+        if lost:
+            issue['status'] = 'open'
+            issue['explanation'] += (' Исходное свидетельство утратило актуальную поддержку; '
+                                    'история сохранена в архивной версии замечания: ' + json.dumps(lost, ensure_ascii=False))
         target = issue['target']
         collection = COLLECTIONS[target['kind']]
         current = next((i for i in data[collection] if i['id'] == target['id']), None)
@@ -209,5 +266,5 @@ class AgentRuntime:
 def build_stages(settings, usage_sink):
     runtime = AgentRuntime(settings, usage_sink)
     model_id = settings.model_name or settings.model_provider + ':default'
-    return StageRegistry('strategy-agents-v1', {stage: StageSpec(runtime, stage + '-v1',
-                         'python-assembler-v1' if stage == 'report' else model_id) for stage in AGENT_STAGES})
+    return StageRegistry('strategy-agents-v2', {stage: StageSpec(runtime, stage + '-v2',
+                         'python-assembler-v2' if stage == 'report' else model_id) for stage in AGENT_STAGES})
