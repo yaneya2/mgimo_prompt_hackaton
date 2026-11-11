@@ -331,6 +331,8 @@ def test_version_one_database_is_migrated_without_losing_runs(tmp_path):
         connection.execute("DROP TABLE run_inputs")
         connection.execute("DROP TABLE commands")
         connection.execute("DROP TABLE exports")
+        for table in ('external_calls', 'response_cache', 'run_events'):
+            connection.execute('DROP TABLE ' + table)
         connection.execute("PRAGMA user_version = 1")
     store = Storage(tmp_path)
     assert store.get_snapshot(run["id"]) == before
@@ -338,7 +340,7 @@ def test_version_one_database_is_migrated_without_losing_runs(tmp_path):
     assert store.get_checkpoint(before["run"]["checkpoint_id"]) == checkpoint_before
     assert store.list_inputs(run["id"]) == []
     with sqlite3.connect(database) as connection:
-        assert connection.execute("PRAGMA user_version").fetchone()[0] == 3
+        assert connection.execute("PRAGMA user_version").fetchone()[0] == 4
     assert Storage(tmp_path).list_projects() == store.list_projects()
 
 

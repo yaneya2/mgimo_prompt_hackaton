@@ -9,7 +9,8 @@ import httpx
 from jsonschema.exceptions import ValidationError
 
 from app.config import Settings
-from app.execution import before_external_action
+from app.execution import before_external_action, reserve_external
+from app.llm.control import controlled_model, maximum_call_cost
 from app.llm.usage import UsageSink
 
 from app.llm.base import ModelError, ModelResult, strict_json, validate_request
@@ -88,6 +89,7 @@ class OpenRouterAdapter:
     def __exit__(self, *args):
         self.close()
 
+    @controlled_model
     def generate(self, *, messages: list[dict], schema: dict, run_id: str, stage: str,
                  prompt_version: str | None = None, schema_version: str | None = None) -> ModelResult:
         validator = validate_request(messages, schema, run_id, stage)
@@ -105,14 +107,14 @@ class OpenRouterAdapter:
                    "response_format": {"type": "json_schema", "json_schema": {"name": "agent_result", "strict": True, "schema": schema}}}
         ids = []
         for attempt in range(1, self.settings.model_max_retries + 2):
-            before_external_action(run_id)
+            permit = reserve_external(run_id, 'model', self.settings.model_timeout_seconds, maximum_call_cost(self.settings))
             start = time.monotonic()
             stamp = datetime.now(timezone.utc).isoformat()
             body, error, result, response = {}, None, None, None
             try:
                 response = self.client.post("https://openrouter.ai/api/v1/chat/completions",
                     headers={"Authorization": "Bearer " + self.settings.model_api_key.get_secret_value()},
-                    json=payload, timeout=self.settings.model_timeout_seconds)
+                    json=payload, timeout=permit['timeout_seconds'] if permit else self.settings.model_timeout_seconds)
                 try:
                     body = strict_json(response.text)
                 except (ValueError, TypeError):
@@ -146,6 +148,9 @@ class OpenRouterAdapter:
             event = usage_event(body, run_id=run_id, stage=stage, model=model, attempt=attempt,
                                 started_at=stamp, duration_ms=max(0, int((time.monotonic()-start)*1000)),
                                 outcome="error" if error else "success")
+            if permit:
+                event['call_id'] = permit['call_id']
+                context['parameters']['timeout_seconds'] = permit['timeout_seconds']
             ids.append(event["id"])
             generation = body.get("id") if isinstance(body, dict) else None
             generation = generation if isinstance(generation, str) and generation else None

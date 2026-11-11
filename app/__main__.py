@@ -14,7 +14,7 @@ def main() -> None:
         print(f"Invalid application configuration:\n{exc}", file=sys.stderr)
         raise SystemExit(2) from None
     uvicorn.run(create_app(settings), host=settings.host, port=settings.port,
-                log_level=settings.log_level)
+                log_level=settings.log_level, access_log=False)
 
 
 if __name__ == "__main__":

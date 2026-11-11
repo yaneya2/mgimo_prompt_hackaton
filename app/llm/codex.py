@@ -5,7 +5,8 @@ from pathlib import Path
 import shutil
 import signal
 import subprocess
-from app.execution import before_external_action
+from app.execution import reserve_external
+from app.llm.control import controlled_model, maximum_call_cost
 import tempfile
 import time
 from datetime import datetime, timezone
@@ -65,6 +66,7 @@ class CodexAdapter:
     def __exit__(self, *args):
         self.close()
 
+    @controlled_model
     def generate(self, *, messages: list[dict], schema: dict, run_id: str, stage: str,
                  prompt_version: str | None = None, schema_version: str | None = None) -> ModelResult:
         validator = validate_request(messages, schema, run_id, stage)
@@ -79,6 +81,7 @@ class CodexAdapter:
         stamp = datetime.now(timezone.utc).isoformat()
         error = None
         data, thread_id, token_usage = None, None, {}
+        permit = None
         # CLI may not report the selected default model: keep it unknown.
         model = self.settings.model_name
         try:
@@ -99,8 +102,8 @@ class CodexAdapter:
                           "Use only their provided content; do not use tools or inspect files. "
                           "Return only the final JSON matching the supplied output schema.\n"
                           + json.dumps(messages, ensure_ascii=False))
-                before_external_action(run_id)
-                result = self.runner(command, prompt, self.settings.model_timeout_seconds, str(work))
+                permit = reserve_external(run_id, 'model', self.settings.model_timeout_seconds, maximum_call_cost(self.settings))
+                result = self.runner(command, prompt, permit['timeout_seconds'] if permit else self.settings.model_timeout_seconds, str(work))
                 terminal = None
                 stream_error = False
                 for line in result.stdout.splitlines():
@@ -147,6 +150,9 @@ class CodexAdapter:
                      input_tokens=count("input_tokens"), output_tokens=count("output_tokens"),
                      cost=None, cost_basis="unknown", pricing_version=None,
                      outcome="error" if error else "success", cached=False)
+        if permit:
+            event['call_id'] = permit['call_id']
+            context['parameters']['timeout_seconds'] = permit['timeout_seconds']
         try:
             self.recorder.record_model(event, context, thread_id if isinstance(thread_id, str) and thread_id else None)
         except OSError:

@@ -6,6 +6,8 @@ from app.llm.base import ModelError
 from app.execution import PauseRequested, before_external_action, execution_control
 from app.reuse import input_key, reuse_result
 from app.storage.database import encode
+from app.storage.runtime import LimitReached, RunPolicy
+from app.tools.control import ToolFailure
 from app.storage.validation import COLLECTIONS, Conflict, StorageError, require, validate
 from app.workflow.results import artifact_for, error_for, result_for
 from app.workflow.stages import STAGES, StageContext, StageSpec
@@ -165,6 +167,11 @@ class Orchestrator:
                                   error=error_for(request["run_id"], code, message, retryable=retryable))
         return worker.commit_step(job["id"], output, status="failed", quality="blocked", graph_state=state)
 
+    def _limited(self, worker, job, request, state, error):
+        state['stop_reason'] = dict(code=error.code, message=str(error))
+        output = self._diagnostic(request, state, message=str(error))
+        return worker.commit_step(job['id'], output, status='incomplete', quality='blocked', graph_state=state)
+
     def step(self, worker, run_id, stop=None):
         run = self.storage.get_run(run_id)
         request, spec = self._request(run)
@@ -177,29 +184,41 @@ class Orchestrator:
                                        if item["brief_version"] == request["brief"]["version"]], feedback=deepcopy(state["feedback"]),
                                repairs_used=state["repairs_used"], synthetic=self.registry.synthetic)
         state['reuse_key'] = input_key(request, spec, context)
+        policy = RunPolicy(self.storage, request, job, state)
         reused = False
         def check_pause():
             if (stop is not None and stop.is_set()) or self.storage.get_run(run_id)['status'] == 'pause_requested':
                 raise PauseRequested()
         try:
+            policy.check()
             checkpoint = self.storage.get_checkpoint(run["checkpoint_id"]) if run["checkpoint_id"] else {}
             if checkpoint.get("outcome") == "needs_input" and not any(i["checkpoint_id"] == run["checkpoint_id"] for i in context.inputs):
                 # Resume after pausing an unanswered question must not repeat a paid model call.
                 output = result_for(request, outcome="needs_input", questions=deepcopy(checkpoint["questions"]))
             else:
-                with execution_control(run_id, check_pause):
+                with execution_control(run_id, check_pause, policy):
                     before_external_action()
                     output = reuse_result(self.storage, request, spec, context, state)
                     reused = output is not None
                     if output is None:
                         output = spec.handler(deepcopy(request), deepcopy(context))
+            policy.check()
         except PauseRequested:
             return worker.interrupt_step(job['id'])
-        except ModelError as error:
-            if error.code in ("INVALID_RESPONSE", "INCOMPLETE_RESPONSE"):
-                return self._invalid(worker, job, request, state)
-            return self._failed(worker, job, request, state, "UPSTREAM_UNAVAILABLE", "Вызов модели не выполнен.", retryable=error.retryable)
-        except TimeoutError:
+        except LimitReached as error:
+            return self._limited(worker, job, request, state, error)
+        except (ModelError, ToolFailure, TimeoutError) as error:
+            # An exhausted run deadline/budget takes precedence over a transport timeout/error.
+            try:
+                policy.check()
+            except LimitReached as limit:
+                return self._limited(worker, job, request, state, limit)
+            if isinstance(error, ModelError):
+                if error.code in ("INVALID_RESPONSE", "INCOMPLETE_RESPONSE"):
+                    return self._invalid(worker, job, request, state)
+                return self._failed(worker, job, request, state, "UPSTREAM_UNAVAILABLE", "Вызов модели не выполнен.", retryable=error.retryable)
+            if isinstance(error, ToolFailure):
+                return self._failed(worker, job, request, state, 'UPSTREAM_UNAVAILABLE', str(error), retryable=error.retryable)
             return self._failed(worker, job, request, state, "UPSTREAM_UNAVAILABLE", "Время ожидания этапа истекло.", retryable=True)
         except Exception:
             return self._failed(worker, job, request, state, "INTERNAL_ERROR", "Обработчик этапа завершился с ошибкой.")

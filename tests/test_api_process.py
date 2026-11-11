@@ -73,6 +73,10 @@ def test_http_demo_with_separate_worker_and_server_restart(tmp_path, revise_budg
             wait_server(client, server)
             response = client.get('/api/v1/runs/' + result['run_id'] + '/snapshot')
             assert response.status_code == 200 and response.json() == expected
+            for endpoint, filename in [('summary', 'summary.json'), ('events', 'events.json')]:
+                response = client.get('/api/v1/runs/' + result['run_id'] + '/' + endpoint)
+                assert response.status_code == 200
+                assert response.json() == json.loads((output_dir / filename).read_text())
             for exported, extension in zip(result['exports'], ('md', 'html')):
                 response = client.get(exported['download_url'])
                 assert response.status_code == 200

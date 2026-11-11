@@ -42,6 +42,8 @@ def main():
         print("Worker configuration failed. Set --stages demo or APP_STAGE_FACTORY=package.module:build_stages; check APP_DATA_DIR.", file=sys.stderr)
         return 2
     logging.basicConfig(level=settings.log_level.upper(), format="%(levelname)s %(message)s")
+    for name in ('httpx', 'httpcore'):
+        logging.getLogger(name).setLevel(logging.WARNING)
     stop = StopFlag()
     # Set a flag only; external-action guards and stage boundaries observe it.
     for name in (signal.SIGINT, signal.SIGTERM):

@@ -56,6 +56,8 @@ def dispatch(request, operation, body):
         "getSnapshot": lambda: storage.get_snapshot(run_id),
         "listArtifacts": lambda: storage.get_snapshot(run_id)["artifacts"],
         "listUsage": lambda: storage.list_usage(run_id),
+        'getRunSummary': lambda: storage.run_summary(run_id),
+        'listRunEvents': lambda: storage.list_events(run_id),
         "pauseRun": lambda: commands.pause(run_id, body),
         "resumeRun": lambda: commands.resume(run_id, body),
         "answersRun": lambda: storage.submit_answers(run_id, body["answers"], expected_revision=body["expected_revision"]),

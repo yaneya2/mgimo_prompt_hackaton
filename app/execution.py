@@ -11,8 +11,8 @@ _control = ContextVar('execution_control', default=None)
 
 
 @contextmanager
-def execution_control(run_id, check):
-    token = _control.set((run_id, check))
+def execution_control(run_id, check, policy=None):
+    token = _control.set((run_id, check, policy))
     try:
         yield
     finally:
@@ -27,7 +27,22 @@ def before_external_action(run_id=None):
     """
     control = _control.get()
     if control is not None:
-        active_id, check = control
+        active_id, check, policy = control
         if run_id is not None and run_id != active_id:
             raise ValueError('External action belongs to another run')
         check()
+        if policy is not None:
+            policy.check()
+
+
+def current_policy(run_id=None):
+    control = _control.get()
+    if control is not None and run_id is not None and run_id != control[0]:
+        raise ValueError('External action belongs to another run')
+    return control[2] if control is not None else None
+
+
+def reserve_external(run_id, kind, timeout, maximum_cost=None):
+    before_external_action(run_id)
+    policy = current_policy(run_id)
+    return policy.reserve(kind, timeout, maximum_cost) if policy is not None else None

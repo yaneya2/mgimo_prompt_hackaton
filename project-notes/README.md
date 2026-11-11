@@ -13,6 +13,7 @@
 - [Протокол проверки оркестратора и worker A5](reports/A5_CHECKS.md).
 - [Протокол проверки HTTP API A6](reports/A6_CHECKS.md).
 - [Протокол проверки управления и повторного использования A7](reports/A7_CHECKS.md).
+- [Протокол проверки лимитов, кэша и наблюдаемости A8](reports/A8_CHECKS.md).
 - [Исправления четырёх ошибок из ревью](reports/REVIEW_FIXES.md).
 
 Инструкция запуска приложения находится в [корневом README](../README.md), технические контракты — в [contracts](../contracts/README.md).

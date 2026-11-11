@@ -296,6 +296,8 @@ def test_v2_migration_preserves_runs_and_adds_command_storage(tmp_path):
     with store.transaction(write=True) as db:
         db.execute('DROP TABLE commands')
         db.execute('DROP TABLE exports')
+        for table in ('external_calls', 'response_cache', 'run_events'):
+            db.execute('DROP TABLE ' + table)
         db.execute('PRAGMA user_version=2')
     store=Storage(tmp_path)
     assert store.get_run(run['id'])==run

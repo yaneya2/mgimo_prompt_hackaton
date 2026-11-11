@@ -98,11 +98,14 @@ def _decimal_string(value):
 
 def _stats(events):
     result = {"events": len(events), "successes": 0, "errors": 0, "retries": 0,
+              "cached_events": 0, "external_attempts": 0,
               "duration_ms": 0, "input_tokens": 0, "output_tokens": 0,
               "unknown_input_tokens": 0, "unknown_output_tokens": 0,
               "cost_by_currency": {}, "unknown_cost_events": 0, "cost_complete": True}
     costs = {}
     for event in events:
+        result['cached_events'] += int(event['cached'])
+        result['external_attempts'] += int(not event['cached'])
         result["successes" if event["outcome"] == "success" else "errors"] += 1
         result["retries"] += int(event["attempt"] > 1)
         result["duration_ms"] += event["duration_ms"]

@@ -58,6 +58,8 @@ class WorkerSession:
                 run = json.loads(row[0])
                 run.update(status="paused", revision=run["revision"] + 1, updated_at=now())
                 self.storage._write_run(connection, run)
+                from app.storage.runtime import event
+                event(connection, run['id'], run['stage'], 'run_recovered', 'INTERRUPTED')
                 recovered.append(run["id"])
             connection.execute("UPDATE jobs SET state = 'interrupted', finished_at = ? WHERE state = 'running'", (now(),))
         return recovered
@@ -93,6 +95,8 @@ class WorkerSession:
             connection.execute("""INSERT INTO jobs
                 (id, run_id, stage, state, owner, run_revision, base_checkpoint_id, created_at, finished_at, checkpoint_id)
                 VALUES (:id, :run_id, :stage, :state, :owner, :run_revision, :base_checkpoint_id, :created_at, :finished_at, :checkpoint_id)""", job)
+            from app.storage.runtime import event
+            event(connection, run_id, run['stage'], 'step_started', 'STARTED')
         return job
 
     def pause_at_boundary(self, run_id):
@@ -123,6 +127,8 @@ class WorkerSession:
             run.update(status='paused', revision=run['revision'] + 1, updated_at=stamp)
             self.storage._write_run(connection, run)
             connection.execute("UPDATE jobs SET state = 'interrupted', finished_at = ? WHERE id = ?", (stamp, job_id))
+            from app.storage.runtime import event
+            event(connection, run['id'], run['stage'], 'step_interrupted', 'PAUSE')
         return run
 
     def _merge_entities(self, connection, run, previous, incoming):
@@ -273,4 +279,13 @@ class WorkerSession:
             self.storage._write_run(connection, run)
             connection.execute("UPDATE jobs SET state = 'completed', finished_at = ?, checkpoint_id = ? WHERE id = ?",
                                (now(), checkpoint_id, job_id))
+            from app.storage.runtime import event
+            reason = graph_state.get('stop_reason', {}).get('code') if graph_state.get('stop_reason') else None
+            event(connection, run['id'], job['stage'], 'step_completed', result['outcome'])
+            if reason:
+                event(connection, run['id'], job['stage'], 'execution_stopped', reason)
+            elif graph_state.get('feedback') and graph_state['feedback'][0] in ('INVALID_STAGE_RESULT', 'REVIEW_REVISION', 'STAGE_REVISION', 'BRIEF_CHANGED'):
+                event(connection, run['id'], job['stage'], 'execution_decision', graph_state['feedback'][0])
+            if any('reused_from' in artifact for artifact in result['artifacts']):
+                event(connection, run['id'], job['stage'], 'stage_reused', 'STORED_RESULT')
         return checkpoint

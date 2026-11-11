@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     model_timeout_seconds: float = Field(default=60, gt=0, le=300)
     model_max_tokens: int = Field(default=2048, ge=1, le=32768)
     model_max_retries: int = Field(default=1, ge=0, le=3)
+    model_call_cost_reserve: Decimal | None = Field(default=None, ge=0, allow_inf_nan=False, max_digits=20, decimal_places=6)
     codex_command: str = Field(default="codex", min_length=1)
     model_input_cost_per_million: Decimal | None = Field(default=None, ge=0, allow_inf_nan=False, max_digits=20, decimal_places=9)
     model_output_cost_per_million: Decimal | None = Field(default=None, ge=0, allow_inf_nan=False, max_digits=20, decimal_places=9)
@@ -44,7 +45,7 @@ class Settings(BaseSettings):
     def empty_is_unset(cls, value):
         return None if value == "" else value
 
-    @field_validator("model_input_cost_per_million", "model_output_cost_per_million", "model_pricing_version", mode="before")
+    @field_validator("model_input_cost_per_million", "model_output_cost_per_million", "model_pricing_version", "model_call_cost_reserve", mode="before")
     @classmethod
     def empty_pricing_is_unset(cls, value):
         return None if value == "" else value

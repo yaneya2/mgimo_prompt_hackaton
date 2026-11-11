@@ -1099,6 +1099,10 @@
               "type": "null"
             }
           ]
+        },
+        "cache_origin_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
         }
       }
     },
@@ -1682,6 +1686,17 @@
               "type": "null"
             }
           ]
+        },
+        "max_steps": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 100
+        },
+        "cache_ttl_seconds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 86400,
+          "default": 3600
         }
       }
     },
@@ -2179,6 +2194,486 @@
         "download_url": {
           "type": "string",
           "format": "uri-reference"
+        }
+      }
+    },
+    "UsageTotals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "events",
+        "successes",
+        "errors",
+        "retries",
+        "cached_events",
+        "external_attempts",
+        "duration_ms",
+        "input_tokens",
+        "output_tokens",
+        "unknown_input_tokens",
+        "unknown_output_tokens",
+        "unknown_cost_events",
+        "cost_complete",
+        "cost_by_currency"
+      ],
+      "properties": {
+        "events": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "successes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cached_events": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "external_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duration_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "input_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "output_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unknown_input_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unknown_output_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unknown_cost_events": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cost_complete": {
+          "type": "boolean"
+        },
+        "cost_by_currency": {
+          "type": "object",
+          "additionalProperties": false,
+          "patternProperties": {
+            "^[A-Z]{3}$": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "reported",
+                "estimated",
+                "known_total"
+              ],
+              "properties": {
+                "reported": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "estimated": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "known_total": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UsageSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id_filter",
+        "events_read",
+        "duplicate_events",
+        "totals",
+        "groups"
+      ],
+      "properties": {
+        "run_id_filter": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "events_read": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duplicate_events": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totals": {
+          "$ref": "#/$defs/UsageTotals"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "events",
+              "successes",
+              "errors",
+              "retries",
+              "cached_events",
+              "external_attempts",
+              "duration_ms",
+              "input_tokens",
+              "output_tokens",
+              "unknown_input_tokens",
+              "unknown_output_tokens",
+              "unknown_cost_events",
+              "cost_complete",
+              "cost_by_currency",
+              "run_id",
+              "provider",
+              "model",
+              "tool"
+            ],
+            "properties": {
+              "events": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "successes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "errors": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "retries": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "cached_events": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "external_attempts": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "duration_ms": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "input_tokens": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "output_tokens": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "unknown_input_tokens": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "unknown_output_tokens": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "unknown_cost_events": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "cost_complete": {
+                "type": "boolean"
+              },
+              "cost_by_currency": {
+                "type": "object",
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^[A-Z]{3}$": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "reported",
+                      "estimated",
+                      "known_total"
+                    ],
+                    "properties": {
+                      "reported": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "estimated": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "known_total": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              },
+              "run_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+              },
+              "provider": {
+                "type": "string",
+                "minLength": 1
+              },
+              "model": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "tool": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "RunSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "run_revision",
+        "status",
+        "limits",
+        "accounting_complete",
+        "model_calls",
+        "search_calls",
+        "steps",
+        "active_seconds",
+        "remaining_seconds",
+        "usage",
+        "stop_reason",
+        "budget"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "run_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "queued",
+            "running",
+            "pause_requested",
+            "paused",
+            "waiting_for_input",
+            "completed",
+            "failed",
+            "incomplete"
+          ]
+        },
+        "limits": {
+          "$ref": "#/$defs/Limits"
+        },
+        "accounting_complete": {
+          "type": "boolean"
+        },
+        "model_calls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "search_calls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "steps": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "active_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "remaining_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "usage": {
+          "$ref": "#/$defs/UsageSummary"
+        },
+        "stop_reason": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "limit",
+            "allocated",
+            "remaining_estimate",
+            "estimated",
+            "unrecorded_attempts",
+            "blocked_reason"
+          ],
+          "properties": {
+            "limit": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Money"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "allocated": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Money"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "remaining_estimate": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Money"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "estimated": {
+              "type": "boolean"
+            },
+            "unrecorded_attempts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "blocked_reason": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "RunEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "run_id",
+        "stage",
+        "kind",
+        "code",
+        "created_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+        },
+        "stage": {
+          "type": "string",
+          "enum": [
+            "brief",
+            "research",
+            "options",
+            "communications",
+            "review",
+            "selection",
+            "report"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     }

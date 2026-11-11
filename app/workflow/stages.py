@@ -22,6 +22,11 @@ class StageContext:
         """Tools must call this before every external action; never swallow PauseRequested."""
         before_external_action()
 
+    def tool_call(self, **kwargs):
+        """Invoke a transport through shared reservations, retries, cache and Usage."""
+        from app.tools.control import tool_call
+        return tool_call(**kwargs)
+
 
 class StageHandler(Protocol):
     def __call__(self, request: dict, context: StageContext) -> dict: ...
@@ -87,6 +92,7 @@ class StageRegistry:
 class RecordingSink:
     """Pass only the recording operation to a stage factory, not the storage API."""
     callback: Callable[[dict], None]
+    requires_execution_control = True
 
     def record(self, event: dict) -> None:
         self.callback(event)

@@ -61,6 +61,7 @@ D['CallContext'] = obj(metadata_version={'const': '1.0.0'}, prompt_version=S, sc
                        pricing=nullable(ref('TokenPricing')))
 # Optional provenance is additive: old Usage records remain valid.
 D['Usage']['properties'].update(context=ref('CallContext'), generation_id=nullable(S))
+D['Usage']['properties']['cache_origin_id'] = ID
 D['Question'] = obj(id=ID, stage=enum(*STAGES), text=S, required={'type': 'boolean'}, options=arr(S))
 D['ErrorResponse'] = obj(error=obj(code=enum('VALIDATION_ERROR', 'NOT_FOUND', 'VERSION_CONFLICT', 'INVALID_STATE', 'RUN_ALREADY_ACTIVE', 'UPSTREAM_UNAVAILABLE', 'BUDGET_EXCEEDED', 'INTERNAL_ERROR'), message=S, retryable={'type': 'boolean'}, request_id=ID, run_id=nullable(ID), field_errors=arr(obj(path=S, message=S))))
 D['Run'] = obj(id=ID, project_id=ID, brief_version=I, revision=I, status=enum(*STATUS), stage=enum(*STAGES), quality=enum('draft', 'blocked', 'ready'), created_at=DT, updated_at=DT, checkpoint_id=nullable(ID), attempt=N, error=nullable(ref('ErrorResponse')))
@@ -69,6 +70,7 @@ D['Artifact']['properties']['reused_from'] = obj(artifact_id=ID, version=I, brie
 collections = {'capabilities': 'Capability', 'sources': 'Source', 'claims': 'Claim', 'options': 'StrategyOption', 'messages': 'Message', 'experiments': 'Experiment', 'decisions': 'Decision', 'issues': 'ReviewIssue'}
 D['DataBundle'] = obj(**{k: arr(ref(v)) for k, v in collections.items()})
 D['Limits'] = obj(max_model_calls=I, max_search_calls=I, max_repair_cycles=N, timeout_seconds=I, budget=nullable(ref('Money')))
+D['Limits']['properties'].update(max_steps=dict(I, default=100), cache_ttl_seconds=dict(N, maximum=86400, default=3600))
 D['StageRequest'] = obj(schema_version={'const': '1.0.0'}, run_id=ID, project_id=ID, stage=enum(*STAGES), brief=ref('BriefVersion'), input_data=ref('DataBundle'), input_artifacts=arr(ref('Artifact')), limits=ref('Limits'), prompt_version=S, model_id=S)
 D['StageResult'] = obj(schema_version={'const': '1.0.0'}, run_id=ID, project_id=ID, brief_version=I, stage=enum(*STAGES), outcome=enum('success', 'needs_input', 'needs_revision', 'incomplete', 'failed'), data=ref('DataBundle'), artifacts=arr(ref('Artifact')), questions=arr(ref('Question')), suggested_next_stage=nullable(enum(*STAGES)), usage_ids=arr(ID), error=nullable(ref('ErrorResponse')))
 D['StageResult']['allOf'] = [
@@ -85,6 +87,21 @@ D['ChooseOption'] = obj(expected_revision=I, option_id=ID, option_version=I, rat
 D['ExcludeSource'] = obj(expected_revision=I, source_id=ID, source_version=I, reason=S)
 D['ExportRequest'] = obj(run_id=ID, expected_revision=I, format=enum('markdown', 'html'), allow_draft={'type': 'boolean'})
 D['Export'] = obj(id=ID, run_id=ID, run_revision=I, brief_version=I, quality=enum('draft', 'blocked', 'ready'), format=enum('markdown', 'html'), download_url={'type': 'string', 'format': 'uri-reference'})
+D['UsageTotals'] = obj(**{key: N for key in ('events', 'successes', 'errors', 'retries', 'cached_events', 'external_attempts',
+    'duration_ms', 'input_tokens', 'output_tokens', 'unknown_input_tokens', 'unknown_output_tokens', 'unknown_cost_events')},
+    cost_complete={'type': 'boolean'}, cost_by_currency={'type': 'object', 'additionalProperties': False,
+    'patternProperties': {'^[A-Z]{3}$': obj(reported=S, estimated=S, known_total=S)}})
+group = copy.deepcopy(D['UsageTotals'])
+group['properties'].update(run_id=ID, provider=S, model=nullable(S), tool=nullable(S))
+group['required'] += ['run_id', 'provider', 'model', 'tool']
+D['UsageSummary'] = obj(run_id_filter=nullable(ID), events_read=N, duplicate_events=N, totals=ref('UsageTotals'), groups=arr(group))
+D['RunSummary'] = obj(run_id=ID, run_revision=I, status=enum(*STATUS), limits=ref('Limits'),
+    accounting_complete={'type': 'boolean'},
+    model_calls=N, search_calls=N, steps=N, active_seconds={'type': 'number', 'minimum': 0},
+    remaining_seconds={'type': 'number', 'minimum': 0}, usage=ref('UsageSummary'), stop_reason=nullable(obj(code=S, message=S)),
+    budget=obj(limit=nullable(ref('Money')), allocated=nullable(ref('Money')), remaining_estimate=nullable(ref('Money')),
+               estimated={'type': 'boolean'}, unrecorded_attempts=N, blocked_reason=nullable(S)))
+D['RunEvent'] = obj(id=ID, run_id=ID, stage=enum(*STAGES), kind=S, code=S, created_at=DT)
 
 def write(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -123,6 +140,8 @@ endpoint('/runs/{run_id}', 'get', 'getRun', 'Run')
 endpoint('/runs/{run_id}/snapshot', 'get', 'getSnapshot', 'Snapshot')
 endpoint('/runs/{run_id}/artifacts', 'get', 'listArtifacts', 'Artifact', array=True)
 endpoint('/runs/{run_id}/usage', 'get', 'listUsage', 'Usage', array=True)
+endpoint('/runs/{run_id}/summary', 'get', 'getRunSummary', 'RunSummary')
+endpoint('/runs/{run_id}/events', 'get', 'listRunEvents', 'RunEvent', array=True)
 for action, request in [('pause', 'RunCommand'), ('resume', 'RunCommand'), ('answers', 'AnswerQuestions'), ('selection', 'ChooseOption'), ('exclude-source', 'ExcludeSource')]:
     endpoint('/runs/{run_id}/' + action, 'post', action.replace('-', '_') + 'Run', 'Run', request, '202')
 endpoint('/projects/{project_id}/exports', 'post', 'createExport', 'Export', 'ExportRequest', '201')

@@ -75,6 +75,9 @@ def run_demo(base_url, output_dir, *, revise_budget=False):
         output_dir = Path(output_dir).resolve() / run['id']
         output_dir.mkdir(parents=True, exist_ok=False)
         (output_dir / 'snapshot.json').write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+        for endpoint, filename in [('summary', 'summary.json'), ('events', 'events.json')]:
+            value = read('/api/v1' + path + '/' + endpoint)
+            (output_dir / filename).write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         exports = []
         for format, extension in [('markdown', 'md'), ('html', 'html')]:
             exported = post('/projects/' + project['id'] + '/exports', dict(run_id=run['id'],

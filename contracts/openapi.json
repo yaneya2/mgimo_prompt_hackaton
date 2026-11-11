@@ -837,6 +837,165 @@
         }
       }
     },
+    "/runs/{run_id}/summary": {
+      "get": {
+        "operationId": "getRunSummary",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/RunSummary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/runs/{run_id}/events": {
+      "get": {
+        "operationId": "listRunEvents",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "./schema.json#/$defs/RunEvent"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured error; see contracts/README.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schema.json#/$defs/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/runs/{run_id}/pause": {
       "post": {
         "operationId": "pauseRun",

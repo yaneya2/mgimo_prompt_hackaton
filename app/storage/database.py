@@ -88,6 +88,8 @@ COMMAND_DDL = [
 class Storage:
     """Each operation owns its connection; reads use a consistent transaction."""
 
+    requires_execution_control = True
+
     def __init__(self, data_dir: Path):
         self.data_dir = Path(data_dir).resolve()
         self.data_dir.mkdir(parents=True, exist_ok=True)
@@ -97,7 +99,7 @@ class Storage:
             (self.data_dir / name).mkdir(exist_ok=True)
         with self.transaction(write=True) as connection:
             version = connection.execute("PRAGMA user_version").fetchone()[0]
-            if version not in (0, 1, 2, 3):
+            if version not in (0, 1, 2, 3, 4):
                 raise StorageError("Unsupported storage schema version")
             if version == 0:
                 for statement in DDL:
@@ -107,7 +109,11 @@ class Storage:
             if version < 3:
                 for statement in COMMAND_DDL:
                     connection.execute(statement)
-                connection.execute("PRAGMA user_version = 3")
+            if version < 4:
+                from app.storage.runtime import RUNTIME_DDL
+                for statement in RUNTIME_DDL:
+                    connection.execute(statement)
+                connection.execute("PRAGMA user_version = 4")
 
     @contextmanager
     def transaction(self, *, write=False):
@@ -146,6 +152,8 @@ class Storage:
         validate("Run", run)
         connection.execute("UPDATE runs SET status = ?, revision = ?, brief_version = ?, payload = ? WHERE id = ?",
                            (run["status"], run["revision"], run["brief_version"], encode(run), run["id"]))
+        from app.storage.runtime import event
+        event(connection, run['id'], run['stage'], 'run_status', run['status'])
 
     def create_project(self, name, brief_input, *, project_id=None):
         stamp = now()
@@ -274,6 +282,15 @@ class Storage:
             self._run(connection, run_id)
             return self._usage(connection, run_id)
 
+    def run_summary(self, run_id):
+        from app.storage.runtime import summary
+        return summary(self, run_id)
+
+    def list_events(self, run_id):
+        with self.transaction() as connection:
+            self._run(connection, run_id)
+            return [dict(row) for row in connection.execute('SELECT * FROM run_events WHERE run_id = ? ORDER BY rowid', (run_id,))]
+
     def record(self, event):
         """UsageSink: each completed call attempt is persisted independently of a step."""
         validate("Usage", event)
@@ -281,6 +298,14 @@ class Storage:
         payload = encode(event)
         with self.transaction(write=True) as connection:
             self._run(connection, event["run_id"])
+            if event['cached']:
+                require(event['cost'] is not None and event['cost']['amount'].strip('0.') == ''
+                        and event['cost_basis'] == 'reported' and event['outcome'] == 'success', 'Cache hit must have zero new cost')
+            if 'cache_origin_id' in event:
+                origin = self._payload(connection, 'SELECT payload FROM usage WHERE id = ?', (event['cache_origin_id'],))
+                require(event['cached'] and not origin['cached'] and origin['outcome'] == 'success'
+                        and all(event[key] == origin[key] for key in ('run_id', 'stage', 'provider', 'model', 'tool')),
+                        'Cache hit does not match its origin')
             old = connection.execute("SELECT payload FROM usage WHERE id = ?", (event["id"],)).fetchone()
             if old:
                 if old[0] != payload:
@@ -291,6 +316,14 @@ class Storage:
                                    (event["id"], event["run_id"], event["call_id"], event["attempt"], payload))
             except sqlite3.IntegrityError:
                 raise Conflict("Call attempt already recorded under another usage ID") from None
+            reserved = connection.execute('SELECT * FROM external_calls WHERE id = ?', (event['call_id'],)).fetchone()
+            if reserved is not None:
+                require(reserved['run_id'] == event['run_id'] and reserved['stage'] == event['stage']
+                        and (reserved['kind'] == 'model') == (event['tool'] is None)
+                        and reserved['usage_id'] is None and not event['cached'], 'Usage does not match its reservation')
+                connection.execute('UPDATE external_calls SET usage_id = ? WHERE id = ?', (event['id'], event['call_id']))
+            from app.storage.runtime import event as log_event
+            log_event(connection, event['run_id'], event['stage'], 'cache_hit' if event['cached'] else 'usage_recorded', event['outcome'])
 
     def _materialize(self, directory, payload):
         """Write before DB commit; only DB-referenced files are authoritative results."""
