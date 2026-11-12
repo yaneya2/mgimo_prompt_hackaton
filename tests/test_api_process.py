@@ -22,13 +22,18 @@ def test_http_demo_with_separate_worker_and_server_restart(tmp_path, revise_budg
         port = listener.getsockname()[1]
     environment = {k: v for k, v in os.environ.items() if not k.startswith('APP_')}
     environment.update(APP_HOST='127.0.0.1', APP_PORT=str(port), APP_DATA_DIR=str(tmp_path / 'state'),
-                       APP_STAGE_FACTORY='demo', APP_WORKER_POLL_SECONDS='0.05', APP_LOG_LEVEL='warning')
+                       APP_STAGE_FACTORY='demo', APP_WORKER_POLL_SECONDS='0.05', APP_LOG_LEVEL='debug',
+                       APP_MODEL_API_KEY='A9-process-credential-canary')
     base_url = f'http://127.0.0.1:{port}'
     processes = []
+    logs = []
 
     def launch(module):
-        process = subprocess.Popen([sys.executable, '-E', '-m', module], cwd=ROOT, env=environment,
-                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        path = tmp_path / f'process-{len(processes)}.log'
+        logs.append(path)
+        with path.open('wb') as log:
+            process = subprocess.Popen([sys.executable, '-E', '-m', module], cwd=ROOT, env=environment,
+                                       stdout=log, stderr=log)
         processes.append(process)
         return process
 
@@ -57,6 +62,10 @@ def test_http_demo_with_separate_worker_and_server_restart(tmp_path, revise_budg
         server = launch('app')
         with httpx.Client(base_url=base_url, timeout=2, trust_env=False) as client:
             wait_server(client, server)
+            assert client.get('/health?private=A9-query-canary').status_code == 200
+            response = client.post('/api/v1/projects', content='A9-invalid-body-canary',
+                                   headers={'Content-Type': 'application/json', 'Idempotency-Key': 'canary'})
+            assert response.status_code == 422 and 'A9-invalid-body-canary' not in response.text
             worker = launch('app.worker')
             result = run_demo(base_url, tmp_path / 'documents', revise_budget=revise_budget)
             output_dir = Path(result['output_dir'])
@@ -84,3 +93,8 @@ def test_http_demo_with_separate_worker_and_server_restart(tmp_path, revise_budg
     finally:
         for process in processes:
             stop(process)
+    outputs = [path.read_text() for path in logs]
+    outputs += [path.read_text() for path in output_dir.iterdir() if path.is_file()]
+    assert any('Strategy backend started' in text for text in outputs)
+    for marker in ('A9-process-credential-canary', 'A9-query-canary', 'A9-invalid-body-canary'):
+        assert all(marker not in text for text in outputs)

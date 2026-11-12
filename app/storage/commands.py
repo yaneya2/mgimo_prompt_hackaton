@@ -74,7 +74,8 @@ class Commands:
         artifacts = [dict(item, freshness="stale") for item in snapshot["artifacts"]]
         old = self.storage.get_checkpoint(run["checkpoint_id"]) if run["checkpoint_id"] else {}
         state = {key: value for key, value in old.get("graph_state", {}).items() if key in ("workflow_version", "registry")}
-        state.update(repairs_used=0, feedback=["BRIEF_CHANGED"], stop_reason=None, control=control, reuse_plan=reuse_plan)
+        state.update(repairs_used=old.get('graph_state', {}).get('repairs_used', 0),
+                     feedback=["BRIEF_CHANGED"], stop_reason=None, control=control, reuse_plan=reuse_plan)
         checkpoint_id, job_id, stamp = new_id("checkpoint"), new_id("job"), now()
         parent = run["checkpoint_id"]
         run.update(brief_version=brief["version"], revision=run["revision"] + 1, status="paused",

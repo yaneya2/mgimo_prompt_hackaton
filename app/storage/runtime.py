@@ -120,10 +120,11 @@ def summary(storage, run_id):
 
 
 class RunPolicy:
-    def __init__(self, storage, request, job, state):
+    def __init__(self, storage, request, job, state, *, inputs=()):
         self.storage, self.request, self.job = storage, request, job
         self.run_id, self.stage, self.limits = request['run_id'], request['stage'], request['limits']
-        self.input_hash = fingerprint(dict(request=request, feedback=state['feedback'], repairs_used=state['repairs_used']))
+        self.input_hash = fingerprint(dict(request=request, inputs=list(inputs),
+                                          feedback=state['feedback'], repairs_used=state['repairs_used']))
 
     def check(self):
         with self.storage.transaction() as db:
@@ -169,7 +170,7 @@ class RunPolicy:
         return dict(call_id=call_id, timeout_seconds=min(timeout, remaining))
 
     def cache_key(self, identity):
-        return fingerprint(dict(version=1, input_hash=self.input_hash, stage=self.stage, identity=identity))
+        return fingerprint(dict(version=2, input_hash=self.input_hash, stage=self.stage, identity=identity))
 
     def cached(self, key, max_age=None):
         with self.storage.transaction() as db:

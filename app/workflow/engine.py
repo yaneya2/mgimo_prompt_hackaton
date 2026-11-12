@@ -184,7 +184,7 @@ class Orchestrator:
                                        if item["brief_version"] == request["brief"]["version"]], feedback=deepcopy(state["feedback"]),
                                repairs_used=state["repairs_used"], synthetic=self.registry.synthetic)
         state['reuse_key'] = input_key(request, spec, context)
-        policy = RunPolicy(self.storage, request, job, state)
+        policy = RunPolicy(self.storage, request, job, state, inputs=context.inputs)
         reused = False
         def check_pause():
             if (stop is not None and stop.is_set()) or self.storage.get_run(run_id)['status'] == 'pause_requested':

@@ -22,6 +22,8 @@ def controlled_model(generate):
             if getattr(self.sink, 'requires_execution_control', False):
                 raise ModelError('INVALID_STATE', 'Persistent workflow calls require the active worker execution context')
             return generate(self, **args)
+        if stage != policy.stage:
+            raise ModelError('INVALID_STATE', 'Model call must belong to the active worker stage')
         before_external_action(run_id)
         validator = validate_request(messages, schema, run_id, stage)
         parameters = dict(timeout_seconds=self.settings.model_timeout_seconds,
