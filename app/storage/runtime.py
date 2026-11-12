@@ -105,18 +105,22 @@ def balances(db, storage, run_id, limits):
 
 def summary(storage, run_id):
     with storage.transaction() as db:
-        run = storage._run(db, run_id)
-        limits = json.loads(db.execute('SELECT limits_json FROM runs WHERE id = ?', (run_id,)).fetchone()[0])
-        counts, budget, usage = balances(db, storage, run_id, limits)
-        steps = db.execute("SELECT COUNT(*) FROM jobs WHERE run_id = ? AND owner != 'user-control'", (run_id,)).fetchone()[0]
-        seconds = active_seconds(db, run_id)
-        checkpoint = storage._payload(db, 'SELECT payload FROM checkpoints WHERE id = ?', (run['checkpoint_id'],)) if run['checkpoint_id'] else {}
-        aggregates = aggregate_usage(usage, run_id)
-        return dict(run_id=run_id, run_revision=run['revision'], status=run['status'], limits=limits,
-                    accounting_complete=aggregates['totals']['cost_complete'] and budget['unrecorded_attempts'] == 0,
-                    model_calls=counts['model'], search_calls=counts['search'], steps=steps,
-                    active_seconds=round(seconds, 3), remaining_seconds=round(max(0, limits['timeout_seconds'] - seconds), 3),
-                    budget=budget, usage=aggregates, stop_reason=checkpoint.get('graph_state', {}).get('stop_reason'))
+        return summary_from_connection(storage, db, run_id)
+
+
+def summary_from_connection(storage, db, run_id):
+    run = storage._run(db, run_id)
+    limits = json.loads(db.execute('SELECT limits_json FROM runs WHERE id = ?', (run_id,)).fetchone()[0])
+    counts, budget, usage = balances(db, storage, run_id, limits)
+    steps = db.execute("SELECT COUNT(*) FROM jobs WHERE run_id = ? AND owner != 'user-control'", (run_id,)).fetchone()[0]
+    seconds = active_seconds(db, run_id)
+    checkpoint = storage._payload(db, 'SELECT payload FROM checkpoints WHERE id = ?', (run['checkpoint_id'],)) if run['checkpoint_id'] else {}
+    aggregates = aggregate_usage(usage, run_id)
+    return dict(run_id=run_id, run_revision=run['revision'], status=run['status'], limits=limits,
+                accounting_complete=aggregates['totals']['cost_complete'] and budget['unrecorded_attempts'] == 0,
+                model_calls=counts['model'], search_calls=counts['search'], steps=steps,
+                active_seconds=round(seconds, 3), remaining_seconds=round(max(0, limits['timeout_seconds'] - seconds), 3),
+                budget=budget, usage=aggregates, stop_reason=checkpoint.get('graph_state', {}).get('stop_reason'))
 
 
 class RunPolicy:

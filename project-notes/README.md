@@ -15,6 +15,10 @@
 - [Протокол проверки управления и повторного использования A7](reports/A7_CHECKS.md).
 - [Протокол проверки лимитов, кэша и наблюдаемости A8](reports/A8_CHECKS.md).
 - [Проверки, исправления и инструкция повторной приёмки A9](reports/A9_CHECKS.md).
+- [Техническая часть сдачи A10](submission/PLATFORM.md).
+- [Порядок интеграции участников](submission/INTEGRATION.md).
+- [Участие человека и ИИ в разработке](submission/DEVELOPMENT.md).
+- [Протокол A10](reports/A10_CHECKS.md).
 - [Исправления четырёх ошибок из ревью](reports/REVIEW_FIXES.md).
 
 Инструкция запуска приложения находится в [корневом README](../README.md), технические контракты — в [contracts](../contracts/README.md).

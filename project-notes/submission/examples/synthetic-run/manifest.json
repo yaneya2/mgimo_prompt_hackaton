@@ -1,0 +1,38 @@
+{
+  "format_version": "1.0.0",
+  "run_id": "run_ee0ca0cb02c1428cb2b4d9d2aa3e16ee",
+  "captured_at": "2026-11-12T18:58:08.290745+00:00",
+  "export_environment": {
+    "python": "3.12.3",
+    "exporter_revision": null,
+    "exporter_dirty": null,
+    "packages": {
+      "fastapi": "0.162.0",
+      "uvicorn": "0.54.0",
+      "httpx": "0.28.1",
+      "pydantic": "2.14.3",
+      "pydantic-settings": "2.16.2",
+      "jsonschema": "4.26.0"
+    },
+    "files_sha256": {
+      "pyproject.toml": "41d0a5996359b57e6f2902bf2ed6817afe49559bffcc05a2b1597c2e626386d2",
+      "uv.lock": "31ddab4a70575b50c62828f1e349d64c4d1a1b890d590a828b32192f295384a2",
+      "contracts/schema.json": "764ed1c649e6ad0c1b953b5bf7340e0f546fd980a5dd18cacc2678730df3364a",
+      "contracts/openapi.json": "c7c20bfcab533d5f00b63ba5df2f3ca7f6d9ba35d5de1d7049615072b02fe90c"
+    }
+  },
+  "files": {
+    "metrics.json": {
+      "sha256": "2ce490fa84b84e8f97a7c39a820e60308eda1a2c1bfb7842134c501909f73080",
+      "bytes": 16037
+    },
+    "usage.csv": {
+      "sha256": "c1d6643dba0aad1bae0653d370ede7a359c34269a06a4a413e4f39b06d31110f",
+      "bytes": 164
+    },
+    "README.md": {
+      "sha256": "c32e008acbe46b58c0aee045ccdfecf0cb4c281beccaab668ae39ef4ef0f419a",
+      "bytes": 2226
+    }
+  }
+}

@@ -11,6 +11,7 @@ import httpx
 import pytest
 
 from scripts.try_api import run_demo
+from scripts.export_run import export_run
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -77,6 +78,11 @@ def test_http_demo_with_separate_worker_and_server_restart(tmp_path, revise_budg
                 assert any(a.get('reused_from') for a in expected['artifacts'] if a['freshness'] == 'current')
             stop(worker)
             stop(server)
+            evidence_dir = export_run(tmp_path / 'state', result['run_id'], tmp_path / 'evidence')
+            evidence = json.loads((evidence_dir / 'metrics.json').read_text())
+            assert evidence['synthetic'] is True and evidence['run']['status'] == 'completed'
+            assert evidence['summary'] == json.loads((output_dir / 'summary.json').read_text())
+            assert evidence['recorded_inputs'] and evidence['usage'] == []
         server = launch('app')
         with httpx.Client(base_url=base_url, timeout=2, trust_env=False) as client:
             wait_server(client, server)

@@ -90,11 +90,19 @@ class Storage:
 
     requires_execution_control = True
 
-    def __init__(self, data_dir: Path):
+    def __init__(self, data_dir: Path, *, readonly=False):
         self.data_dir = Path(data_dir).resolve()
-        self.data_dir.mkdir(parents=True, exist_ok=True)
         self.database_path = self.data_dir / "state.sqlite3"
+        self.readonly = readonly
         self._command_connection = ContextVar("storage_command_connection", default=None)
+        if readonly:
+            if not self.database_path.is_file():
+                raise NotFound('Existing database required for export')
+            with self.transaction() as connection:
+                require(connection.execute('PRAGMA user_version').fetchone()[0] == 4,
+                        'Export requires schema 4; start the application to migrate first')
+            return
+        self.data_dir.mkdir(parents=True, exist_ok=True)
         for name in ("results", "checkpoints"):
             (self.data_dir / name).mkdir(exist_ok=True)
         with self.transaction(write=True) as connection:
@@ -117,12 +125,14 @@ class Storage:
 
     @contextmanager
     def transaction(self, *, write=False):
+        require(not (write and self.readonly), 'Storage is read-only')
         # A command and its replay record commit together, even when it calls several operations.
         shared = self._command_connection.get()
         if shared is not None:
             yield shared
             return
-        connection = sqlite3.connect(self.database_path, timeout=5, isolation_level=None)
+        connection = sqlite3.connect(self.database_path.as_uri() + '?mode=ro' if self.readonly else self.database_path,
+                                     uri=self.readonly, timeout=5, isolation_level=None)
         connection.row_factory = sqlite3.Row
         try:
             connection.execute("PRAGMA foreign_keys = ON")
