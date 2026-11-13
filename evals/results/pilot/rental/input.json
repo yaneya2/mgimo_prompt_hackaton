@@ -1,0 +1,185 @@
+{
+  "snapshot": {
+    "schema_version": "1.0.0",
+    "project": {
+      "id": "project_rental",
+      "name": "Прокат оборудования для небольших событий",
+      "created_at": "2026-11-11T14:30:46.835937+00:00",
+      "current_brief_version": 1
+    },
+    "brief": {
+      "project_id": "project_rental",
+      "version": 1,
+      "created_at": "2026-11-11T14:30:46.835937+00:00",
+      "author": "user",
+      "input": {
+        "product": "Услуга проката: доступны каталог трёх комплектов света, ручное согласование даты и выдача со склада. Доставки, автоматической проверки доступности и монтажа нет.",
+        "goal": "Выбрать первый сегмент и проверяемый способ привлечения",
+        "audience": [
+          "Небольшие организаторы событий",
+          "Фотографы"
+        ],
+        "horizon": "Пять недель",
+        "budget": {
+          "amount": "45000",
+          "currency": "RUB"
+        },
+        "constraints": [
+          "Платная реклама запрещена",
+          "Один ответственный за пилот",
+          "Не обещать отсутствующие функции: Доставка, Автоматическая проверка доступности, Монтаж"
+        ],
+        "assumptions": [
+          "Условия вымышлены и заданы пользователем",
+          "Данных о спросе нет; разрешены явно обозначенные осторожные допущения для экспериментов"
+        ],
+        "unknowns": [
+          "Спрос",
+          "Готовность платить",
+          "Базовые метрики"
+        ],
+        "excluded_source_ids": []
+      }
+    },
+    "run": {
+      "id": "run_seed_rental",
+      "project_id": "project_rental",
+      "brief_version": 1,
+      "revision": 1,
+      "status": "paused",
+      "stage": "options",
+      "quality": "draft",
+      "created_at": "2026-11-11T14:30:46.835937+00:00",
+      "updated_at": "2026-11-11T14:30:46.835937+00:00",
+      "checkpoint_id": null,
+      "attempt": 0,
+      "error": null
+    },
+    "data": {
+      "capabilities": [
+        {
+          "id": "cap_rental_0",
+          "version": 1,
+          "project_id": "project_rental",
+          "brief_version": 1,
+          "name": "Каталог комплектов света",
+          "status": "available",
+          "basis": "Явно задано в условии кейса",
+          "source_ids": [
+            "source_rental"
+          ]
+        },
+        {
+          "id": "cap_rental_1",
+          "version": 1,
+          "project_id": "project_rental",
+          "brief_version": 1,
+          "name": "Ручное согласование даты",
+          "status": "available",
+          "basis": "Явно задано в условии кейса",
+          "source_ids": [
+            "source_rental"
+          ]
+        },
+        {
+          "id": "cap_rental_2",
+          "version": 1,
+          "project_id": "project_rental",
+          "brief_version": 1,
+          "name": "Выдача со склада",
+          "status": "available",
+          "basis": "Явно задано в условии кейса",
+          "source_ids": [
+            "source_rental"
+          ]
+        },
+        {
+          "id": "cap_rental_absent_0",
+          "version": 1,
+          "project_id": "project_rental",
+          "brief_version": 1,
+          "name": "Доставка",
+          "status": "hypothesis",
+          "basis": "В условии прямо указано отсутствие; не обещать в коммуникации.",
+          "source_ids": [
+            "source_rental"
+          ]
+        },
+        {
+          "id": "cap_rental_absent_1",
+          "version": 1,
+          "project_id": "project_rental",
+          "brief_version": 1,
+          "name": "Автоматическая проверка доступности",
+          "status": "hypothesis",
+          "basis": "В условии прямо указано отсутствие; не обещать в коммуникации.",
+          "source_ids": [
+            "source_rental"
+          ]
+        },
+        {
+          "id": "cap_rental_absent_2",
+          "version": 1,
+          "project_id": "project_rental",
+          "brief_version": 1,
+          "name": "Монтаж",
+          "status": "hypothesis",
+          "basis": "В условии прямо указано отсутствие; не обещать в коммуникации.",
+          "source_ids": [
+            "source_rental"
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "source_rental",
+          "version": 1,
+          "project_id": "project_rental",
+          "brief_version": 1,
+          "kind": "user_file",
+          "title": "Прокат оборудования для небольших событий — карточка условий",
+          "url": null,
+          "publisher": null,
+          "published_at": null,
+          "retrieved_at": "2026-11-11T14:30:46.835937+00:00",
+          "content_excerpt": "Услуга проката: доступны каталог трёх комплектов света, ручное согласование даты и выдача со склада. Доставки, автоматической проверки доступности и монтажа нет.",
+          "locator": "Условие приёмочного кейса",
+          "verification": "read",
+          "origin_note": "Вымышленная карточка пользователя; не внешнее исследование рынка."
+        }
+      ],
+      "claims": [
+        {
+          "id": "claim_rental",
+          "version": 1,
+          "project_id": "project_rental",
+          "brief_version": 1,
+          "text": "Возможности продукта заданы в карточке пользователя; независимая проверка не проводилась.",
+          "kind": "user_provided",
+          "verification": "supported",
+          "evidence": [
+            {
+              "source_id": "source_rental",
+              "source_version": 1,
+              "quote": "Услуга проката: доступны каталог трёх комплектов света, ручное согласование даты и выдача со склада. Доставки, автоматической проверки доступности и монтажа нет.",
+              "locator": "Условие кейса",
+              "relation": "supports"
+            }
+          ],
+          "limitations": [
+            "Нет внешних свидетельств спроса и эффекта"
+          ]
+        }
+      ],
+      "options": [],
+      "messages": [],
+      "experiments": [],
+      "decisions": [],
+      "issues": []
+    },
+    "artifacts": [],
+    "questions": [],
+    "usage": []
+  },
+  "inputs": []
+}

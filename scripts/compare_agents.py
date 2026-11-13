@@ -131,6 +131,7 @@ def evaluate(snapshot, settings, directory, mode, *, inputs=(), model_factory=No
     events = sink.events
     result = dict(mode=mode, evaluation_only=True, independent_acceptance=False,
                   source_brief_version=snapshot['brief']['version'], run_id=run['id'], status=final['run']['status'],
+                  stage=final['run']['stage'], comparison_complete=final['run']['stage']=='selection' and bool(final['data']['options']) and bool(final['data']['messages']) and bool(final['data']['experiments']),
                   effective_context=effective_context(final['brief'], answers), data=final['data'],
                   summaries=[a['summary'] for a in final['artifacts'] if a['freshness'] == 'current'],
                   defects_found=list(found.values()), defects_fixed=fixed, residual_issues=residual,

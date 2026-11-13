@@ -4,7 +4,8 @@ import json
 
 from app.llm.base import ModelError
 from app.storage.database import encode
-from app.storage.validation import COLLECTIONS, StorageError, require, validate
+from app.storage.validation import COLLECTIONS, StorageError, Conflict, require, validate
+from app.storage.controls import excluded_metadata
 from app.workflow.results import artifact_for, error_for, result_for
 from app.workflow.stages import STAGES, StageContext, StageSpec
 
@@ -163,7 +164,8 @@ class Orchestrator:
         if state["registry"] != self.registry.manifest():
             return self._failed(worker, job, request, state, "INVALID_STATE", "Конфигурация этапов изменилась после контрольной точки.")
         context = StageContext(inputs=self.storage.list_inputs(run_id), feedback=deepcopy(state["feedback"]),
-                               repairs_used=state["repairs_used"], synthetic=self.registry.synthetic)
+                               repairs_used=state["repairs_used"], synthetic=self.registry.synthetic,
+                               excluded_sources=excluded_metadata(self.storage, run["project_id"], request["brief"]["input"]["excluded_source_ids"]))
         try:
             output = spec.handler(deepcopy(request), deepcopy(context))
         except ModelError as error:
@@ -192,5 +194,10 @@ class Orchestrator:
         while self.storage.get_run(run_id)["status"] == "running":
             if stop.is_set():
                 return worker.pause_at_boundary(run_id)
-            self.step(worker, run_id)
+            try:
+                self.step(worker, run_id)
+            except Conflict:
+                if self.storage.get_run(run_id)["status"] not in ("paused", "pause_requested"):
+                    raise
+                return worker.pause_at_boundary(run_id)
         return self.storage.get_run(run_id)

@@ -16,6 +16,7 @@ class StageContext:
     feedback: list[str]
     repairs_used: int
     synthetic: bool
+    excluded_sources: tuple[dict, ...] = ()
 
 
 class StageHandler(Protocol):

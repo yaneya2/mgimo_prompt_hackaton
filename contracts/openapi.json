@@ -3,7 +3,7 @@
   "info": {
     "title": "Strategy API — proposed contract",
     "version": "1.0.0",
-    "description": "Specification only. Server implementation belongs to A6."
+    "description": "Local HTTP API implemented by app/api/business.py. Commands require Idempotency-Key; model work is performed by the separate worker. See docs/interface.md."
   },
   "servers": [
     {

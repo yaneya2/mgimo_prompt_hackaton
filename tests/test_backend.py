@@ -25,7 +25,7 @@ def test_health_and_preserved_data(tmp_path):
     with TestClient(create_app(config)) as client:
         assert client.get("/health").status_code == 200
         assert (folder / "existing.txt").read_text() == "keep"
-        assert client.get("/api/v1/projects").status_code == 404
+        assert client.get("/api/v1/projects").status_code == 200
 
 
 def test_env_overrides_dotenv_and_key_is_hidden(monkeypatch, tmp_path):

@@ -13,7 +13,7 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --locked --no-dev --no-cache
 COPY app ./app
 COPY prompts ./prompts
-COPY contracts/schema.json ./contracts/schema.json
+COPY contracts ./contracts
 RUN groupadd --gid 10001 backend && useradd --uid 10001 --gid backend --no-create-home backend \
     && mkdir -p /data && chown backend:backend /data
 USER backend

@@ -210,8 +210,10 @@ class WorkerSession:
             require(run["status"] in ("running", "pause_requested"), "Run is not active")
             require((result["run_id"], result["project_id"], result["brief_version"], result["stage"])
                     == (run["id"], run["project_id"], run["brief_version"], job["stage"]), "Stage result belongs to another context")
+            if run["status"] == "pause_requested" and status == "running":
+                status = "paused"
             allowed = {"success": {"running", "completed", "paused"}, "needs_input": {"waiting_for_input"},
-                       "needs_revision": {"running", "incomplete"}, "incomplete": {"incomplete"}, "failed": {"failed"}}
+                       "needs_revision": {"running", "paused", "incomplete"}, "incomplete": {"incomplete"}, "failed": {"failed"}}
             require(status in allowed[result["outcome"]], "Status disagrees with stage outcome")
             require(status != "paused" or run["status"] == "pause_requested", "Pause was not requested")
             require((next_stage is not None) == (status in ("running", "paused")), "Next stage disagrees with status")

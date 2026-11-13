@@ -1,6 +1,7 @@
 """Six A5-compatible handlers. Models never write platform state or select for a human."""
 from copy import deepcopy
 import json
+from pathlib import Path
 
 from app.agents.context import effective_context, current_summaries
 from app.agents.checks import check_bundle
@@ -83,9 +84,12 @@ class AgentRuntime:
             tools = self.tools_factory(self.settings, self.sink, self.gate, request)
             errors = []
             try:
+                excluded_urls = {s['url'] for s in context.excluded_sources if s['url']}
+                excluded_files = {s['title'] for s in context.excluded_sources if s['kind'] == 'user_file'}
                 for path in self.settings.research_files:
                     try:
-                        collected.append(tools.read_file(path))
+                        if Path(path).name not in excluded_files:
+                            collected.append(tools.read_file(path))
                     except ResearchError as exc:
                         errors.append(str(exc))
                 urls, url_errors = extract_user_urls(dict(brief=request['brief']['input'],
@@ -114,7 +118,7 @@ class AgentRuntime:
                     excluded = set(request['brief']['input']['excluded_source_ids'])
                     for group in groups:
                         group['urls'] = [url for url in group['urls']
-                            if source(request, key=url, title=url, text='', url=url)['id'] not in excluded]
+                            if url not in excluded_urls and source(request, key=url, title=url, text='', url=url)['id'] not in excluded]
                     urls = select_urls(groups, self.settings.research_max_sources)
                     try:
                         collected.extend(tools.extract(urls))
@@ -266,5 +270,5 @@ class AgentRuntime:
 def build_stages(settings, usage_sink):
     runtime = AgentRuntime(settings, usage_sink)
     model_id = settings.model_name or settings.model_provider + ':default'
-    return StageRegistry('strategy-agents-v2', {stage: StageSpec(runtime, stage + '-v2',
+    return StageRegistry('strategy-agents-v3', {stage: StageSpec(runtime, stage + '-v3',
                          'python-assembler-v2' if stage == 'report' else model_id) for stage in AGENT_STAGES})
