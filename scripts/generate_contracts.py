@@ -57,7 +57,7 @@ D['CallContext'] = obj(metadata_version={'const': '1.0.0'}, prompt_version=S, sc
                        prompt_hash={'type': 'string', 'pattern': '^[a-f0-9]{64}$'},
                        schema_hash={'type': 'string', 'pattern': '^[a-f0-9]{64}$'},
                        model_requested=nullable(S),
-                       parameters=obj(timeout_seconds={'type': 'number', 'exclusiveMinimum': 0}, max_tokens=nullable(I), max_retries=N),
+                       parameters=obj(timeout_seconds=nullable({'type': 'number', 'exclusiveMinimum': 0}), max_tokens=nullable(I), max_retries=N),
                        pricing=nullable(ref('TokenPricing')))
 # Optional provenance is additive: old Usage records remain valid.
 D['Usage']['properties'].update(context=ref('CallContext'), generation_id=nullable(S))
@@ -69,7 +69,7 @@ D['Artifact'] = obj(id=ID, version=I, project_id=ID, run_id=ID, brief_version=I,
 D['Artifact']['properties']['reused_from'] = obj(artifact_id=ID, version=I, brief_version=I)
 collections = {'capabilities': 'Capability', 'sources': 'Source', 'claims': 'Claim', 'options': 'StrategyOption', 'messages': 'Message', 'experiments': 'Experiment', 'decisions': 'Decision', 'issues': 'ReviewIssue'}
 D['DataBundle'] = obj(**{k: arr(ref(v)) for k, v in collections.items()})
-D['Limits'] = obj(max_model_calls=I, max_search_calls=I, max_repair_cycles=N, timeout_seconds=I, budget=nullable(ref('Money')))
+D['Limits'] = obj(max_model_calls=I, max_search_calls=I, max_repair_cycles=N, timeout_seconds=N, budget=nullable(ref('Money')))
 D['Limits']['properties'].update(max_steps=dict(I, default=100), cache_ttl_seconds=dict(N, maximum=86400, default=3600))
 D['StageRequest'] = obj(schema_version={'const': '1.0.0'}, run_id=ID, project_id=ID, stage=enum(*STAGES), brief=ref('BriefVersion'), input_data=ref('DataBundle'), input_artifacts=arr(ref('Artifact')), limits=ref('Limits'), prompt_version=S, model_id=S)
 D['StageResult'] = obj(schema_version={'const': '1.0.0'}, run_id=ID, project_id=ID, brief_version=I, stage=enum(*STAGES), outcome=enum('success', 'needs_input', 'needs_revision', 'incomplete', 'failed'), data=ref('DataBundle'), artifacts=arr(ref('Artifact')), questions=arr(ref('Question')), suggested_next_stage=nullable(enum(*STAGES)), usage_ids=arr(ID), error=nullable(ref('ErrorResponse')))
@@ -98,7 +98,7 @@ D['UsageSummary'] = obj(run_id_filter=nullable(ID), events_read=N, duplicate_eve
 D['RunSummary'] = obj(run_id=ID, run_revision=I, status=enum(*STATUS), limits=ref('Limits'),
     accounting_complete={'type': 'boolean'},
     model_calls=N, search_calls=N, steps=N, active_seconds={'type': 'number', 'minimum': 0},
-    remaining_seconds={'type': 'number', 'minimum': 0}, usage=ref('UsageSummary'), stop_reason=nullable(obj(code=S, message=S)),
+    remaining_seconds=nullable({'type': 'number', 'minimum': 0}), usage=ref('UsageSummary'), stop_reason=nullable(obj(code=S, message=S)),
     budget=obj(limit=nullable(ref('Money')), allocated=nullable(ref('Money')), remaining_estimate=nullable(ref('Money')),
                estimated={'type': 'boolean'}, unrecorded_attempts=N, blocked_reason=nullable(S)))
 D['RunEvent'] = obj(id=ID, run_id=ID, stage=enum(*STAGES), kind=S, code=S, created_at=DT)

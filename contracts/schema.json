@@ -1193,8 +1193,15 @@
           ],
           "properties": {
             "timeout_seconds": {
-              "type": "number",
-              "exclusiveMinimum": 0
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
             },
             "max_tokens": {
               "anyOf": [
@@ -1675,7 +1682,7 @@
         },
         "timeout_seconds": {
           "type": "integer",
-          "minimum": 1
+          "minimum": 0
         },
         "budget": {
           "anyOf": [
@@ -2536,8 +2543,15 @@
           "minimum": 0
         },
         "remaining_seconds": {
-          "type": "number",
-          "minimum": 0
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "usage": {
           "$ref": "#/$defs/UsageSummary"

@@ -44,7 +44,7 @@ class CallGate:
             db.execute('INSERT OR IGNORE INTO reservations VALUES (?, 0, 0, 0, NULL)', (request['run_id'],))
             row = db.execute('SELECT model, search, elapsed, active_since FROM reservations WHERE run_id=?', (request['run_id'],)).fetchone()
             elapsed = row[2] + (max(0, time.time() - row[3]) if row[3] is not None else 0)
-            if elapsed >= limits['timeout_seconds']:
+            if limits['timeout_seconds'] and elapsed >= limits['timeout_seconds']:
                 raise LimitExceeded('Лимит активного времени запуска исчерпан; создайте новый запуск для продолжения.')
             used = row[0 if kind == 'model' else 1]
             if used + count > limits['max_' + kind + '_calls']:

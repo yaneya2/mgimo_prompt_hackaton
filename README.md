@@ -177,3 +177,5 @@ docker compose config --quiet
 | tests/ | Проверки backend |
 
 При реализации использованы официальные руководства: [FastAPI в Docker](https://fastapi.tiangolo.com/deployment/docker/), [настройки Pydantic](https://docs.pydantic.dev/latest/concepts/pydantic_settings/), [uv в Docker](https://docs.astral.sh/uv/guides/integration/docker/).
+
+**Долгие запросы.** `APP_MODEL_TIMEOUT_SECONDS=0` в локальном `.env` отключает тайм-аут модели. Положительное число задаёт секунды ожидания. В `Limits.timeout_seconds` значение 0 отключает общий лимит активного времени; новые запуски из UI используют 0. Существующие Run сохраняют прежние лимиты. Количество вызовов и денежный бюджет контролируются отдельно. После изменения `.env` перезапустите сервер и worker.

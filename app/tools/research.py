@@ -62,7 +62,7 @@ class ResearchTools:
     def __init__(self, settings, sink, gate, request, *, client=None):
         self.settings, self.request, self.gate = settings, request, gate
         self.recorder = UsageRecorder(sink)
-        self.client = client or httpx.Client(timeout=min(settings.research_timeout_seconds, request['limits']['timeout_seconds']),
+        self.client = client or httpx.Client(timeout=min(settings.research_timeout_seconds, request['limits']['timeout_seconds']) if request['limits']['timeout_seconds'] else settings.research_timeout_seconds,
                                             follow_redirects=False)
 
     def close(self):

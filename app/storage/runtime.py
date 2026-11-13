@@ -71,7 +71,8 @@ def balances(db, storage, run_id, limits):
     calls = [dict(row) for row in db.execute('SELECT * FROM external_calls WHERE run_id = ?', (run_id,))]
     linked = {call['usage_id'] for call in calls if call['usage_id']}
     legacy = [u for u in usage if not u['cached'] and u['id'] not in linked]
-    counts = {kind: sum(c['kind'] == kind for c in calls) + sum((u['tool'] is None) == (kind == 'model') for u in legacy)
+    counts = {kind: sum(c['kind'] == kind for c in calls) + sum((u['tool'] is None) == (kind == 'model')
+                  for u in legacy if not (u['provider'] == 'local' and u['tool'] == 'read_file'))
               for kind in ('model', 'search')}
     limit = limits['budget']
     budget = dict(limit=limit, allocated=None, remaining_estimate=None, estimated=False,
@@ -119,7 +120,7 @@ def summary_from_connection(storage, db, run_id):
     return dict(run_id=run_id, run_revision=run['revision'], status=run['status'], limits=limits,
                 accounting_complete=aggregates['totals']['cost_complete'] and budget['unrecorded_attempts'] == 0,
                 model_calls=counts['model'], search_calls=counts['search'], steps=steps,
-                active_seconds=round(seconds, 3), remaining_seconds=round(max(0, limits['timeout_seconds'] - seconds), 3),
+                active_seconds=round(seconds, 3), remaining_seconds=round(max(0, limits['timeout_seconds'] - seconds), 3) if limits['timeout_seconds'] else None,
                 budget=budget, usage=aggregates, stop_reason=checkpoint.get('graph_state', {}).get('stop_reason'))
 
 
@@ -135,7 +136,7 @@ class RunPolicy:
             steps = db.execute("SELECT COUNT(*) FROM jobs WHERE run_id = ? AND owner != 'user-control'", (self.run_id,)).fetchone()[0]
             if steps > self.limits.get('max_steps', 100):
                 raise LimitReached('STEP_LIMIT')
-            if active_seconds(db, self.run_id) >= self.limits['timeout_seconds']:
+            if self.limits['timeout_seconds'] and active_seconds(db, self.run_id) >= self.limits['timeout_seconds']:
                 raise LimitReached('ACTIVE_TIME_LIMIT')
             if self.limits['budget'] is not None:
                 _, budget, _ = balances(db, self.storage, self.run_id, self.limits)
@@ -143,7 +144,7 @@ class RunPolicy:
                     raise LimitReached(budget['blocked_reason'])
 
     def reserve(self, kind, timeout, maximum_cost=None):
-        require(kind in ('model', 'search') and timeout > 0, 'Invalid external action reservation')
+        require(kind in ('model', 'search') and (timeout is None or timeout > 0), 'Invalid external action reservation')
         if maximum_cost is not None:
             validate('Money', maximum_cost)
         with self.storage.transaction(write=True) as db:
@@ -151,8 +152,8 @@ class RunPolicy:
             if run['status'] == 'pause_requested':
                 raise PauseRequested()
             require(run['status'] == 'running', 'External action requires an active run')
-            remaining = self.limits['timeout_seconds'] - active_seconds(db, self.run_id)
-            if remaining <= 0:
+            remaining = self.limits['timeout_seconds'] - active_seconds(db, self.run_id) if self.limits['timeout_seconds'] else None
+            if remaining is not None and remaining <= 0:
                 raise LimitReached('ACTIVE_TIME_LIMIT')
             counts, budget, _ = balances(db, self.storage, self.run_id, self.limits)
             if counts[kind] >= self.limits['max_model_calls' if kind == 'model' else 'max_search_calls']:
@@ -171,7 +172,7 @@ class RunPolicy:
                        (call_id, self.run_id, self.job['id'], self.stage, kind,
                         encode(maximum_cost) if maximum_cost else None, now()))
             event(db, self.run_id, self.stage, 'external_reserved', kind)
-        return dict(call_id=call_id, timeout_seconds=min(timeout, remaining))
+        return dict(call_id=call_id, timeout_seconds=min(v for v in (timeout, remaining) if v is not None) if any(v is not None for v in (timeout, remaining)) else None)
 
     def cache_key(self, identity):
         return fingerprint(dict(version=2, input_hash=self.input_hash, stage=self.stage, identity=identity))

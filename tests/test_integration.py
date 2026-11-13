@@ -77,3 +77,29 @@ def test_real_agents_revise_and_export_through_atomic_platform(tmp_path):
     export = commands.create_export(project['id'], dict(run_id=run['id'], expected_revision=final['revision'], format='html', allow_draft=True))
     _, text = commands.download_export(export['id'])
     assert '25000' in text and 'Integration test' in text
+
+
+def test_local_file_reads_do_not_consume_search_quota(tmp_path):
+    from app.llm.accounting import UsageRecorder
+    store = Storage(tmp_path/'state')
+    project = store.create_project('Quota test', demo_brief())
+    run = store.create_run(project['id'], LIMITS)
+    recorder = UsageRecorder(store)
+    for _ in range(6):
+        recorder.record_tool(run_id=run['id'], stage='research', provider='local', tool='read_file', duration_ms=0,
+                             cost={'amount':'0','currency':'USD'}, cost_basis='reported')
+    for _ in range(4):
+        recorder.record_tool(run_id=run['id'], stage='research', provider='tavily', tool='search', duration_ms=0)
+    summary = store.run_summary(run['id'])
+    assert summary['search_calls'] == 4
+    assert summary['usage']['totals']['events'] == 10
+
+
+def test_unlimited_time_retains_call_quota(tmp_path):
+    from app.config import Settings
+    from app.storage.runtime import RunPolicy
+    assert Settings(_env_file=None, model_timeout_seconds=0).model_timeout_seconds is None
+    store = Storage(tmp_path/'state')
+    project = store.create_project('Unlimited time', demo_brief())
+    run = store.create_run(project['id'], dict(LIMITS, timeout_seconds=0))
+    assert store.run_summary(run['id'])['remaining_seconds'] is None

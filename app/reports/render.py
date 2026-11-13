@@ -5,7 +5,7 @@ from urllib.parse import urlsplit
 from app.agents import report
 from app.workflow.stages import StageContext
 
-LABELS={'ready':'Готово','draft':'Черновик','blocked':'Есть блокирующие замечания'}
+LABELS={'ready':'Отчёт сформирован; гипотезы требуют проверки','draft':'Черновик','blocked':'Есть блокирующие замечания'}
 
 
 def safe_url(value):
@@ -22,13 +22,15 @@ def markdown(snapshot, inputs=()):
     header=['# '+snapshot['project']['name'], '', 'Версия брифа: '+str(brief['version']),
             'Актуальность: '+('ИСТОРИЧЕСКАЯ ВЕРСИЯ' if historical else 'Текущая версия'),
             'Качество: '+LABELS[run['quality']], 'Состояние: '+run['status'], 'Запуск: '+run['id'], '']
-    header += ['Бюджет продукта: ' + json.dumps(brief['input']['budget'], ensure_ascii=False), 'Горизонт: ' + brief['input']['horizon'], *brief['input']['constraints'], '']
+    header += ['Бюджет продукта: ' + (brief['input']['budget']['amount'] + ' ' + brief['input']['budget']['currency'] if brief['input']['budget'] else 'не указан'), 'Горизонт: ' + brief['input']['horizon'], *brief['input']['constraints'], '']
     for decision in snapshot['data']['decisions']:
         if decision['author'] == 'user':
             header += ['Решение пользователя: ' + decision['rationale'], '']
     for artifact in snapshot['artifacts']:
         if artifact.get('reused_from'):
             header += ['Повторное использование результатов: ' + artifact['stage'] + ' — ' + json.dumps(artifact['reused_from'], ensure_ascii=False), '']
+    if not any(src['kind']=='web' and src['verification']=='read' for src in snapshot['data']['sources']):
+        header += ['В текущих основаниях нет прочитанных веб-источников. Предоставленные тестовые материалы не подтверждают рыночный спрос.', '']
     if synthetic: header+=['СИНТЕТИЧЕСКИЙ ПРИМЕР. Внешнее исследование не выполнялось.','']
     if run['quality']!='ready' or historical: header+=['ЧЕРНОВИК. ЧЕРНОВАЯ ВЫГРУЗКА: ограничения и замечания требуют проверки.','']
     reports = [a for a in snapshot['artifacts'] if a['stage']=='report' and a['freshness']=='current']

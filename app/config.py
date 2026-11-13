@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     model_provider: str | None = "codex"
     model_name: str | None = None
     model_api_key: SecretStr | None = None
-    model_timeout_seconds: float = Field(default=60, gt=0, le=300)
+    model_timeout_seconds: float | None = Field(default=60, gt=0)
     model_max_tokens: int = Field(default=2048, ge=1, le=32768)
     model_max_retries: int = Field(default=1, ge=0, le=3)
     model_call_cost_reserve: Decimal | None = Field(default=None, ge=0, allow_inf_nan=False, max_digits=20, decimal_places=6)
@@ -43,6 +43,11 @@ class Settings(BaseSettings):
     research_materials_dir: Path = Path("materials")
     research_files: list[str] = Field(default_factory=list, max_length=10)
     agent_context_chars: int = Field(default=120000, ge=20000, le=300000)
+
+    @field_validator("model_timeout_seconds", mode="before")
+    @classmethod
+    def unlimited_model_timeout(cls, value):
+        return None if value in (0, "0", "", "none") else value
 
     @field_validator("data_dir", mode="before")
     @classmethod
