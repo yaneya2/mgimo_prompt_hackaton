@@ -8,3 +8,7 @@
 !contracts/openapi.json
 app/**/__pycache__/
 app/**/*.pyc
+!prompts/
+!prompts/**
+!contracts/examples/
+!contracts/examples/**

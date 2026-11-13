@@ -1,0 +1,10 @@
+{
+  "status": "blocked",
+  "mode": "web",
+  "model_requested": "gpt-6.1-sol",
+  "provider": "codex",
+  "missing": [
+    "APP_TAVILY_API_KEY не задан: настоящий Search/Extract недоступен."
+  ],
+  "services_called": false
+}

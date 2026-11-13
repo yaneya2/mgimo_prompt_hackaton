@@ -8,7 +8,7 @@ from app.api.health import router
 from app.api.business import router as business_router, http_error, openapi_document
 from app.config import Settings
 from app.storage import Storage
-from app.storage.exports import render_snapshot
+from app.reports.render import render_snapshot
 from starlette.exceptions import HTTPException
 
 logger = logging.getLogger("uvicorn.error")
@@ -42,4 +42,6 @@ def create_app(settings: Settings | None = None, *, renderer=render_snapshot) ->
     application.add_exception_handler(HTTPException, http_error)
     application.openapi_schema = openapi_document(health_document)
     application.openapi = lambda: application.openapi_schema
+    from app.ui import install_ui
+    install_ui(application, config)
     return application

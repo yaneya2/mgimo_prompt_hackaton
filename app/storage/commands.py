@@ -55,7 +55,7 @@ class Commands:
             if db.execute("""SELECT 1 FROM runs WHERE project_id = ?
                 AND status IN ('queued','running','pause_requested')""", (project_id,)).fetchone():
                 raise Conflict("Pause the run before changing its brief")
-            row = db.execute("SELECT payload FROM runs WHERE project_id = ? ORDER BY rowid DESC LIMIT 1", (project_id,)).fetchone()
+            row = db.execute("SELECT payload FROM runs WHERE project_id = ? ORDER BY CASE WHEN status IN ('paused','waiting_for_input') THEN 0 ELSE 1 END, rowid DESC LIMIT 1", (project_id,)).fetchone()
             run = json.loads(row[0]) if row else None
             brief = dict(project_id=project_id, version=project["current_brief_version"] + 1,
                          created_at=now(), author="user", input=body["brief"])

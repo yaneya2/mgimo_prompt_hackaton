@@ -1,0 +1,170 @@
+{
+  "schema_version": "1.0.0",
+  "project": {
+    "id": "project_returns",
+    "name": "Учёт возвратов в небольших магазинах",
+    "created_at": "2026-11-11T14:30:46.832457+00:00",
+    "current_brief_version": 1
+  },
+  "brief": {
+    "project_id": "project_returns",
+    "version": 1,
+    "created_at": "2026-11-11T14:30:46.832457+00:00",
+    "author": "user",
+    "input": {
+      "product": "Сервис ручного учёта возвратов: доступны карточка обращения, статус и выгрузка CSV. Автоматического возврата денег и интеграции с кассой нет.",
+      "goal": "Выбрать первый сегмент и проверяемый способ привлечения",
+      "audience": [
+        "Небольшие интернет-магазины",
+        "Локальные магазины одежды"
+      ],
+      "horizon": "Шесть недель",
+      "budget": {
+        "amount": "60000",
+        "currency": "RUB"
+      },
+      "constraints": [
+        "Платная реклама запрещена",
+        "Один ответственный за пилот",
+        "Не обещать отсутствующие функции: Автоматический возврат денег, Интеграция с кассой"
+      ],
+      "assumptions": [
+        "Условия вымышлены и заданы пользователем",
+        "Данных о спросе нет; разрешены явно обозначенные осторожные допущения для экспериментов"
+      ],
+      "unknowns": [
+        "Спрос",
+        "Готовность платить",
+        "Базовые метрики"
+      ],
+      "excluded_source_ids": []
+    }
+  },
+  "run": {
+    "id": "run_seed_returns",
+    "project_id": "project_returns",
+    "brief_version": 1,
+    "revision": 1,
+    "status": "paused",
+    "stage": "options",
+    "quality": "draft",
+    "created_at": "2026-11-11T14:30:46.832457+00:00",
+    "updated_at": "2026-11-11T14:30:46.832457+00:00",
+    "checkpoint_id": null,
+    "attempt": 0,
+    "error": null
+  },
+  "data": {
+    "capabilities": [
+      {
+        "id": "cap_returns_0",
+        "version": 1,
+        "project_id": "project_returns",
+        "brief_version": 1,
+        "name": "Карточка обращения",
+        "status": "available",
+        "basis": "Явно задано в условии кейса",
+        "source_ids": [
+          "source_returns"
+        ]
+      },
+      {
+        "id": "cap_returns_1",
+        "version": 1,
+        "project_id": "project_returns",
+        "brief_version": 1,
+        "name": "Статус обращения",
+        "status": "available",
+        "basis": "Явно задано в условии кейса",
+        "source_ids": [
+          "source_returns"
+        ]
+      },
+      {
+        "id": "cap_returns_2",
+        "version": 1,
+        "project_id": "project_returns",
+        "brief_version": 1,
+        "name": "Выгрузка CSV",
+        "status": "available",
+        "basis": "Явно задано в условии кейса",
+        "source_ids": [
+          "source_returns"
+        ]
+      },
+      {
+        "id": "cap_returns_absent_0",
+        "version": 1,
+        "project_id": "project_returns",
+        "brief_version": 1,
+        "name": "Автоматический возврат денег",
+        "status": "hypothesis",
+        "basis": "В условии прямо указано отсутствие; не обещать в коммуникации.",
+        "source_ids": [
+          "source_returns"
+        ]
+      },
+      {
+        "id": "cap_returns_absent_1",
+        "version": 1,
+        "project_id": "project_returns",
+        "brief_version": 1,
+        "name": "Интеграция с кассой",
+        "status": "hypothesis",
+        "basis": "В условии прямо указано отсутствие; не обещать в коммуникации.",
+        "source_ids": [
+          "source_returns"
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "id": "source_returns",
+        "version": 1,
+        "project_id": "project_returns",
+        "brief_version": 1,
+        "kind": "user_file",
+        "title": "Учёт возвратов в небольших магазинах — карточка условий",
+        "url": null,
+        "publisher": null,
+        "published_at": null,
+        "retrieved_at": "2026-11-11T14:30:46.832457+00:00",
+        "content_excerpt": "Сервис ручного учёта возвратов: доступны карточка обращения, статус и выгрузка CSV. Автоматического возврата денег и интеграции с кассой нет.",
+        "locator": "Условие приёмочного кейса",
+        "verification": "read",
+        "origin_note": "Вымышленная карточка пользователя; не внешнее исследование рынка."
+      }
+    ],
+    "claims": [
+      {
+        "id": "claim_returns",
+        "version": 1,
+        "project_id": "project_returns",
+        "brief_version": 1,
+        "text": "Возможности продукта заданы в карточке пользователя; независимая проверка не проводилась.",
+        "kind": "user_provided",
+        "verification": "supported",
+        "evidence": [
+          {
+            "source_id": "source_returns",
+            "source_version": 1,
+            "quote": "Сервис ручного учёта возвратов: доступны карточка обращения, статус и выгрузка CSV. Автоматического возврата денег и интеграции с кассой нет.",
+            "locator": "Условие кейса",
+            "relation": "supports"
+          }
+        ],
+        "limitations": [
+          "Нет внешних свидетельств спроса и эффекта"
+        ]
+      }
+    ],
+    "options": [],
+    "messages": [],
+    "experiments": [],
+    "decisions": [],
+    "issues": []
+  },
+  "artifacts": [],
+  "questions": [],
+  "usage": []
+}

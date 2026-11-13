@@ -10,6 +10,7 @@ from app.storage.runtime import LimitReached, RunPolicy
 from app.tools.control import ToolFailure
 from app.storage.validation import COLLECTIONS, Conflict, StorageError, require, validate
 from app.workflow.results import artifact_for, error_for, result_for
+from app.storage.controls import excluded_metadata
 from app.workflow.stages import STAGES, StageContext, StageSpec
 
 NEXT = dict(zip(STAGES, STAGES[1:]))
@@ -182,7 +183,8 @@ class Orchestrator:
         state['registry'] = self.registry.manifest()
         context = StageContext(inputs=[item for item in self.storage.list_inputs(run_id)
                                        if item["brief_version"] == request["brief"]["version"]], feedback=deepcopy(state["feedback"]),
-                               repairs_used=state["repairs_used"], synthetic=self.registry.synthetic)
+                               repairs_used=state["repairs_used"], synthetic=self.registry.synthetic,
+                               excluded_sources=excluded_metadata(self.storage, run["project_id"], request["brief"]["input"]["excluded_source_ids"]))
         state['reuse_key'] = input_key(request, spec, context)
         policy = RunPolicy(self.storage, request, job, state, inputs=context.inputs)
         reused = False

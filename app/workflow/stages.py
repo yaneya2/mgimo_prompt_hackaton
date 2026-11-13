@@ -17,6 +17,7 @@ class StageContext:
     feedback: list[str]
     repairs_used: int
     synthetic: bool
+    excluded_sources: tuple[dict, ...] = ()
 
     def check_pause(self):
         """Tools must call this before every external action; never swallow PauseRequested."""

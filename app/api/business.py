@@ -116,7 +116,7 @@ def endpoint(spec, method):
                 extension = "md" if metadata["format"] == "markdown" else "html"
                 return Response(content, media_type="text/markdown" if extension == "md" else "text/html", headers={
                     "Content-Disposition": f'attachment; filename="{metadata["id"]}.{extension}"',
-                    "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "sandbox; default-src 'none'"})
+                    "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "sandbox; default-src 'none'; style-src 'unsafe-inline'"})
             return JSONResponse(result, status_code=success_status)
         except APIError as error:
             return error_response(request, error)
