@@ -1,1 +1,1 @@
-/* Uses system fonts so the local interface never contacts external font services. */
+@font-face{font-family:Manrope;src:url('/assets/fonts/Manrope.ttf') format('truetype');font-style:normal;font-weight:200 800;font-display:swap}
