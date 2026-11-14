@@ -1,5 +1,6 @@
 """Assemble the selected strategy exclusively from saved structured data."""
 import json
+from app.reports.names import option_names
 
 from app.agents.contracts import ref
 from app.agents.context import effective_context, current_summaries
@@ -71,5 +72,5 @@ def run(request, context):
     if context.synthetic:
         lines.insert(0, 'СИНТЕТИЧЕСКАЯ ПРОВЕРКА: ответы модели заменены fixtures, качество стратегии не оценивалось.\n')
     output = result_for(request)
-    output['artifacts'] = [artifact_for(request, '\n'.join(lines), entities=[ref('options', option), ref('decisions', selected)])]
+    output['artifacts'] = [artifact_for(request, option_names('\n'.join(lines), data), entities=[ref('options', option), ref('decisions', selected)])]
     return output

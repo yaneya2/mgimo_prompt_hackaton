@@ -1,0 +1,578 @@
+[
+  {
+    "id": "event_b4e90ebb9e324c53a1515045614ce556",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:33:17.581397+00:00"
+  },
+  {
+    "id": "event_2d33c627cbba43cdbd377c86a4e2b440",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:33:17.593881+00:00"
+  },
+  {
+    "id": "event_2b462712ed4144499bffd4c410983eab",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "brief",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-14T08:33:17.593994+00:00"
+  },
+  {
+    "id": "event_c8e5446c21754fd4b9b0de7a2a457f02",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "brief",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-14T08:33:17.622704+00:00"
+  },
+  {
+    "id": "event_f9d552e36d5e49f8bcd46aba33cfc64f",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "brief",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T08:33:37.595929+00:00"
+  },
+  {
+    "id": "event_f5958c44c7d94e1f94d3895169d939e3",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "research",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:33:37.628308+00:00"
+  },
+  {
+    "id": "event_b9c6f11afeaa47389c3819cd572bc48a",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "brief",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-14T08:33:37.628410+00:00"
+  },
+  {
+    "id": "event_29de7f83cb7443078bb69e255343061f",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "research",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:33:37.636553+00:00"
+  },
+  {
+    "id": "event_8bc914d1250b417195aa16b1c342547e",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "research",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-14T08:33:37.636624+00:00"
+  },
+  {
+    "id": "event_27a7427754b14e019e25f869aebdaf51",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T08:33:37.672264+00:00"
+  },
+  {
+    "id": "event_4bb7aa77e8f24b76af36c8fd4be29b7a",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T08:33:37.679060+00:00"
+  },
+  {
+    "id": "event_8554d315febe4dcca4e58661ca482d54",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T08:33:37.686117+00:00"
+  },
+  {
+    "id": "event_84745916e9074c41a7656fd4f8fdc1bd",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "research",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-14T08:33:37.696173+00:00"
+  },
+  {
+    "id": "event_45379699920b4862aff43b937fc76e4a",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T08:33:49.841369+00:00"
+  },
+  {
+    "id": "event_282b46615cf34b4b873daa39b3d3992a",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "research",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-14T08:33:49.888629+00:00"
+  },
+  {
+    "id": "event_abcc309eb2614eca8d1364338bdd5c37",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T08:34:33.890156+00:00"
+  },
+  {
+    "id": "event_d085a76120434450ad1bc45bcd4b315f",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "options",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:34:33.926465+00:00"
+  },
+  {
+    "id": "event_f885d06d962b4999ada25b61d8babf65",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "research",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-14T08:34:33.926558+00:00"
+  },
+  {
+    "id": "event_ed5632c2ad8449b48eb6d35ffda104d0",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "options",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:34:33.935984+00:00"
+  },
+  {
+    "id": "event_5e9c733a363844f38231fde350f62afb",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "options",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-14T08:34:33.936080+00:00"
+  },
+  {
+    "id": "event_246527a2b0ee4462bd7b2d7a5316e9ca",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "options",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-14T08:34:33.964409+00:00"
+  },
+  {
+    "id": "event_ca56495f5bb246a5b6a6035bca5ddc44",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "options",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T08:36:33.433174+00:00"
+  },
+  {
+    "id": "event_f99e8d31f66e4125a73829e10ad30cef",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:36:33.467725+00:00"
+  },
+  {
+    "id": "event_63c7253f73954f0e90f9c979ecb89266",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "options",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-14T08:36:33.467806+00:00"
+  },
+  {
+    "id": "event_a0c8f3dd2af24bf6a8599fc6d8444756",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:36:33.478338+00:00"
+  },
+  {
+    "id": "event_a5d7fb212d9f42fd9fbe44756695d08a",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-14T08:36:33.478426+00:00"
+  },
+  {
+    "id": "event_938a41a669b74f38abb658bf8e6da27c",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-14T08:36:33.513389+00:00"
+  },
+  {
+    "id": "event_7c502b065efb4891b36d338e6ce734f5",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T08:38:18.343262+00:00"
+  },
+  {
+    "id": "event_52349bef08fd455e9eeecf9465164cc1",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:38:18.381655+00:00"
+  },
+  {
+    "id": "event_a0fb2e57d408490b99fd3a40ee40a805",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-14T08:38:18.381804+00:00"
+  },
+  {
+    "id": "event_5f4ee44ed5b04dc8b73191bf4b982d0a",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:38:18.398824+00:00"
+  },
+  {
+    "id": "event_8659657e6e28484d83ed05f21f37a8bd",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-14T08:38:18.398926+00:00"
+  },
+  {
+    "id": "event_024cb2ec4113432484d8a9066ad82521",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-14T08:38:18.436152+00:00"
+  },
+  {
+    "id": "event_26d69a9b17c8412f9fb12e08dcc17b98",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T08:39:01.753448+00:00"
+  },
+  {
+    "id": "event_258a25d30f0446d18a8a41c4c018c709",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:39:01.789599+00:00"
+  },
+  {
+    "id": "event_b8b724e3906b4fba8e95e5fb44da7ed3",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "step_completed",
+    "code": "needs_revision",
+    "created_at": "2026-11-14T08:39:01.789686+00:00"
+  },
+  {
+    "id": "event_bc5a83b9bb3d4a9084f3cb1a8bc858dd",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "execution_decision",
+    "code": "REVIEW_REVISION",
+    "created_at": "2026-11-14T08:39:01.789701+00:00"
+  },
+  {
+    "id": "event_84f2bebef9ef4e38854e0d5554fc42ed",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:39:01.801693+00:00"
+  },
+  {
+    "id": "event_a44e55e13eee4f1a9f70f8190314636c",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-14T08:39:01.801776+00:00"
+  },
+  {
+    "id": "event_ef32e986d4754caba2834de3679fcfde",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-14T08:39:01.838884+00:00"
+  },
+  {
+    "id": "event_816773632abc427382e34487bb71aa3f",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T08:41:06.826566+00:00"
+  },
+  {
+    "id": "event_c746ba39a8e642ac90c124dd26597122",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:41:06.867757+00:00"
+  },
+  {
+    "id": "event_8d1b0087b33a47659b263e6e403486c2",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-14T08:41:06.867833+00:00"
+  },
+  {
+    "id": "event_2f7ab3d8fed64f8d8f8666781c558e7f",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:41:06.880806+00:00"
+  },
+  {
+    "id": "event_3b811f9e0145419a81ff997ab69964f7",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-14T08:41:06.880886+00:00"
+  },
+  {
+    "id": "event_4447d5962da44acabef026969345e85b",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-14T08:41:06.917085+00:00"
+  },
+  {
+    "id": "event_8bc9a0a511af4056b0a0fcf3b87ee8df",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T08:41:43.030548+00:00"
+  },
+  {
+    "id": "event_feb4ac2059c948f18e88ed7a69570dba",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "options",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:41:43.068600+00:00"
+  },
+  {
+    "id": "event_dc24204c5e4e40b09fc3b3f6897c8725",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "step_completed",
+    "code": "needs_revision",
+    "created_at": "2026-11-14T08:41:43.068695+00:00"
+  },
+  {
+    "id": "event_579a76ec235c4542b099d01e28800f12",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "execution_decision",
+    "code": "REVIEW_REVISION",
+    "created_at": "2026-11-14T08:41:43.068706+00:00"
+  },
+  {
+    "id": "event_fa3481cd34164bc1a8e8bfac6242b6c3",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "options",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:41:43.081151+00:00"
+  },
+  {
+    "id": "event_38b32e3c513b42559ad7aea26a053d85",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "options",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-14T08:41:43.081250+00:00"
+  },
+  {
+    "id": "event_3407398f0b5c405cb30518d327e4d846",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "options",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-14T08:41:43.112688+00:00"
+  },
+  {
+    "id": "event_78fc628a9206476bab808a87e29a7500",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "options",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T08:43:22.902611+00:00"
+  },
+  {
+    "id": "event_1d823aef63d7487ca288b8e51acf29dd",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:43:22.944243+00:00"
+  },
+  {
+    "id": "event_c0834094eab54ee5a522af7da229a249",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "options",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-14T08:43:22.944323+00:00"
+  },
+  {
+    "id": "event_243bbc733c9640dba73943141c52e5c3",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:43:22.957224+00:00"
+  },
+  {
+    "id": "event_6ab0d1f1ee304f75856669d5769dac05",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-14T08:43:22.957309+00:00"
+  },
+  {
+    "id": "event_cf6ea3afcb3c46eb8ac0974d1d45de17",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-14T08:43:22.992321+00:00"
+  },
+  {
+    "id": "event_1c497d6dc281483da7348898fcd64223",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T08:45:21.894410+00:00"
+  },
+  {
+    "id": "event_a4dbe71496f64596bc1b035c0383febd",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:45:21.935604+00:00"
+  },
+  {
+    "id": "event_5803dac3ff414b9db9dbb4939c09e055",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "communications",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-14T08:45:21.935692+00:00"
+  },
+  {
+    "id": "event_31239dab6b5449efaa635646a85d88c9",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:45:21.949323+00:00"
+  },
+  {
+    "id": "event_3bd47fa84d4545979d67ca099cac7e1b",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-14T08:45:21.949428+00:00"
+  },
+  {
+    "id": "event_2ae1d0998a994b68ba8980265a01da2c",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-14T08:45:21.986259+00:00"
+  },
+  {
+    "id": "event_2c8e5947069e4dd7a362d630a43a7985",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T08:45:49.994070+00:00"
+  },
+  {
+    "id": "event_c8411026188a452ebb979655b0c9a924",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "selection",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:45:50.036871+00:00"
+  },
+  {
+    "id": "event_9cf6e8ba5b7148a4b4119e815afd9443",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "review",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-14T08:45:50.036959+00:00"
+  },
+  {
+    "id": "event_8b2e564d8a64442fbf1b227797aa66d7",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "selection",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T08:45:50.056572+00:00"
+  },
+  {
+    "id": "event_6bf5e39bf7ec4d8ab79154012cde77c5",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "selection",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-14T08:45:50.056658+00:00"
+  },
+  {
+    "id": "event_e418e11bcf044aa198e06ebdcbacae78",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "selection",
+    "kind": "run_status",
+    "code": "waiting_for_input",
+    "created_at": "2026-11-14T08:45:50.085799+00:00"
+  },
+  {
+    "id": "event_fe4959d670df40f884720eccbe760428",
+    "run_id": "run_22a9a6d8c26a4fca9d5aa0d45411beaa",
+    "stage": "selection",
+    "kind": "step_completed",
+    "code": "needs_input",
+    "created_at": "2026-11-14T08:45:50.085878+00:00"
+  }
+]

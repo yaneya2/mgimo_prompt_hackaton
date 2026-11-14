@@ -3,6 +3,7 @@ from html import escape
 import json
 from urllib.parse import urlsplit
 from app.agents import report
+from app.reports.names import option_names
 from app.workflow.stages import StageContext
 
 LABELS={'ready':'Отчёт сформирован; гипотезы требуют проверки','draft':'Черновик','blocked':'Есть блокирующие замечания'}
@@ -44,6 +45,7 @@ def markdown(snapshot, inputs=()):
         text='## Бриф\n'+brief['input']['product']+'\n\nЦель: '+brief['input']['goal']+'\n\nОкончательное направление ещё не выбрано.\n'
         for title,key in [('Альтернативы','options'),('Утверждения','claims'),('Источники','sources'),('Замечания','issues')]:
             text+='\n## '+title+'\n\n'+ '\n'.join('- '+json.dumps(v,ensure_ascii=False) for v in snapshot['data'][key])+'\n'
+    text = option_names(text, snapshot['data'])
     if snapshot['questions']:
         text+='\n## Открытые вопросы\n'+'\n'.join('- '+q['text'] for q in snapshot['questions'])
     text+='\n\n## Прочитанные фрагменты\n'
