@@ -5,7 +5,7 @@ export function reportText(value,data){
  const names=new Map();
  for(const [key,label] of [['options','Направление'],['capabilities','Возможность'],['claims','Утверждение'],['sources','Источник'],['messages','Сообщение'],['experiments','Эксперимент'],['issues','Замечание']])
   (data[key]||[]).forEach((x,i)=>names.set(x.id,x.name||x.title||`${label} ${i+1}`));
- return String(value??'').replace(/brief\.input\.product/g,'описании продукта').replace(/brief\.input\./g,'брифе: ').replace(/\b[A-Za-z][A-Za-z0-9_]*\b/g,t=>names.get(t)||words[t]||(/^agent_|^source_/.test(t)?'связанный материал':t));
+ return String(value??'').replace(/brief\.input\.product/g,'описании продукта').replace(/brief\.input\./g,'брифе: ').replace(/синтетический возврат S04 показывает возможный механизм отказа, а не его рыночную частоту/g,'в учебном примере одна мастерская получила возврат, потому что ожидала автоматические SMS. Насколько часто это станет причиной отказа у реальных клиентов, неизвестно').replace(/Тексты экспериментов здесь не предоставлены:[^\n]*?статусы чужих issues не изменяются\./g,'').replace(/\bв issues\b/g,'в замечаниях').replace(/\bиз issues\b/g,'из замечаний').replace(/ с сохранением ID/g,'').replace(/\b[A-Za-z][A-Za-z0-9_]*\b/g,t=>names.get(t)||words[t]||(/^agent_|^source_/.test(t)?'связанный материал':t));
 }
 export function readableReport(snapshot){
  const d=snapshot.data,b=snapshot.brief.input;

@@ -1,7 +1,7 @@
 [project]
 name = "strategy-backend"
 version = "0.1.0"
-description = "Backend skeleton for the strategy assistant"
+description = "Local product strategy assistant with research, human review and reports"
 requires-python = ">=3.12,<3.13"
 dependencies = [
   "fastapi>=0.115,<1",

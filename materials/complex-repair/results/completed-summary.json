@@ -1,0 +1,142 @@
+{
+  "run_id": "run_2384b9818fe8425a9196079f9a689b61",
+  "run_revision": 30,
+  "status": "completed",
+  "limits": {
+    "budget": null,
+    "max_model_calls": 80,
+    "max_repair_cycles": 2,
+    "max_search_calls": 40,
+    "timeout_seconds": 0
+  },
+  "accounting_complete": false,
+  "model_calls": 11,
+  "search_calls": 3,
+  "steps": 13,
+  "active_seconds": 976.307,
+  "remaining_seconds": null,
+  "budget": {
+    "limit": null,
+    "allocated": null,
+    "remaining_estimate": null,
+    "estimated": false,
+    "unrecorded_attempts": 0,
+    "blocked_reason": null
+  },
+  "usage": {
+    "run_id_filter": "run_2384b9818fe8425a9196079f9a689b61",
+    "events_read": 20,
+    "duplicate_events": 0,
+    "totals": {
+      "events": 20,
+      "successes": 20,
+      "errors": 0,
+      "retries": 0,
+      "cached_events": 0,
+      "external_attempts": 20,
+      "duration_ms": 975203,
+      "input_tokens": 340913,
+      "output_tokens": 40424,
+      "unknown_input_tokens": 9,
+      "unknown_output_tokens": 9,
+      "cost_by_currency": {
+        "USD": {
+          "reported": "0",
+          "estimated": "0",
+          "known_total": "0"
+        }
+      },
+      "unknown_cost_events": 14,
+      "cost_complete": false
+    },
+    "groups": [
+      {
+        "run_id": "run_2384b9818fe8425a9196079f9a689b61",
+        "provider": "codex",
+        "model": null,
+        "tool": null,
+        "events": 11,
+        "successes": 11,
+        "errors": 0,
+        "retries": 0,
+        "cached_events": 0,
+        "external_attempts": 11,
+        "duration_ms": 966835,
+        "input_tokens": 340913,
+        "output_tokens": 40424,
+        "unknown_input_tokens": 0,
+        "unknown_output_tokens": 0,
+        "cost_by_currency": {},
+        "unknown_cost_events": 11,
+        "cost_complete": false
+      },
+      {
+        "run_id": "run_2384b9818fe8425a9196079f9a689b61",
+        "provider": "local",
+        "model": null,
+        "tool": "read_file",
+        "events": 6,
+        "successes": 6,
+        "errors": 0,
+        "retries": 0,
+        "cached_events": 0,
+        "external_attempts": 6,
+        "duration_ms": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "unknown_input_tokens": 6,
+        "unknown_output_tokens": 6,
+        "cost_by_currency": {
+          "USD": {
+            "reported": "0",
+            "estimated": "0",
+            "known_total": "0"
+          }
+        },
+        "unknown_cost_events": 0,
+        "cost_complete": true
+      },
+      {
+        "run_id": "run_2384b9818fe8425a9196079f9a689b61",
+        "provider": "tavily",
+        "model": null,
+        "tool": "extract",
+        "events": 1,
+        "successes": 1,
+        "errors": 0,
+        "retries": 0,
+        "cached_events": 0,
+        "external_attempts": 1,
+        "duration_ms": 2996,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "unknown_input_tokens": 1,
+        "unknown_output_tokens": 1,
+        "cost_by_currency": {},
+        "unknown_cost_events": 1,
+        "cost_complete": false
+      },
+      {
+        "run_id": "run_2384b9818fe8425a9196079f9a689b61",
+        "provider": "tavily",
+        "model": null,
+        "tool": "search",
+        "events": 2,
+        "successes": 2,
+        "errors": 0,
+        "retries": 0,
+        "cached_events": 0,
+        "external_attempts": 2,
+        "duration_ms": 5372,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "unknown_input_tokens": 2,
+        "unknown_output_tokens": 2,
+        "cost_by_currency": {},
+        "unknown_cost_events": 2,
+        "cost_complete": false
+      }
+    ]
+  },
+  "stop_reason": null
+}

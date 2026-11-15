@@ -1,0 +1,14 @@
+{
+  "attempt": 1,
+  "brief_version": 1,
+  "checkpoint_id": "checkpoint_f35aee128a754ae4996c618d035709a7",
+  "created_at": "2026-11-14T21:24:22.527900+00:00",
+  "error": null,
+  "id": "run_e50c118ed868498aaab36495a60757bb",
+  "project_id": "project_287c3d74f11c4911a1f5d0dcd386c835",
+  "quality": "draft",
+  "revision": 6,
+  "stage": "brief",
+  "status": "paused",
+  "updated_at": "2026-11-14T21:25:19.951249+00:00"
+}

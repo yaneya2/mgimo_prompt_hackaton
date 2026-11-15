@@ -1,0 +1,1274 @@
+[
+  {
+    "id": "event_26f97ffce667418fa44c725be8c746de",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T21:24:22.871688+00:00"
+  },
+  {
+    "id": "event_b6b79b5dfd834521b1f4245fe5e37ea6",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T21:24:22.885871+00:00"
+  },
+  {
+    "id": "event_1eb1ffc39104470886155deb41f32f6f",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-14T21:24:22.885983+00:00"
+  },
+  {
+    "id": "event_96dc6e94732344c6a796c55f98053288",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-14T21:24:22.916686+00:00"
+  },
+  {
+    "id": "event_0c3b5e1a7dec410caaa1105d874221f1",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "pause_requested",
+    "created_at": "2026-11-14T21:24:34.346952+00:00"
+  },
+  {
+    "id": "event_696e793ab5f346b99ef84d1c3d289952",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T21:24:53.573494+00:00"
+  },
+  {
+    "id": "event_ea79faea1d36414da69eec0dbf3a493c",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "waiting_for_input",
+    "created_at": "2026-11-14T21:24:53.599764+00:00"
+  },
+  {
+    "id": "event_dc151539acef40af971b5c4bbaf81674",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "step_completed",
+    "code": "needs_input",
+    "created_at": "2026-11-14T21:24:53.599853+00:00"
+  },
+  {
+    "id": "event_036d579b15b948f9ab4d9103c3a74222",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "paused",
+    "created_at": "2026-11-14T21:25:19.951866+00:00"
+  },
+  {
+    "id": "event_a6d60a9cf28e4040b8221930689cc7aa",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "queued",
+    "created_at": "2026-11-14T21:25:19.964706+00:00"
+  },
+  {
+    "id": "event_b2fcfb463fb9478a965b6f867ae3b1e5",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T21:25:20.168057+00:00"
+  },
+  {
+    "id": "event_bbce6ec2d7ab4e86b501e27c8a46b256",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T21:25:20.180948+00:00"
+  },
+  {
+    "id": "event_dc00fda86f73463a8ed597ebfc22f656",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-14T21:25:20.181106+00:00"
+  },
+  {
+    "id": "event_454ef9edc0804c83b0fb0219f5b2243a",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "waiting_for_input",
+    "created_at": "2026-11-14T21:25:20.199993+00:00"
+  },
+  {
+    "id": "event_46f34d7a617d43e8813cfdd812fa51a3",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "step_completed",
+    "code": "needs_input",
+    "created_at": "2026-11-14T21:25:20.200080+00:00"
+  },
+  {
+    "id": "event_a95ce46546f94e6da93726ce89b1347c",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "queued",
+    "created_at": "2026-11-14T21:25:30.980651+00:00"
+  },
+  {
+    "id": "event_99ff8bbf93a94cddbb1e05f8351e2d50",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T21:25:31.233323+00:00"
+  },
+  {
+    "id": "event_746a6db70b294268b1d87754efa37ede",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T21:25:31.245754+00:00"
+  },
+  {
+    "id": "event_18de3f5147de46cba6d9823a1141c559",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-14T21:25:31.245868+00:00"
+  },
+  {
+    "id": "event_026b46ca569f4c8c8079e8b07b266301",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-14T21:25:31.270932+00:00"
+  },
+  {
+    "id": "event_d9bf55f636c942d4be197665aecf0cb0",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T21:26:07.294399+00:00"
+  },
+  {
+    "id": "event_e64de749aaba4413923919767679aa5b",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T21:26:07.324405+00:00"
+  },
+  {
+    "id": "event_5953eeeeb05b46eda7c919b61fff829b",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-14T21:26:07.324484+00:00"
+  },
+  {
+    "id": "event_23ae5f72a4cc42a9a6926cb3175f899a",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-14T21:26:07.333397+00:00"
+  },
+  {
+    "id": "event_9f143baa261b4794ae0295e12cdd6f74",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-14T21:26:07.333480+00:00"
+  },
+  {
+    "id": "event_2b40cc9f97d0448b85651fae406b43da",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T21:26:07.371629+00:00"
+  },
+  {
+    "id": "event_efb1fd7a28ad40909614a173d1028335",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T21:26:07.379030+00:00"
+  },
+  {
+    "id": "event_3b0b29a334fa4c08b96c593d0ab71fc8",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T21:26:07.386670+00:00"
+  },
+  {
+    "id": "event_577cf42c97c14b9fbfdd6d4630a4405f",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T21:26:07.393290+00:00"
+  },
+  {
+    "id": "event_c88a69c36a184e13871282c27630a9a7",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T21:26:07.401547+00:00"
+  },
+  {
+    "id": "event_8fbb5a23ef50433f9044be308ef4f197",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T21:26:07.407491+00:00"
+  },
+  {
+    "id": "event_3c9c27b72f4f443a8c4e6d67617124dc",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T21:26:07.414355+00:00"
+  },
+  {
+    "id": "event_d2a806fa547d420aaa068ff4c3be2480",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-14T21:26:07.425095+00:00"
+  },
+  {
+    "id": "event_314473fb8fd94243b794dd548191210e",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T21:26:24.805129+00:00"
+  },
+  {
+    "id": "event_ffc764f082d54a4dbe1366defcf33a19",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "external_reserved",
+    "code": "search",
+    "created_at": "2026-11-14T21:26:24.812533+00:00"
+  },
+  {
+    "id": "event_c8a94a05a38d40f195351aebaf03517a",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T21:26:27.053043+00:00"
+  },
+  {
+    "id": "event_7f656254742041259cf3bd05c6c93357",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "external_reserved",
+    "code": "search",
+    "created_at": "2026-11-14T21:26:27.066199+00:00"
+  },
+  {
+    "id": "event_aefcebf3344a4a69bfe21dd21cf314f9",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T21:26:28.397353+00:00"
+  },
+  {
+    "id": "event_e9eff652360340b78edf068f9014875e",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "external_reserved",
+    "code": "search",
+    "created_at": "2026-11-14T21:26:28.407620+00:00"
+  },
+  {
+    "id": "event_48d626ab7e6f47bdbf2993d2af588ac4",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T21:26:29.584094+00:00"
+  },
+  {
+    "id": "event_5c1669e0a54e49a782279c029caa5904",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "external_reserved",
+    "code": "search",
+    "created_at": "2026-11-14T21:26:29.595784+00:00"
+  },
+  {
+    "id": "event_470df768d2594742adc0a3b39d820ed7",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T21:26:31.533499+00:00"
+  },
+  {
+    "id": "event_b21166eeb8be4f5b86a52fe525d04bfd",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "external_reserved",
+    "code": "search",
+    "created_at": "2026-11-14T21:26:31.546872+00:00"
+  },
+  {
+    "id": "event_a66e49297cb547ddb07452e73058301f",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-14T21:26:33.990334+00:00"
+  },
+  {
+    "id": "event_a99bd986413f423cba9f1a71d40865ca",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-14T21:26:34.019832+00:00"
+  },
+  {
+    "id": "event_c5baf882224c4383bc9e9b1715f670c0",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "error",
+    "created_at": "2026-11-14T21:26:42.215048+00:00"
+  },
+  {
+    "id": "event_2f668e86a1814567b4687fcb8a89a7fc",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "run_status",
+    "code": "failed",
+    "created_at": "2026-11-14T21:26:42.237675+00:00"
+  },
+  {
+    "id": "event_70c93cb4444f4874825963815dd3e1e5",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "step_completed",
+    "code": "failed",
+    "created_at": "2026-11-14T21:26:42.237740+00:00"
+  },
+  {
+    "id": "event_d814f4c34d704b38a3c3ada4ff657590",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "execution_stopped",
+    "code": "UPSTREAM_UNAVAILABLE",
+    "created_at": "2026-11-14T21:26:42.237749+00:00"
+  },
+  {
+    "id": "event_86344987e7d1421ca3bd71746da0c10b",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "paused",
+    "created_at": "2026-11-15T08:56:30.406246+00:00"
+  },
+  {
+    "id": "event_d39551e200ea4439b49098cf4beabd40",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "queued",
+    "created_at": "2026-11-15T08:56:30.416204+00:00"
+  },
+  {
+    "id": "event_29537fb41639468baa9436a8c85c8827",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T08:56:41.811210+00:00"
+  },
+  {
+    "id": "event_eabaf4b364dd426c8e9e00728bff9a41",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T08:56:41.819609+00:00"
+  },
+  {
+    "id": "event_2643f6fe7f924710ad15846793d8ae1c",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-15T08:56:41.819688+00:00"
+  },
+  {
+    "id": "event_f43be19d2d3945af812541eb6ab87fa4",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-15T08:56:41.850697+00:00"
+  },
+  {
+    "id": "event_942e9872e8fc4d9aafd93e2f7cdae101",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T08:57:11.427867+00:00"
+  },
+  {
+    "id": "event_495f80d616fb492188d254f616de54ca",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "waiting_for_input",
+    "created_at": "2026-11-15T08:57:11.459446+00:00"
+  },
+  {
+    "id": "event_da2c3d2817bc47a3a44b48618463ee5f",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "step_completed",
+    "code": "needs_input",
+    "created_at": "2026-11-15T08:57:11.459520+00:00"
+  },
+  {
+    "id": "event_09e3d117659c4e59a7797fbd219cbe7b",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "execution_decision",
+    "code": "BRIEF_CHANGED",
+    "created_at": "2026-11-15T08:57:11.459530+00:00"
+  },
+  {
+    "id": "event_b223ede45cce4163ab2a42538fce03b5",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "queued",
+    "created_at": "2026-11-15T08:57:24.693119+00:00"
+  },
+  {
+    "id": "event_21d21a865c844100b17cce649d13d81c",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T08:57:24.931611+00:00"
+  },
+  {
+    "id": "event_bdd2b4c56e9144c1b1488b6477b0e7df",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T08:57:24.942858+00:00"
+  },
+  {
+    "id": "event_058ade70966c4cb7bb6d06e59338ad7a",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-15T08:57:24.942945+00:00"
+  },
+  {
+    "id": "event_38aeb605065941dca1a6f75c6439b34f",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-15T08:57:24.971601+00:00"
+  },
+  {
+    "id": "event_3789fb23a7b74a01ade5a0bc8a7aff86",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T08:57:56.939918+00:00"
+  },
+  {
+    "id": "event_71e58c52ef58415a8ce7a16a2564ebbf",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T08:57:56.979550+00:00"
+  },
+  {
+    "id": "event_57fd3f5831104035a988c876ff1bcf29",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "brief",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-15T08:57:56.979637+00:00"
+  },
+  {
+    "id": "event_bbd81b7b90f24f24ac548c4aa926a778",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T08:57:56.988820+00:00"
+  },
+  {
+    "id": "event_93ed23b805524cb2854d24c8432757f2",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-15T08:57:56.988901+00:00"
+  },
+  {
+    "id": "event_d90c8108e9014e2daa311cb5b8af61a3",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T08:57:57.027586+00:00"
+  },
+  {
+    "id": "event_1a2ba4b318d94fc1897f80c89468ee49",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T08:57:57.033309+00:00"
+  },
+  {
+    "id": "event_c9a7c6e9ca3f4fe8a213f5ddebab98b8",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T08:57:57.039754+00:00"
+  },
+  {
+    "id": "event_c24335357950451aabee24f46b41adff",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T08:57:57.047208+00:00"
+  },
+  {
+    "id": "event_e4bbe825c7f745c7b384578843361fe5",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T08:57:57.055304+00:00"
+  },
+  {
+    "id": "event_96ec9f3dd8e7404c8064ce3bb7e896fe",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T08:57:57.061237+00:00"
+  },
+  {
+    "id": "event_0f2f676dcd42484aa2150f2a941e1829",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T08:57:57.067906+00:00"
+  },
+  {
+    "id": "event_fac6b1d0106b49a0826688702612c80d",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-15T08:57:57.080401+00:00"
+  },
+  {
+    "id": "event_7436fa12a5024d5e822657bda6a290fa",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T08:58:12.819230+00:00"
+  },
+  {
+    "id": "event_0d6d181b5eb94bcc829570a7a14c4b4c",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "external_reserved",
+    "code": "search",
+    "created_at": "2026-11-15T08:58:12.849646+00:00"
+  },
+  {
+    "id": "event_7e266b7115d74818833e35d72899bc44",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T08:58:14.962218+00:00"
+  },
+  {
+    "id": "event_cd8f6a8e49a8470c8e6115528e9a9f95",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "external_reserved",
+    "code": "search",
+    "created_at": "2026-11-15T08:58:14.975324+00:00"
+  },
+  {
+    "id": "event_c8c705528d3247eaa070822c40fbce51",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T08:58:16.379328+00:00"
+  },
+  {
+    "id": "event_97038d020f144a40afb1b6131d97f524",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "external_reserved",
+    "code": "search",
+    "created_at": "2026-11-15T08:58:16.393196+00:00"
+  },
+  {
+    "id": "event_eb020159425e4b5ea164766eaf460207",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T08:58:17.471140+00:00"
+  },
+  {
+    "id": "event_6e48685917af47a6a1c1c9ec3cab2848",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-15T08:58:17.503636+00:00"
+  },
+  {
+    "id": "event_bc58587f86654a48b9b83e7755294de8",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T09:00:47.938356+00:00"
+  },
+  {
+    "id": "event_18e555f97d1146deb4de6e376080a7b0",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "options",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:00:48.019367+00:00"
+  },
+  {
+    "id": "event_b7ca674833d544fc9d5ce0d29272a801",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "research",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-15T09:00:48.019464+00:00"
+  },
+  {
+    "id": "event_e4e920dc29bc477b8045e94ee4fa5ef3",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "options",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:00:48.033884+00:00"
+  },
+  {
+    "id": "event_d8f696cd48164285af2669a66f17dd82",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "options",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-15T09:00:48.033974+00:00"
+  },
+  {
+    "id": "event_e43a086b2cbe495eb1005ff6131842ac",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "options",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-15T09:00:48.066670+00:00"
+  },
+  {
+    "id": "event_258833f107984e29981dfce883632e81",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "options",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T09:02:38.541016+00:00"
+  },
+  {
+    "id": "event_adc7714427664a299703247cee63aa06",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:02:38.588767+00:00"
+  },
+  {
+    "id": "event_90303f7c4027481ba095a9696d2221ee",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "options",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-15T09:02:38.588843+00:00"
+  },
+  {
+    "id": "event_2a0167aa51ef44fd9e12dbcdc32a17fe",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:02:38.603573+00:00"
+  },
+  {
+    "id": "event_a16c93884af045339117e87a27bcd2ff",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-15T09:02:38.603661+00:00"
+  },
+  {
+    "id": "event_9842977d14ed4490a1fc7573f165c82f",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-15T09:02:38.641025+00:00"
+  },
+  {
+    "id": "event_7c30728cefc8420292b31c773888cf45",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T09:04:26.020652+00:00"
+  },
+  {
+    "id": "event_6e2af52f6e794b788403922f373ffe16",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:04:26.072159+00:00"
+  },
+  {
+    "id": "event_ccdbf196e6804708ab09aebdc465ac2e",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-15T09:04:26.072231+00:00"
+  },
+  {
+    "id": "event_961fb69bd3194d169df13cd7689b0f6d",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:04:26.088459+00:00"
+  },
+  {
+    "id": "event_b4f3810978ae4d81a4cf757b5298912e",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-15T09:04:26.088542+00:00"
+  },
+  {
+    "id": "event_9d4320282c9e4502aeac65139a5e045f",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-15T09:04:26.128485+00:00"
+  },
+  {
+    "id": "event_9a1ad83eefc440c7b2ce0f5963d309d6",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T09:05:08.704973+00:00"
+  },
+  {
+    "id": "event_1839c36cba7e4766b434afd45ea78a68",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:05:08.752445+00:00"
+  },
+  {
+    "id": "event_c8f55b5c06224a0791b34e43dc1a9c3d",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "step_completed",
+    "code": "needs_revision",
+    "created_at": "2026-11-15T09:05:08.752532+00:00"
+  },
+  {
+    "id": "event_24446e2069aa405a9ec9ab0bac118b88",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "execution_decision",
+    "code": "REVIEW_REVISION",
+    "created_at": "2026-11-15T09:05:08.752549+00:00"
+  },
+  {
+    "id": "event_df4bafe6f5d94c5885cf652a36161f18",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:05:08.769555+00:00"
+  },
+  {
+    "id": "event_3484b434904b4d5baec8d428a81b2684",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-15T09:05:08.769644+00:00"
+  },
+  {
+    "id": "event_c571aa9687ca48b4af26e25faa01e141",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-15T09:05:08.806025+00:00"
+  },
+  {
+    "id": "event_1f293108bbb648c1b0a75c6214105779",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T09:07:12.188502+00:00"
+  },
+  {
+    "id": "event_807b81b76b1748758c2557deb973404f",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:07:12.265405+00:00"
+  },
+  {
+    "id": "event_f123befcb32344b398820299a7d8768e",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-15T09:07:12.265487+00:00"
+  },
+  {
+    "id": "event_3e8f2ec4031c4b00a759f76047c25378",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:07:12.282110+00:00"
+  },
+  {
+    "id": "event_38ce2b4bb03d4bf9bbf1d097b74ef7f8",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-15T09:07:12.282188+00:00"
+  },
+  {
+    "id": "event_a3abdecb68fd493ab66b053c024f75c7",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-15T09:07:12.322281+00:00"
+  },
+  {
+    "id": "event_1255657e22fb41f38c9f8b983761e911",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T09:07:50.446623+00:00"
+  },
+  {
+    "id": "event_943877fdce05409faa0c76adcb5b1263",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:07:50.494678+00:00"
+  },
+  {
+    "id": "event_f370641f13004269916a14ac01fa4756",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "step_completed",
+    "code": "needs_revision",
+    "created_at": "2026-11-15T09:07:50.494822+00:00"
+  },
+  {
+    "id": "event_17c328024156425799d4bf869b8273a3",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "execution_decision",
+    "code": "REVIEW_REVISION",
+    "created_at": "2026-11-15T09:07:50.494858+00:00"
+  },
+  {
+    "id": "event_4cf13468eccd45b6a79f2a15afbf91c7",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:07:50.511830+00:00"
+  },
+  {
+    "id": "event_c6dbfaf640044941bda5ecac7050c937",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-15T09:07:50.511917+00:00"
+  },
+  {
+    "id": "event_5fecdd7ef91d4d41b63a6a934b3fb43d",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-15T09:07:50.564128+00:00"
+  },
+  {
+    "id": "event_0ab4d690bb5c49b99dca1802fc86fbf0",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T09:09:53.043092+00:00"
+  },
+  {
+    "id": "event_9f323f6875df4024a2231cb4d96a468d",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:09:53.094742+00:00"
+  },
+  {
+    "id": "event_1c9153cffa884ea1b37902bf3af814f8",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-15T09:09:53.094818+00:00"
+  },
+  {
+    "id": "event_75c63b96fd1d4582a37ba604166d5a24",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:09:53.112535+00:00"
+  },
+  {
+    "id": "event_fc4898c1a7c94a4e892aab17c333a7e4",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-15T09:09:53.112629+00:00"
+  },
+  {
+    "id": "event_edbe08f6a3404e0890830dfb0a44837e",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-15T09:09:53.153225+00:00"
+  },
+  {
+    "id": "event_7e11f2f7ad764458b729e9ef3b520618",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T09:10:36.163675+00:00"
+  },
+  {
+    "id": "event_aadaa84181d640eea1d4fe8b0de05853",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:10:36.210834+00:00"
+  },
+  {
+    "id": "event_3a61e99d49004b0f815e061f82451e23",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "step_completed",
+    "code": "needs_revision",
+    "created_at": "2026-11-15T09:10:36.210912+00:00"
+  },
+  {
+    "id": "event_29dfe63162974b8c84ff4b57aefa0f8f",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "execution_decision",
+    "code": "REVIEW_REVISION",
+    "created_at": "2026-11-15T09:10:36.210926+00:00"
+  },
+  {
+    "id": "event_4695894772f14cd0bdeb279bca478c73",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:10:36.228229+00:00"
+  },
+  {
+    "id": "event_0984b9b8cb494393a7a5bbdbdd0bb126",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-15T09:10:36.228321+00:00"
+  },
+  {
+    "id": "event_3215f96abd1046a8a3d9e1d376c4bf25",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-15T09:10:36.266289+00:00"
+  },
+  {
+    "id": "event_60f0f7157517462e8cfb53f5f41ac3c9",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T09:12:48.468869+00:00"
+  },
+  {
+    "id": "event_933a4aeda21e466db68a3eb9c390396f",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:12:48.528456+00:00"
+  },
+  {
+    "id": "event_5a35d7df6d914361a987495458ed8ea4",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-15T09:12:48.528534+00:00"
+  },
+  {
+    "id": "event_1074b54704b14396977c2981632fab9b",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:12:48.547562+00:00"
+  },
+  {
+    "id": "event_2dc42ba12b6e412c9b8e3fd1219c540e",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-15T09:12:48.547651+00:00"
+  },
+  {
+    "id": "event_24e73b2365bb4dbb8b4dee0b6a287931",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-15T09:12:48.586365+00:00"
+  },
+  {
+    "id": "event_bd3c8a699cbf41e8a809964f94f16484",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T09:13:30.300108+00:00"
+  },
+  {
+    "id": "event_346c9b6a7c234e0abae25279a077a6f1",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:13:30.347840+00:00"
+  },
+  {
+    "id": "event_4adf9b757df44245a548e889a044e2bc",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "step_completed",
+    "code": "needs_revision",
+    "created_at": "2026-11-15T09:13:30.347925+00:00"
+  },
+  {
+    "id": "event_da6f2a33bd7349de9121cd6e16f09fcc",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "execution_decision",
+    "code": "REVIEW_REVISION",
+    "created_at": "2026-11-15T09:13:30.347935+00:00"
+  },
+  {
+    "id": "event_4f3ac77c67ba4b149c5673503887efe3",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:13:30.365343+00:00"
+  },
+  {
+    "id": "event_14db5b500432410fb4908b5177b96312",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-15T09:13:30.365422+00:00"
+  },
+  {
+    "id": "event_7c711285b7d949dc9346223df03ae067",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-15T09:13:30.402344+00:00"
+  },
+  {
+    "id": "event_4e85a48897d64a9199231da7a08993b6",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T09:15:48.553753+00:00"
+  },
+  {
+    "id": "event_eb43414d6eeb420d8286bebaf499eaf7",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:15:48.609177+00:00"
+  },
+  {
+    "id": "event_f79492edee0c4d9ea14692679090c7b1",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "communications",
+    "kind": "step_completed",
+    "code": "success",
+    "created_at": "2026-11-15T09:15:48.609271+00:00"
+  },
+  {
+    "id": "event_735507286b764ffe8eb66f0e440dbd42",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "running",
+    "created_at": "2026-11-15T09:15:48.627970+00:00"
+  },
+  {
+    "id": "event_c17471fd94714bc384ee10fc44566634",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "step_started",
+    "code": "STARTED",
+    "created_at": "2026-11-15T09:15:48.628044+00:00"
+  },
+  {
+    "id": "event_5ab922ea23d34b909f5efab0c71fa10a",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "external_reserved",
+    "code": "model",
+    "created_at": "2026-11-15T09:15:48.666971+00:00"
+  },
+  {
+    "id": "event_dc348df56faa448583c8315f5953d7a5",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "usage_recorded",
+    "code": "success",
+    "created_at": "2026-11-15T09:16:26.678750+00:00"
+  },
+  {
+    "id": "event_5db4c94d101048c9a41d377ffcc21616",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "run_status",
+    "code": "incomplete",
+    "created_at": "2026-11-15T09:16:26.731160+00:00"
+  },
+  {
+    "id": "event_12affd317eb3428f8ad01ecc3cd16fe0",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "step_completed",
+    "code": "incomplete",
+    "created_at": "2026-11-15T09:16:26.731241+00:00"
+  },
+  {
+    "id": "event_1a168dec10d042e19230503be7aad8a4",
+    "run_id": "run_e50c118ed868498aaab36495a60757bb",
+    "stage": "review",
+    "kind": "execution_stopped",
+    "code": "REPAIR_LIMIT_EXCEEDED",
+    "created_at": "2026-11-15T09:16:26.731251+00:00"
+  }
+]

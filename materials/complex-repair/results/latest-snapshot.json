@@ -1,0 +1,629 @@
+{
+  "schema_version": "1.0.0",
+  "project": {
+    "created_at": "2026-11-14T21:24:22.514454+00:00",
+    "current_brief_version": 1,
+    "id": "project_287c3d74f11c4911a1f5d0dcd386c835",
+    "name": "ТЕСТ: Заказ под контролем — комплексный"
+  },
+  "brief": {
+    "author": "user",
+    "created_at": "2026-11-14T21:24:22.514454+00:00",
+    "input": {
+      "assumptions": [
+        "Цена 3000 рублей за мастерскую в месяц — проверяемое допущение.",
+        "Пороги пилота допускаются как управленческие гипотезы с обоснованием, а не статистические гарантии."
+      ],
+      "audience": [
+        "Независимые мастерские смартфонов",
+        "Велосипедные мастерские",
+        "Небольшие сети ремонтных мастерских"
+      ],
+      "budget": {
+        "amount": "180000",
+        "currency": "RUB"
+      },
+      "constraints": [
+        "Россия, русский язык; все внутренние данные синтетические. Не выдавать их за независимые сведения о рынке.",
+        "Не определено, включает ли бюджет дополнительные расходы разработки: уточнить до финального плана.",
+        "После поддержки свободно 20 часов разработки, 12 часов внедренца и 8 часов основателя в неделю.",
+        "Не выполнять реальные публикации, рассылки, платежи, интервью или переговоры. Только подготовить план.",
+        "Запрещены массовые личные рассылки, обещания интеграций и гарантия снижения звонков.",
+        "Веб-поиск: официальные страницы минимум двух релевантных альтернатив, если они доступны; источники читать, указывать дату и пробелы. Не выдумывать недоступные сведения."
+      ],
+      "excluded_source_ids": [],
+      "goal": "Выбрать один сегмент и одну стратегию на восемь недель. Проверить привлечение, фактическую оплату и продление без обещания отсутствующих функций. Сопоставить три содержательно разные альтернативы, план продукта и коммуникаций, ресурсы и экономику; описать основания, сильные возражения, эксперименты и условия остановки.",
+      "horizon": "Восемь недель с 16 ноября 2026",
+      "product": "Учебный проект «Заказ под контролем»: веб-сервис для ремонтных мастерских. Есть ручной заказ, статусы, ссылка клиенту, шаблоны SMS для ручной отправки и CSV. Нет автоматических SMS, склада, платежей, филиальной аналитики и офлайн-режима. Компания и внутренние данные вымышлены. Доступны семь материалов кейса; для внешних альтернатив нужен настоящий веб-поиск.",
+      "unknowns": [
+        "Границы бюджета",
+        "Спрос вне круга знакомых",
+        "Сезонность и продления",
+        "Доступ к базе поставщика",
+        "Полная стоимость привлечения и внешних сервисов"
+      ]
+    },
+    "project_id": "project_287c3d74f11c4911a1f5d0dcd386c835",
+    "version": 1
+  },
+  "run": {
+    "attempt": 3,
+    "brief_version": 1,
+    "checkpoint_id": "checkpoint_ae7fde805c36411480c4f5d1ecdfdf70",
+    "created_at": "2026-11-14T21:24:22.527900+00:00",
+    "error": {
+      "error": {
+        "code": "UPSTREAM_UNAVAILABLE",
+        "field_errors": [],
+        "message": "Вызов модели не выполнен.",
+        "request_id": "request_1e4e585b11ab40c7af76dd0a2b2752ba",
+        "retryable": false,
+        "run_id": "run_e50c118ed868498aaab36495a60757bb"
+      }
+    },
+    "id": "run_e50c118ed868498aaab36495a60757bb",
+    "project_id": "project_287c3d74f11c4911a1f5d0dcd386c835",
+    "quality": "blocked",
+    "revision": 16,
+    "stage": "research",
+    "status": "failed",
+    "updated_at": "2026-11-14T21:26:42.225419+00:00"
+  },
+  "data": {
+    "capabilities": [
+      {
+        "basis": "Со слов пользователя: В описании продукта прямо указано: «Есть ручной заказ». Доступность заявлена пользователем, независимо не проверена.",
+        "brief_version": 1,
+        "id": "agent_9424cb6b96c1e20cf2000fcaeb9b",
+        "name": "Ручное создание заказа",
+        "project_id": "project_287c3d74f11c4911a1f5d0dcd386c835",
+        "source_ids": [
+          "source_50082a54c0587e1d475aacfa"
+        ],
+        "status": "available",
+        "version": 1
+      },
+      {
+        "basis": "Со слов пользователя: В описании продукта прямо указано наличие статусов. Доступность заявлена пользователем, независимо не проверена.",
+        "brief_version": 1,
+        "id": "agent_677908f888bccaa3005cb5b26c26",
+        "name": "Статусы заказов",
+        "project_id": "project_287c3d74f11c4911a1f5d0dcd386c835",
+        "source_ids": [
+          "source_50082a54c0587e1d475aacfa"
+        ],
+        "status": "available",
+        "version": 1
+      },
+      {
+        "basis": "Со слов пользователя: В описании продукта прямо указано наличие ссылки клиенту. Её дополнительные свойства не описаны; доступность независимо не проверена.",
+        "brief_version": 1,
+        "id": "agent_70a707080fe47ee37d354912f509",
+        "name": "Ссылка клиенту",
+        "project_id": "project_287c3d74f11c4911a1f5d0dcd386c835",
+        "source_ids": [
+          "source_50082a54c0587e1d475aacfa"
+        ],
+        "status": "available",
+        "version": 1
+      },
+      {
+        "basis": "Со слов пользователя: В описании продукта прямо указаны «шаблоны SMS для ручной отправки»; автоматические SMS прямо исключены. Доступность независимо не проверена.",
+        "brief_version": 1,
+        "id": "agent_a26aef100945963cfa7d6577802e",
+        "name": "Шаблоны SMS для ручной отправки",
+        "project_id": "project_287c3d74f11c4911a1f5d0dcd386c835",
+        "source_ids": [
+          "source_50082a54c0587e1d475aacfa"
+        ],
+        "status": "available",
+        "version": 1
+      },
+      {
+        "basis": "Со слов пользователя: В описании продукта прямо указано наличие CSV. Направление обмена, состав данных и ограничения не раскрыты; доступность независимо не проверена.",
+        "brief_version": 1,
+        "id": "agent_c1dbd777cb1d1f577968fa17895a",
+        "name": "Работа с CSV",
+        "project_id": "project_287c3d74f11c4911a1f5d0dcd386c835",
+        "source_ids": [
+          "source_50082a54c0587e1d475aacfa"
+        ],
+        "status": "available",
+        "version": 1
+      }
+    ],
+    "claims": [],
+    "decisions": [],
+    "experiments": [],
+    "issues": [],
+    "messages": [],
+    "options": [],
+    "sources": [
+      {
+        "brief_version": 1,
+        "content_excerpt": "{\"brief\": {\"assumptions\": [\"Цена 3000 рублей за мастерскую в месяц — проверяемое допущение.\", \"Пороги пилота допускаются как управленческие гипотезы с обоснованием, а не статистические гарантии.\"], \"audience\": [\"Независимые мастерские смартфонов\", \"Велосипедные мастерские\", \"Небольшие сети ремонтных мастерских\"], \"budget\": {\"amount\": \"180000\", \"currency\": \"RUB\"}, \"constraints\": [\"Россия, русский язык; все внутренние данные синтетические. Не выдавать их за независимые сведения о рынке.\", \"Не определено, включает ли бюджет дополнительные расходы разработки: уточнить до финального плана.\", \"После поддержки свободно 20 часов разработки, 12 часов внедренца и 8 часов основателя в неделю.\", \"Не выполнять реальные публикации, рассылки, платежи, интервью или переговоры. Только подготовить план.\", \"Запрещены массовые личные рассылки, обещания интеграций и гарантия снижения звонков.\", \"Веб-поиск: официальные страницы минимум двух релевантных альтернатив, если они доступны; источники читать, указывать дату и пробелы. Не выдумывать недоступные сведения.\"], \"excluded_source_ids\": [], \"goal\": \"Выбрать один сегмент и одну стратегию на восемь недель. Проверить привлечение, фактическую оплату и продление без обещания отсутствующих функций. Сопоставить три содержательно разные альтернативы, план продукта и коммуникаций, ресурсы и экономику; описать основания, сильные возражения, эксперименты и условия остановки.\", \"horizon\": \"Восемь недель с 16 ноября 2026\", \"product\": \"Учебный проект «Заказ под контролем»: веб-сервис для ремонтных мастерских. Есть ручной заказ, статусы, ссылка клиенту, шаблоны SMS для ручной отправки и CSV. Нет автоматических SMS, склада, платежей, филиальной аналитики и офлайн-режима. Компания и внутренние данные вымышлены. Доступны семь материалов кейса; для внешних альтернатив нужен настоящий веб-поиск.\", \"unknowns\": [\"Границы бюджета\", \"Спрос вне круга знакомых\", \"Сезонность и продления\", \"Доступ к базе поставщика\", \"Полная стоимость привлечения и внешних сервисов\"]}, \"answers\": [{\"id\": \"input_ff66648606ac4517be29cd9b7f95c107\", \"run_id\": \"run_e50c118ed868498aaab36495a60757bb\", \"checkpoint_id\": \"checkpoint_29a69930a61c4782a65a7e283957578c\", \"kind\": \"answers\", \"payload\": {\"answers\": [{\"question_id\": \"budget_scope\", \"value\": \"180000 рублей — дополнительные денежные затраты на пилот, привлечение, внедрение, сервисы и поддержку новых клиентов. Фиксированные зарплаты команды уже оплачены и не входят в этот бюджет; часы ограничены брифом. Не тратить бюджет автоматически. Разработка только в пределах свободных часов без найма. Все условия учебные.\"}], \"expected_revision\": 10}, \"created_at\": \"2026-11-14T21:25:30.980217+00:00\", \"questions\": [{\"id\": \"budget_scope\", \"options\": [\"Все расходы входят в 180 000 рублей\", \"Разработка оплачивается отдельно; остальные расходы входят в бюджет\", \"Границы бюджета пока неизвестны\"], \"required\": true, \"stage\": \"brief\", \"text\": \"Входят ли дополнительные расходы разработки в бюджет 180 000 рублей и какие ещё затраты он должен покрывать: работу команды, привлечение, внедрение и внешние сервисы?\"}], \"stage\": \"brief\", \"brief_version\": 1}]}",
+        "id": "source_50082a54c0587e1d475aacfa",
+        "kind": "user_text",
+        "locator": "Сохранённый фрагмент, символы 1–3119",
+        "origin_note": "Данные пользователя; независимая проверка не проводилась.",
+        "project_id": "project_287c3d74f11c4911a1f5d0dcd386c835",
+        "published_at": null,
+        "publisher": null,
+        "retrieved_at": "2026-11-14T21:25:31.258007+00:00",
+        "title": "Бриф и ответы пользователя",
+        "url": null,
+        "verification": "read",
+        "version": 1
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "brief_version": 1,
+      "created_at": "2026-11-14T21:24:53.578976+00:00",
+      "depends_on": [],
+      "entities": [],
+      "freshness": "stale",
+      "id": "artifact_c224ccc5d06fc47c44a7952be82856aa",
+      "model_id": null,
+      "project_id": "project_287c3d74f11c4911a1f5d0dcd386c835",
+      "prompt_version": "brief-v3",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "schema_version": "1.0.0",
+      "stage": "brief",
+      "summary": "«Заказ под контролем» — учебный веб-сервис для ремонтных мастерских в России, на русском языке. Рассматриваются независимые мастерские смартфонов, велосипедные мастерские и небольшие сети. Цель — подготовить сопоставление трёх содержательно разных стратегий, чтобы руководитель выбрал один сегмент и одну стратегию на восемь недель с 16 ноября 2026 года. План должен охватывать проверку привлечения, фактической оплаты и продления, продукт, коммуникации, ресурсы, экономику, сильные возражения и условия остановки. Выбор пока не сделан.\nБюджет — 180 000 рублей; включение дополнительных расходов разработки требует уточнения. После поддержки доступно в неделю 20 часов разработки, 12 часов внедренца и 8 часов основателя: за восемь недель соответственно 160, 96 и 64 часа при сохранении указанной загрузки. Цена 3000 рублей за мастерскую в месяц — проверяемое допущение; пороги пилота допустимы только как обоснованные управленческие гипотезы, без статистических гарантий.\nПо сообщению пользователя доступны ручной заказ, статусы, ссылка клиенту, шаблоны SMS для ручной отправки и CSV. Автоматические SMS, склад, платежи, филиальная аналитика и офлайн-режим отсутствуют; план их разработки не заявлен. Способ проверки фактической оплаты с учётом отсутствия платежей в продукте ещё предстоит определить.\nКомпания и внутренние данные вымышлены; они не подтверждают рынок независимо. Семь материалов кейса заявлены, но их содержание здесь не предоставлено. Неизвестны спрос вне круга знакомых, сезонность, продления, доступ к базе поставщика, полная стоимость привлечения и внешних сервисов; эти пробелы требуют первичного измерения. Для дальнейшего исследования предусмотрено чтение официальных страниц минимум двух релевантных альтернатив, если они доступны, с датами и указанием пробелов; в этом ответе внешней проверки нет.\nРазрешена только подготовка плана: без реальных публикаций, рассылок, платежей, интервью и переговоров. Запрещены массовые личные рассылки, обещания интеграций и гарантия снижения звонков.",
+      "version": 1
+    },
+    {
+      "brief_version": 1,
+      "created_at": "2026-11-14T21:26:07.302338+00:00",
+      "depends_on": [],
+      "entities": [
+        {
+          "id": "agent_9424cb6b96c1e20cf2000fcaeb9b",
+          "kind": "capability",
+          "version": 1
+        },
+        {
+          "id": "agent_677908f888bccaa3005cb5b26c26",
+          "kind": "capability",
+          "version": 1
+        },
+        {
+          "id": "agent_70a707080fe47ee37d354912f509",
+          "kind": "capability",
+          "version": 1
+        },
+        {
+          "id": "agent_a26aef100945963cfa7d6577802e",
+          "kind": "capability",
+          "version": 1
+        },
+        {
+          "id": "agent_c1dbd777cb1d1f577968fa17895a",
+          "kind": "capability",
+          "version": 1
+        },
+        {
+          "id": "source_50082a54c0587e1d475aacfa",
+          "kind": "source",
+          "version": 1
+        }
+      ],
+      "freshness": "current",
+      "id": "artifact_c224ccc5d06fc47c44a7952be82856aa",
+      "model_id": null,
+      "project_id": "project_287c3d74f11c4911a1f5d0dcd386c835",
+      "prompt_version": "brief-v3",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "schema_version": "1.0.0",
+      "stage": "brief",
+      "summary": "«Заказ под контролем» — учебный веб-сервис для ремонтных мастерских в России, на русском языке. Кандидаты для сравнения: независимые мастерские смартфонов, велосипедные мастерские и небольшие сети. Сегмент и стратегия пока не выбраны; решение остаётся за руководителем. Цель — подготовить сравнение трёх содержательно разных альтернатив и план на восемь недель с 16 ноября 2026 года для проверки привлечения, фактической оплаты и продления, с экономикой, ресурсами, возражениями, экспериментами и условиями остановки. Бюджет уточнён: до 180 000 рублей дополнительных денежных затрат на пилот, привлечение, внедрение, сервисы и поддержку новых клиентов; фиксированные зарплаты уже оплачены и исключены. Автоматическое расходование бюджета не допускается. Разработка — без найма, в пределах свободных 20 часов в неделю; внедренец — 12 часов, основатель — 8 часов в неделю после поддержки. За восемь недель это максимум 160, 96 и 64 часа соответственно, без учёта возможных отклонений доступности. Доступны только заявленные функции; автоматических SMS, склада, платежей, филиальной аналитики и офлайн-режима нет, план их разработки не заявлен. Цена 3000 рублей за мастерскую в месяц — проверяемое допущение; пороги пилота допустимы как обоснованные управленческие гипотезы. Неизвестны спрос вне круга знакомых, сезонность, продления, доступ к базе поставщика и полная стоимость привлечения и внешних сервисов: нужны первичные измерения, подтверждённых результатов нет. Компания и внутренние данные вымышлены; сведения пользователя не являются независимыми рыночными доказательствами. Заявлены семь материалов кейса, но их содержание здесь не предоставлено. Для последующего сравнения нужны прочитанные официальные страницы минимум двух релевантных альтернатив, если доступны, с датой обращения и пробелами; внешняя проверка в этом ответе не проводилась. Разрешена только подготовка плана: реальные публикации, рассылки, платежи, интервью и переговоры исключены. Запрещены массовые личные рассылки, обещания интеграций и гарантии снижения звонков. Вопрос о границах бюджета уже разрешён; повторное уточнение не требуется.",
+      "version": 2
+    },
+    {
+      "brief_version": 1,
+      "created_at": "2026-11-14T21:26:42.224362+00:00",
+      "depends_on": [],
+      "entities": [],
+      "freshness": "current",
+      "id": "artifact_37dfb3e676570aefe529fd8818eb88cf",
+      "model_id": null,
+      "project_id": "project_287c3d74f11c4911a1f5d0dcd386c835",
+      "prompt_version": "platform-diagnostic-v1",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "schema_version": "1.0.0",
+      "stage": "research",
+      "summary": "Вызов модели не выполнен.",
+      "version": 1
+    }
+  ],
+  "questions": [],
+  "usage": [
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_9287afe9acb34d4d8d1ba43410693cbe",
+      "context": {
+        "metadata_version": "1.0.0",
+        "model_requested": null,
+        "parameters": {
+          "max_retries": 0,
+          "max_tokens": null,
+          "timeout_seconds": null
+        },
+        "pricing": null,
+        "prompt_hash": "d7a9689c695f78babda6170c61131240640092e767c8d2e2e60eda41a892b43d",
+        "prompt_version": "brief-v3",
+        "schema_hash": "c0b7e93adbf3c157ecd6b5131629ce46c393678a77e86272ec903b885eac0df8",
+        "schema_version": "agents-payload-v1"
+      },
+      "cost": null,
+      "cost_basis": "unknown",
+      "duration_ms": 30655,
+      "generation_id": "01a1dbf2-787a-7e61-9f11-f03356936ed8",
+      "id": "usage_46276201938942249e29fa840e84e713",
+      "input_tokens": 13918,
+      "model": null,
+      "outcome": "success",
+      "output_tokens": 1093,
+      "pricing_version": null,
+      "provider": "codex",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "brief",
+      "started_at": "2026-11-14T21:24:22.915464+00:00",
+      "tool": null
+    },
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_ec9ab43145d34c8d9bd8c3e550747aed",
+      "context": {
+        "metadata_version": "1.0.0",
+        "model_requested": null,
+        "parameters": {
+          "max_retries": 0,
+          "max_tokens": null,
+          "timeout_seconds": null
+        },
+        "pricing": null,
+        "prompt_hash": "29c7c3607a53c3bb3122419d01712be1eb1851bd0a8a21eedd3f5968fee26509",
+        "prompt_version": "brief-v3",
+        "schema_hash": "c0b7e93adbf3c157ecd6b5131629ce46c393678a77e86272ec903b885eac0df8",
+        "schema_version": "agents-payload-v1"
+      },
+      "cost": null,
+      "cost_basis": "unknown",
+      "duration_ms": 36023,
+      "generation_id": "01a1dbf3-82a4-74f1-a01b-fac96f497de3",
+      "id": "usage_1c33ad4e39214a4abc909917ab17f454",
+      "input_tokens": 15438,
+      "model": null,
+      "outcome": "success",
+      "output_tokens": 983,
+      "pricing_version": null,
+      "provider": "codex",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "brief",
+      "started_at": "2026-11-14T21:25:31.269871+00:00",
+      "tool": null
+    },
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_71df4a4b470c4f32bb13dc84935ca339",
+      "cost": {
+        "amount": "0",
+        "currency": "USD"
+      },
+      "cost_basis": "reported",
+      "duration_ms": 0,
+      "id": "usage_55bf0f6cb19a4cf1b5c7b977f7d693b0",
+      "input_tokens": null,
+      "model": null,
+      "outcome": "success",
+      "output_tokens": null,
+      "pricing_version": null,
+      "provider": "local",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "research",
+      "started_at": "2026-11-14T21:26:07.370727+00:00",
+      "tool": "read_file"
+    },
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_68154e9293fa467d89a79730b1061b87",
+      "cost": {
+        "amount": "0",
+        "currency": "USD"
+      },
+      "cost_basis": "reported",
+      "duration_ms": 0,
+      "id": "usage_901253a61172406d84ea1ee57ea6a2d3",
+      "input_tokens": null,
+      "model": null,
+      "outcome": "success",
+      "output_tokens": null,
+      "pricing_version": null,
+      "provider": "local",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "research",
+      "started_at": "2026-11-14T21:26:07.378112+00:00",
+      "tool": "read_file"
+    },
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_324755b726f040498bcc389fb321fc38",
+      "cost": {
+        "amount": "0",
+        "currency": "USD"
+      },
+      "cost_basis": "reported",
+      "duration_ms": 0,
+      "id": "usage_60f7314336fb462da56cbe3b1349b1cc",
+      "input_tokens": null,
+      "model": null,
+      "outcome": "success",
+      "output_tokens": null,
+      "pricing_version": null,
+      "provider": "local",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "research",
+      "started_at": "2026-11-14T21:26:07.385771+00:00",
+      "tool": "read_file"
+    },
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_ec7ee62179b241a9bf364f9398cb35b8",
+      "cost": {
+        "amount": "0",
+        "currency": "USD"
+      },
+      "cost_basis": "reported",
+      "duration_ms": 0,
+      "id": "usage_261a17f29a6649e697893d1ab27f8d98",
+      "input_tokens": null,
+      "model": null,
+      "outcome": "success",
+      "output_tokens": null,
+      "pricing_version": null,
+      "provider": "local",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "research",
+      "started_at": "2026-11-14T21:26:07.392458+00:00",
+      "tool": "read_file"
+    },
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_54ab284209ca4a25b99dfabb5a05f419",
+      "cost": {
+        "amount": "0",
+        "currency": "USD"
+      },
+      "cost_basis": "reported",
+      "duration_ms": 0,
+      "id": "usage_626c07cbef0b44bf93d1c330708de869",
+      "input_tokens": null,
+      "model": null,
+      "outcome": "success",
+      "output_tokens": null,
+      "pricing_version": null,
+      "provider": "local",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "research",
+      "started_at": "2026-11-14T21:26:07.400262+00:00",
+      "tool": "read_file"
+    },
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_ca77542796c64aae9c9c029f2c0c1185",
+      "cost": {
+        "amount": "0",
+        "currency": "USD"
+      },
+      "cost_basis": "reported",
+      "duration_ms": 0,
+      "id": "usage_8f2a11bbf5a348238a3e00013f6d7fbb",
+      "input_tokens": null,
+      "model": null,
+      "outcome": "success",
+      "output_tokens": null,
+      "pricing_version": null,
+      "provider": "local",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "research",
+      "started_at": "2026-11-14T21:26:07.406647+00:00",
+      "tool": "read_file"
+    },
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_62e40c7d8b0f43e9a12c0d639c9d60a0",
+      "cost": {
+        "amount": "0",
+        "currency": "USD"
+      },
+      "cost_basis": "reported",
+      "duration_ms": 0,
+      "id": "usage_560edfe26ce74e21bc5e40cf046bd6d9",
+      "input_tokens": null,
+      "model": null,
+      "outcome": "success",
+      "output_tokens": null,
+      "pricing_version": null,
+      "provider": "local",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "research",
+      "started_at": "2026-11-14T21:26:07.413577+00:00",
+      "tool": "read_file"
+    },
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_4c2bbca60f914dc4846c89b2e242b5a1",
+      "context": {
+        "metadata_version": "1.0.0",
+        "model_requested": null,
+        "parameters": {
+          "max_retries": 0,
+          "max_tokens": null,
+          "timeout_seconds": null
+        },
+        "pricing": null,
+        "prompt_hash": "e4926ad8037f888c13e4b41155cfbfc6f1e3439d298579f2cf572372d515f1b7",
+        "prompt_version": "research-v3",
+        "schema_hash": "a6810b504cd188ff4f6ad538122f756eb97bd03febc986481f4839e9fbd6dcaf",
+        "schema_version": "agents-payload-v1"
+      },
+      "cost": null,
+      "cost_basis": "unknown",
+      "duration_ms": 17379,
+      "generation_id": "01a1dbf4-0fe7-7f53-91a8-d9b8e88fa92a",
+      "id": "usage_4984dddafa984579a2c7a3083a06fdae",
+      "input_tokens": 16815,
+      "model": null,
+      "outcome": "success",
+      "output_tokens": 276,
+      "pricing_version": null,
+      "provider": "codex",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "research",
+      "started_at": "2026-11-14T21:26:07.423831+00:00",
+      "tool": null
+    },
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_5da296c7b3fc421797605e52400e48ad",
+      "cost": null,
+      "cost_basis": "unknown",
+      "duration_ms": 2232,
+      "id": "usage_1887fcde4c2c4502bf239a8b77a99f76",
+      "input_tokens": null,
+      "model": null,
+      "outcome": "success",
+      "output_tokens": null,
+      "pricing_version": null,
+      "provider": "tavily",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "research",
+      "started_at": "2026-11-14T21:26:24.818505+00:00",
+      "tool": "search"
+    },
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_4d69dfe8b3384aad9fa7024c9937fa79",
+      "cost": null,
+      "cost_basis": "unknown",
+      "duration_ms": 1324,
+      "id": "usage_7e57e11680ec4c128cc5f6a1e2def49a",
+      "input_tokens": null,
+      "model": null,
+      "outcome": "success",
+      "output_tokens": null,
+      "pricing_version": null,
+      "provider": "tavily",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "research",
+      "started_at": "2026-11-14T21:26:27.071651+00:00",
+      "tool": "search"
+    },
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_f8b43a1ce698442a8905ede3f099d1d1",
+      "cost": null,
+      "cost_basis": "unknown",
+      "duration_ms": 1169,
+      "id": "usage_c471dacbe73a4795b7ff395d489edff6",
+      "input_tokens": null,
+      "model": null,
+      "outcome": "success",
+      "output_tokens": null,
+      "pricing_version": null,
+      "provider": "tavily",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "research",
+      "started_at": "2026-11-14T21:26:28.413059+00:00",
+      "tool": "search"
+    },
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_6cc1f3935d29419a903baa47d778d9aa",
+      "cost": null,
+      "cost_basis": "unknown",
+      "duration_ms": 1928,
+      "id": "usage_0ec834dbb8064effbeaffe83cb8bb343",
+      "input_tokens": null,
+      "model": null,
+      "outcome": "success",
+      "output_tokens": null,
+      "pricing_version": null,
+      "provider": "tavily",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "research",
+      "started_at": "2026-11-14T21:26:29.602091+00:00",
+      "tool": "search"
+    },
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_61c25efe30a94057b0df40b5189b0b5d",
+      "cost": null,
+      "cost_basis": "unknown",
+      "duration_ms": 2436,
+      "id": "usage_1ddd8fd32cae45ef988ac0af131351f6",
+      "input_tokens": null,
+      "model": null,
+      "outcome": "success",
+      "output_tokens": null,
+      "pricing_version": null,
+      "provider": "tavily",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "research",
+      "started_at": "2026-11-14T21:26:31.552595+00:00",
+      "tool": "extract"
+    },
+    {
+      "attempt": 1,
+      "cached": false,
+      "call_id": "call_03edee02138d4d3da5c08907717e84b2",
+      "context": {
+        "metadata_version": "1.0.0",
+        "model_requested": null,
+        "parameters": {
+          "max_retries": 0,
+          "max_tokens": null,
+          "timeout_seconds": null
+        },
+        "pricing": null,
+        "prompt_hash": "30749e0c823bb869fc4fed0b2eca93565f593e3675337af7f45bd353b3218ccd",
+        "prompt_version": "research-v3",
+        "schema_hash": "0d9dab5442e9b3b2d322c819f720f51d71cacfeb1109d2abebce6e50bd45c67c",
+        "schema_version": "agents-payload-v1"
+      },
+      "cost": null,
+      "cost_basis": "unknown",
+      "duration_ms": 8195,
+      "generation_id": "01a1dbf4-77bf-72b3-9422-764737747f2c",
+      "id": "usage_0cbb287438f24e0f9c1380815d984d1b",
+      "input_tokens": null,
+      "model": null,
+      "outcome": "error",
+      "output_tokens": null,
+      "pricing_version": null,
+      "provider": "codex",
+      "run_id": "run_e50c118ed868498aaab36495a60757bb",
+      "stage": "research",
+      "started_at": "2026-11-14T21:26:34.017970+00:00",
+      "tool": null
+    }
+  ]
+}

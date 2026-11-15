@@ -137,7 +137,8 @@ def test_renderer_escapes_untrusted_html_and_includes_quotes_versions():
     snap['data']['sources'][0]['content_excerpt']='<script>alert("secret")</script>'
     content=render.html(snap)
     assert '<script>' not in content and '<img src=x' not in content
-    assert '&lt;script&gt;' in content and 'Версия брифа' in content
+    assert '&lt;script&gt;' not in content and 'Версия брифа' in content
+    assert '&lt;img src=x onerror=alert(1)&gt;' in content
     assert render.safe_url('javascript:alert(1)') is None
     assert render.safe_url('https://user:password@example.org') is None
 

@@ -1,11 +1,15 @@
+# История разработки и участников
+
+Эти планы и протоколы фиксируют состояние на момент работы над отдельными частями. Для текущего запуска и возможностей используйте [корневой README](../README.md), [архитектуру](../docs/architecture.md) и [комплект сдачи](../docs/submission.md).
+
 Материалы проекта и команды
 
 - [Исходное задание](task).
 - [Концепция и план решения](PLAN.md).
 - [Общий roadmap](ROADMAP.md).
-- [План участника 1](team/PARTICIPANT_1.md).
-- [План участника 2](team/PARTICIPANT_2.md).
-- [План участника 3](team/PARTICIPANT_3.md).
+- [План участника 1](archive/team/PARTICIPANT_1.md).
+- [План участника 2](archive/team/PARTICIPANT_2.md).
+- [План участника 3](archive/team/PARTICIPANT_3.md).
 - [Протокол проверки A2](reports/A2_CHECKS.md).
 - [Протокол проверки A3](reports/A3_CHECKS.md).
 - [Проверка сменных моделей и Codex](reports/A3_CODEX_CHECKS.md).
