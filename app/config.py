@@ -42,7 +42,7 @@ class Settings(BaseSettings):
     research_file_bytes: int = Field(default=200000, ge=1000, le=1000000)
     research_materials_dir: Path = Path("materials")
     research_files: list[str] = Field(default_factory=list, max_length=10)
-    agent_context_chars: int = Field(default=120000, ge=20000, le=300000)
+    agent_context_chars: int = Field(default=0, ge=0)
 
     @field_validator("model_timeout_seconds", mode="before")
     @classmethod

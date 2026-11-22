@@ -43,7 +43,7 @@ class AgentRuntime:
                                 and item.get('brief_version') == request['brief']['version']],
                        feedback=context.feedback, repairs_used=context.repairs_used, extra=extra)
         content = json.dumps(payload, ensure_ascii=False)
-        if len(content) > self.settings.agent_context_chars:
+        if 0 < self.settings.agent_context_chars < len(content):
             raise LimitExceeded('Контекст превышает лимит; сократите материалы. Ограничения и доказательства не обрезаны.')
         self.gate.reserve(request, 'model', 1 + (self.settings.model_max_retries if self.settings.model_provider == 'openrouter' else 0))
         system = (ROOT / 'prompts/common-v2.md').read_text() + '\n' + (ROOT / ('prompts/' + stage + '-v2.md')).read_text()
@@ -75,7 +75,7 @@ class AgentRuntime:
         usage_ids = []
         if stage == 'brief':
             text = json.dumps(dict(brief=request['brief']['input'], answers=context.inputs), ensure_ascii=False)
-            if len(text) > self.settings.agent_context_chars:
+            if 0 < self.settings.agent_context_chars < len(text):
                 raise LimitExceeded('Бриф превышает лимит контекста.')
             collected = [source(request, key=request['run_id'] + ':brief', title='Бриф и ответы пользователя',
                                 text=text, kind='user_text', note='Данные пользователя; независимая проверка не проводилась.')]
